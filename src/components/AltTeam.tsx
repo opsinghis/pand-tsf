@@ -200,7 +200,7 @@ export function TeamSkillsSection() {
       <div className="skills-ladder">
         <div className="sl-shared-band">
           <span />
-          <strong>Operations extends to T3, where it becomes the same senior engineering skill as development</strong>
+          <strong>Operations extends to L3, where it becomes the same senior engineering skill as development</strong>
         </div>
         <div className="sl-head">
           <span>Engineering skill</span>
@@ -214,9 +214,9 @@ export function TeamSkillsSection() {
         {skillRows.map((row) => (
           <div className="sl-row" key={row.skill}>
             <span className="sl-skill">{row.skill}</span>
-            <span data-tier="Ops T1 · Monitor & route">{row.t1}</span>
-            <span data-tier="Ops T2 · Diagnose & restore">{row.t2}</span>
-            <span className="sl-shared" data-tier="Ops T3 · Engineer fix">{row.t3}</span>
+            <span data-tier="Ops L1 · Monitor & route">{row.t1}</span>
+            <span data-tier="Ops L2 · Diagnose & restore">{row.t2}</span>
+            <span className="sl-shared" data-tier="Ops L3 · Engineer fix">{row.t3}</span>
             <span className="sl-shared" data-tier="Development · Build & change">{row.dev}</span>
           </div>
         ))}

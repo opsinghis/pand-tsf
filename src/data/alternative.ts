@@ -855,20 +855,20 @@ export const skillRows: SkillRow[] = [
 ];
 
 export const skillsNote =
-  "Full coverage from day one across development and operations — with operations explicitly spanning T1 monitor-and-route, T2 diagnose-and-restore and T3 engineering fix. T3 is deliberately interchangeable with development for the same skill, so production learning turns into permanent code, IaC, tests and runbook improvements.";
+  "Full coverage from day one across development and operations — with operations explicitly spanning L1 monitor-and-route, L2 diagnose-and-restore and L3 engineering fix. L3 is deliberately interchangeable with development for the same skill, so production learning turns into permanent code, IaC, tests and runbook improvements.";
 
 export const skillTierHeaders = [
-  { label: "Ops T1", detail: "Monitor & route" },
-  { label: "Ops T2", detail: "Diagnose & restore" },
-  { label: "Ops T3", detail: "Engineer fix" },
+  { label: "Ops L1", detail: "Monitor & route" },
+  { label: "Ops L2", detail: "Diagnose & restore" },
+  { label: "Ops L3", detail: "Engineer fix" },
   { label: "Development", detail: "Build & change" }
 ] as const;
 
 export const skillBridge = {
-  title: "T3 is not a support silo",
+  title: "L3 is not a support silo",
   detail:
     "The same senior engineering pool works L3 production fixes and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
-  flow: ["Incident / request", "Ops T1", "Ops T2", "Ops T3", "Development", "Permanent fix / reusable pattern"]
+  flow: ["Incident / request", "Ops L1", "Ops L2", "Ops L3", "Development", "Permanent fix / reusable pattern"]
 };
 
 export interface KtStep {
