@@ -295,51 +295,131 @@
   font-weight: 700;
 }
 
-/* Governance layers */
-.gov-layers {
+/* Governance — lit plane over dormant plane (§09) */
+.gov-planes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 0;
+  max-width: 840px;
+  margin: 0 auto;
 }
 
-.gov-layer {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--card);
-  padding: 18px 20px;
+.gov-plane {
+  border-radius: 9px;
+  padding: 18px 22px;
 }
 
-.gov-layer.service {
+.gov-plane.lit {
+  border: 1px solid color-mix(in srgb, var(--proof) 40%, var(--line));
   border-top: 3px solid var(--proof);
+  background: var(--card);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--proof) 18%, transparent);
+  position: relative;
+  z-index: 2;
 }
 
-.gov-layer.agentic {
-  border-top: 3px solid var(--ops);
-  background: var(--paper);
+.gov-plane.dormant {
+  border: 1.5px dashed color-mix(in srgb, var(--muted) 45%, var(--line));
+  background:
+    repeating-linear-gradient(-45deg, var(--paper), var(--paper) 11px, #f2f0ec 11px, #f2f0ec 22px);
+  color: var(--muted);
 }
 
-.gov-layer-head {
-  display: flex;
-  flex-wrap: wrap;
+.gov-plane-head {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 12px;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
   margin-bottom: 12px;
 }
 
-.gov-layer-head h3 {
-  font-size: 14.5px;
-  max-width: 34ch;
+.gov-power {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
 }
 
-.gov-layer ul {
+.gov-power.on {
+  background: var(--proof);
+  color: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--proof) 18%, transparent);
+}
+
+.gov-power.off {
+  border: 1.5px dashed var(--muted);
+  color: var(--muted);
+}
+
+.gov-plane-title h3 {
+  font-size: 14.5px;
+}
+
+.gov-plane-title span {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+.gov-plane.dormant .gov-plane-title h3 {
+  color: #6a6e74;
+}
+
+.gov-plane ul {
   display: grid;
   gap: 7px;
   padding-left: 17px;
   font-family: var(--sans);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.gov-plane.lit ul {
   color: #3a3d43;
+}
+
+.gov-plane.dormant ul {
+  color: var(--muted);
+}
+
+/* The switch between the two planes */
+.gov-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  padding: 14px 0;
+  font-family: var(--sans);
+}
+
+.gov-toggle {
+  flex: none;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--line);
+  border: 1px solid color-mix(in srgb, var(--muted) 30%, var(--line));
+  position: relative;
+}
+
+.gov-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(22 24 29 / 25%);
+}
+
+.gov-switch-label {
+  max-width: 52ch;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 640;
+  line-height: 1.45;
 }
 
 /* Dial explorer */
@@ -1005,5 +1085,24 @@ td:target {
 
   .fstack {
     position: static;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .gov-plane-head {
+    grid-template-columns: 28px 1fr;
+    row-gap: 6px;
+  }
+
+  .gov-plane-head .chip {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .gov-switch {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
   }
 }

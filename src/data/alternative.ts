@@ -304,7 +304,8 @@ export const asIsLanes = [
 export const governanceLayers = [
   {
     id: "service",
-    title: "Layer 1 · Service governance — active from day one",
+    name: "Layer 1 · Service governance",
+    sub: "active from day one",
     state: "ACTIVE DAY 1",
     items: [
       "Weekly delivery forum (delivery and engineering leads, both sides)",
@@ -315,7 +316,8 @@ export const governanceLayers = [
   },
   {
     id: "agentic",
-    title: "Layer 2 · Agentic governance — pre-built, dormant until the first dial-up",
+    name: "Layer 2 · Agentic governance",
+    sub: "pre-built, dormant until the first dial-up",
     state: "DORMANT UNTIL DIAL-UP",
     items: [
       "Agent registry, intent catalogue and model catalogue — prepared as templates during Lane-1 quarters",

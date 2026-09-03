@@ -1,6 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { useState, type CSSProperties, type KeyboardEvent } from "react";
-import { changesNote, changesTable, dialLevels, dialSource, foundationPillars, foundationsIntro, foundationsPunchline, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
+import { changesNote, changesTable, dialSource, foundationPillars, foundationsIntro, foundationsPunchline, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
 import { DataTable, PullQuote, Reveal, Section } from "./primitives";
 import { LandscapeMap } from "./LandscapeMap";
 
@@ -62,6 +62,70 @@ export function ScopeOverviewSection() {
   );
 }
 
+function LevelGateFlow() {
+  const levels = [
+    { tag: "L0", name: "Run as-is", blurb: ["Conventional delivery —", "the default, forever"], fill: "#EDF1F6", stroke: "#B6C5D5", ink: "#35597B" },
+    { tag: "L1", name: "AI-assisted", blurb: ["AI drafts, recommends —", "a human executes"], fill: "#F8F1E6", stroke: "#DDBB8C", ink: "#A3671F" },
+    { tag: "L2", name: "Agentic", blurb: ["A bounded loop,", "behind approval gates"], fill: "#F7E9E9", stroke: "#E4B9BD", ink: "#C43B44" }
+  ];
+  const boxX = [40, 410, 780];
+  const gates = [
+    { cx: 350, name: "Gate 1", sub: "per item · unlocks L1" },
+    { cx: 720, name: "Gate 2", sub: "per item · unlocks L2" }
+  ];
+  const lock = (cx: number, cy: number, key: string) => (
+    <g key={key}>
+      <path d={`M ${cx - 8} ${cy - 4} v -5 a 8 8 0 0 1 16 0 v 5`} fill="none" stroke="#2E7D4F" strokeWidth="1.7" />
+      <rect x={cx - 13} y={cy - 4} width="26" height="20" rx="3.5" fill="#E9F3EC" stroke="#2E7D4F" strokeWidth="1.7" />
+      <circle cx={cx} cy={cy + 5} r="2.3" fill="#2E7D4F" />
+    </g>
+  );
+  return (
+    <Reveal>
+      <svg className="process-svg" viewBox="0 0 1040 320" role="img" aria-label="Levels and gates: Gate 0 is the estate-wide prerequisite; then each scope item moves L0 to L1 through Gate 1, and L1 to L2 through Gate 2">
+        <defs>
+          <marker id="arrow-lg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </marker>
+        </defs>
+        <rect x="10" y="10" width="1020" height="300" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
+
+        <rect x="40" y="36" width="990" height="50" rx="8" fill="#E9F3EC" stroke="#2E7D4F" />
+        {lock(72, 61, "g0lock")}
+        <text x="100" y="57" className="svg-small svg-bold" fill="#2E7D4F">GATE 0 · FOUNDATIONS PROVEN — ESTATE-WIDE, PASSES ONCE</text>
+        <text x="100" y="74" className="svg-small" fill="#3a5a44">Only after Gate 0 can any per-item dial move. Gates 1 and 2 are then per item, and reversible.</text>
+
+        <line x1="535" y1="86" x2="535" y2="120" stroke="#2E7D4F" strokeWidth="1.8" markerEnd="url(#arrow-lg)" />
+        <text x="552" y="110" className="svg-small svg-bold" fill="#2E7D4F">then, per scope item:</text>
+
+        {levels.map((lvl, i) => (
+          <g key={lvl.tag}>
+            <rect x={boxX[i]} y="140" width="250" height="120" rx="8" fill={lvl.fill} stroke={lvl.stroke} />
+            <text x={boxX[i] + 22} y="186" fontSize="26" fontWeight="800" fontFamily="Arial, sans-serif" fill={lvl.ink}>{lvl.tag}</text>
+            <text x={boxX[i] + 70} y="186" className="svg-title" fill={lvl.ink}>{lvl.name}</text>
+            <text x={boxX[i] + 22} y="216" className="svg-small">{lvl.blurb[0]}</text>
+            <text x={boxX[i] + 22} y="232" className="svg-small">{lvl.blurb[1]}</text>
+          </g>
+        ))}
+
+        {gates.map((g) => (
+          <g key={g.name}>
+            <line x1={g.cx - 60} y1="200" x2={g.cx - 20} y2="200" stroke="#2E7D4F" strokeWidth="2" markerEnd="url(#arrow-lg)" />
+            <line x1={g.cx + 20} y1="200" x2={g.cx + 60} y2="200" stroke="#2E7D4F" strokeWidth="2" markerEnd="url(#arrow-lg)" />
+            {lock(g.cx, 200, g.name)}
+            <text x={g.cx} y="250" textAnchor="middle" className="svg-small svg-bold" fill="#2E7D4F">{g.name}</text>
+            <text x={g.cx} y="264" textAnchor="middle" className="svg-small" fill="#3a5a44">{g.sub}</text>
+          </g>
+        ))}
+
+        <text x="520" y="294" textAnchor="middle" className="svg-small svg-bold" fill="#35597B">
+          Every item starts at L0 and stays there until you turn its dial. You hold all 30 dials.
+        </text>
+      </svg>
+    </Reveal>
+  );
+}
+
 export function TwoLaneSection() {
   return (
     <Section id="twolane" num="04" title="The two-lane model — one destination">
@@ -78,17 +142,9 @@ export function TwoLaneSection() {
           </Reveal>
         ))}
       </div>
-      <h3 className="section-inline-title">First, the three service levels — what any scope item's dial can be set to</h3>
-      <div className="tiers dial-legend">
-        {dialLevels.map((level) => (
-          <div className="tier" key={level.level}>
-            <span className="t">L{level.level}</span>
-            <span className="lv">{level.name}</span>
-            <span>{level.detail}</span>
-          </div>
-        ))}
-      </div>
-      <h3 className="section-inline-title">Then, the gate series that unlocks them — exactly three kinds, and no more</h3>
+      <h3 className="section-inline-title">The three service levels, and the two gates that move between them</h3>
+      <LevelGateFlow />
+      <h3 className="section-inline-title">Each gate — scope and evidence</h3>
       <div className="gate-cards">
         {gateSeries.map((gate) => (
           <Reveal className="gate-card-sm" key={gate.id}>

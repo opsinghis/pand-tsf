@@ -1,4 +1,5 @@
-import { CalendarCheck2 } from "lucide-react";
+import { CalendarCheck2, Power } from "lucide-react";
+import { Fragment } from "react";
 import { asIsLanes, dayOneFacts, dialReview, governanceLayers, transitionPlan } from "../data/alternative";
 import { PullQuote, Reveal, Section } from "./primitives";
 
@@ -65,20 +66,41 @@ export function GovernanceSection() {
         Controls arrive before autonomy — always. Service governance runs from day one on the RFP's own cadence; agentic
         governance is prepared during Lane-1 quarters and switches on only when something agentic first touches the estate.
       </p>
-      <div className="gov-layers">
-        {governanceLayers.map((layer) => (
-          <Reveal className={`gov-layer ${layer.id}`} key={layer.id}>
-            <div className="gov-layer-head">
-              <h3>{layer.title}</h3>
-              <span className={`chip ${layer.id === "service" ? "live" : "gap"}`}>{layer.state}</span>
-            </div>
-            <ul>
-              {layer.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </Reveal>
-        ))}
+      <div className="gov-planes">
+        {governanceLayers.map((layer) => {
+          const lit = layer.id === "service";
+          return (
+            <Fragment key={layer.id}>
+              <Reveal className={`gov-plane ${lit ? "lit" : "dormant"}`}>
+                <div className="gov-plane-head">
+                  <span className={`gov-power ${lit ? "on" : "off"}`} aria-hidden="true">
+                    <Power size={15} />
+                  </span>
+                  <div className="gov-plane-title">
+                    <h3>{layer.name}</h3>
+                    <span>{layer.sub}</span>
+                  </div>
+                  <span className={`chip ${lit ? "live" : "gap"}`}>{layer.state}</span>
+                </div>
+                <ul>
+                  {layer.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </Reveal>
+              {lit && (
+                <div className="gov-switch">
+                  <span className="gov-toggle" aria-hidden="true">
+                    <span className="gov-toggle-knob" />
+                  </span>
+                  <span className="gov-switch-label">
+                    Off by design. The switch flips at your first dial-up (Gate 1) — never before, and one scope item at a time.
+                  </span>
+                </div>
+              )}
+            </Fragment>
+          );
+        })}
       </div>
       <PullQuote quote={dialReview} source="The quarterly dial review — where the two layers meet" />
     </Section>
