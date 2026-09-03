@@ -1,0 +1,31 @@
+{
+  "name": "@pandav/alternative-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 3003",
+    "start": "vite --host 127.0.0.1 --port 3003",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 3003",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && tsx src/alternative.smoke.ts",
+    "build:publish": "npm run build && node scripts/publish.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "1.21.0",
+    "motion": "13.1.1",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.0.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3",
+    "vite": "8.1.0",
+    "vite-plugin-singlefile": "2.3.3"
+  }
+}

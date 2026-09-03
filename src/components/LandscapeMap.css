@@ -1,0 +1,195 @@
+.landscape {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.ls-grid {
+  display: grid;
+  grid-template-columns: 148px repeat(4, minmax(150px, 1fr));
+  overflow-x: auto;
+  font-family: var(--sans);
+}
+
+.ls-corner,
+.ls-colhead {
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 10px 12px;
+}
+
+.ls-colhead {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.ls-rowhead {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  padding: 12px;
+}
+
+.ls-rowhead strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.ls-rowhead span {
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.ls-cell {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 84px;
+  border-bottom: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  padding: 10px;
+}
+
+.ls-item {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ls-item.owner-vendor {
+  border-color: color-mix(in srgb, var(--gov) 35%, var(--line));
+  background: var(--gov-dim);
+}
+
+.ls-item.owner-shared {
+  border-color: color-mix(in srgb, var(--ops) 35%, var(--line));
+  background: var(--ops-dim);
+}
+
+.ls-item.owner-enterprise {
+  border-color: color-mix(in srgb, var(--tech) 35%, var(--line));
+  background: var(--tech-dim);
+}
+
+.ls-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ls-item-head strong {
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.ls-item-example {
+  display: block;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.ls-item-meta {
+  display: none;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.ls-item-meta em {
+  font-style: normal;
+  font-weight: 700;
+}
+
+.ls-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.ls-dot.live {
+  background: var(--proof);
+}
+
+.ls-dot.pilot {
+  border: 2px solid var(--ops);
+  background: var(--card);
+}
+
+.ls-dot.none {
+  border: 1px dashed var(--muted);
+  background: transparent;
+}
+
+.ls-legends {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+}
+
+.ls-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+.ls-legend-title {
+  color: var(--muted);
+  font-weight: 780;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+
+.ls-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.ls-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+}
+
+.ls-swatch.vendor {
+  border: 1px solid color-mix(in srgb, var(--gov) 35%, var(--line));
+  background: var(--gov-dim);
+}
+
+.ls-swatch.shared {
+  border: 1px solid color-mix(in srgb, var(--ops) 35%, var(--line));
+  background: var(--ops-dim);
+}
+
+.ls-swatch.enterprise {
+  border: 1px solid color-mix(in srgb, var(--tech) 35%, var(--line));
+  background: var(--tech-dim);
+}
+
+.ls-note {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding: 12px 14px;
+}

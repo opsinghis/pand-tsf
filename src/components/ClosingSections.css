@@ -1,0 +1,228 @@
+/* Risks */
+.risks {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  margin-top: 26px;
+}
+
+.risk {
+  display: grid;
+  grid-template-columns: minmax(200px, 2fr) 3fr minmax(140px, 1fr);
+  gap: 18px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 16px 20px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.risk:last-child {
+  border-bottom: 0;
+}
+
+.risk .obj {
+  font-weight: 760;
+}
+
+.risk .own {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* What we need from Pandora */
+.ask-list {
+  display: grid;
+  gap: 10px;
+  max-width: 900px;
+}
+
+.ask-row {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.ask-row svg {
+  margin-top: 3px;
+  color: var(--proof);
+}
+
+/* Workshops */
+.wsgrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.ws {
+  padding: 18px;
+}
+
+.wk {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 720;
+  text-transform: uppercase;
+}
+
+.ws h3 {
+  margin: 6px 0 10px;
+  font-size: 16px;
+}
+
+.ws ul {
+  padding-left: 17px;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.leaves {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.leaves strong {
+  display: block;
+  color: var(--proof);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.agenda {
+  overflow: hidden;
+  margin-top: 26px;
+}
+
+.ahead {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 20px;
+  font-family: var(--sans);
+}
+
+.ahead h3 {
+  font-size: 15px;
+}
+
+.ahead span {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.arow {
+  display: grid;
+  grid-template-columns: 80px 70px 1fr;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  padding: 10px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.arow:last-child {
+  border-bottom: 0;
+}
+
+.t {
+  font-variant-numeric: tabular-nums;
+  font-weight: 760;
+}
+
+.dur {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.running-note {
+  max-width: 76ch;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* The ask */
+.ask-section {
+  border-bottom: 0;
+  background: var(--ink);
+  color: #f4f2ee;
+  padding: 56px 0;
+}
+
+.ask-section .eyebrow {
+  color: #a9acb3;
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.ask-section h2 {
+  margin-top: 10px;
+  color: #fff;
+}
+
+.askgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.askcard {
+  border-color: #3a3e45;
+  background: transparent;
+  padding: 20px;
+  font-family: var(--sans);
+}
+
+.askcard div {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.askcard p {
+  color: #c9cbd0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.close-line {
+  max-width: 66ch;
+  margin-top: 34px;
+  color: #e8e6e1;
+  font-size: 19px;
+  font-style: italic;
+}
+
+/* Footer */
+footer {
+  padding: 28px 0 44px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+}

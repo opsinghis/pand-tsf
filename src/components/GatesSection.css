@@ -1,0 +1,51 @@
+.gatecards {
+  display: grid;
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.gatecard {
+  border-left: 4px solid var(--accent);
+  overflow: hidden;
+}
+
+.ghead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  padding: 16px 22px;
+}
+
+.ghead h3 {
+  font-size: 16px;
+}
+
+.owner {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.gbody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 16px 22px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.gbody h4 {
+  margin-bottom: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.gbody ul {
+  padding-left: 17px;
+}

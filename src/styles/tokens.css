@@ -1,0 +1,21 @@
+:root {
+  --paper: #fbfaf8;
+  --ink: #16181d;
+  --muted: #5c6066;
+  --line: #e5e2db;
+  --card: #ffffff;
+  --accent: #c43b44;
+  --accent-dim: #f7e9e9;
+  --tech: #35597b;
+  --tech-dim: #edf1f6;
+  --people: #55763f;
+  --people-dim: #eff3ea;
+  --ops: #a3671f;
+  --ops-dim: #f8f1e6;
+  --gov: #684e86;
+  --gov-dim: #f1edf6;
+  --proof: #2e7d4f;
+  --proof-dim: #e9f3ec;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+}

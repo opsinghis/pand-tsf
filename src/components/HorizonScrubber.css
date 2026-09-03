@@ -1,0 +1,65 @@
+.scrubber-shell {
+  position: sticky;
+  top: 46px;
+  z-index: 40;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.scrubber {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.scrubber-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.scrubber-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.scrubber-buttons button {
+  position: relative;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  cursor: pointer;
+  padding: 7px 10px;
+  text-align: left;
+}
+
+.scrubber-buttons button.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.scrubber-buttons span,
+.scrubber-buttons strong {
+  display: block;
+  font-family: var(--sans);
+}
+
+.scrubber-buttons span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scrubber-buttons strong {
+  margin-top: 2px;
+  font-size: 14px;
+}

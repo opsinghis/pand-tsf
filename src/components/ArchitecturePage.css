@@ -1,0 +1,344 @@
+.architecture-page {
+  background: var(--paper);
+}
+
+.arch-hero {
+  border-bottom: 1px solid var(--line);
+  padding: 52px 0 34px;
+}
+
+.arch-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 0.78fr);
+  gap: 34px;
+  align-items: center;
+}
+
+.arch-hero-copy h1 {
+  max-width: 18ch;
+}
+
+.arch-reference {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: 0 14px 34px rgb(22 24 29 / 7%);
+  padding: 18px;
+}
+
+.arch-reference p {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 11px 0;
+}
+
+.arch-reference p:last-child {
+  padding-bottom: 0;
+}
+
+.arch-diagram-panel,
+.arch-list-panel,
+.arch-step-panel,
+.security-matrix {
+  min-width: 0;
+}
+
+.arch-diagram-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: 0 14px 34px rgb(22 24 29 / 7%);
+  padding: 18px;
+}
+
+.arch-diagram-panel--wide {
+  margin-top: 4px;
+}
+
+.architecture-svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.arch-diagram-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.architecture-v3-diagram {
+  --t2: #52525b;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f8;
+  padding: 14px;
+}
+
+.architecture-v3-diagram svg {
+  display: block;
+  width: max(100%, 760px);
+  height: auto;
+  margin: 0 auto;
+}
+
+.architecture-v3-diagram svg text {
+  font-family: var(--sans);
+}
+
+.architecture-v3-diagram .ts {
+  fill: #52525b;
+  font-size: 10px;
+}
+
+.architecture-v3-diagram .th {
+  fill: #18181b;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.architecture-v3-diagram .c-purple rect,
+.architecture-v3-diagram .c-purple ellipse {
+  fill: #ebebff;
+  stroke: #c5c6f5;
+}
+
+.architecture-v3-diagram .c-blue rect,
+.architecture-v3-diagram .c-blue ellipse {
+  fill: #e8f4ff;
+  stroke: #93c5fd;
+}
+
+.architecture-v3-diagram .c-teal rect,
+.architecture-v3-diagram .c-teal ellipse {
+  fill: #d1fae5;
+  stroke: #6ee7b7;
+}
+
+.architecture-v3-diagram .c-amber rect,
+.architecture-v3-diagram .c-amber ellipse {
+  fill: #fef3c7;
+  stroke: #fcd34d;
+}
+
+.architecture-v3-diagram .c-gray rect,
+.architecture-v3-diagram .c-gray ellipse {
+  fill: #f4f4f5;
+  stroke: #d4d4d8;
+}
+
+.architecture-v3-diagram .c-graph rect,
+.architecture-v3-diagram .c-graph ellipse {
+  fill: #fdf4ff;
+  stroke: #d8b4fe;
+}
+
+.architecture-v3-diagram .c-coral rect,
+.architecture-v3-diagram .c-coral ellipse {
+  fill: #fde8e8;
+  stroke: #fca5a5;
+}
+
+.architecture-v3-diagram .box {
+  fill: #f7f7f8;
+  stroke: #e4e4e7;
+}
+
+@keyframes arch-flow-forward {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes arch-flow-reverse {
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+
+.architecture-v3-diagram .fl {
+  animation: arch-flow-forward 1.4s linear infinite;
+  stroke-dasharray: 5 4;
+}
+
+.architecture-v3-diagram .fls {
+  animation: arch-flow-forward 2.2s linear infinite;
+  stroke-dasharray: 5 4;
+}
+
+.architecture-v3-diagram .flr {
+  animation: arch-flow-reverse 1.6s linear infinite;
+  stroke-dasharray: 5 4;
+}
+
+.arch-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.arch-card,
+.arch-row,
+.security-row,
+.security-matrix article,
+.arch-step-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.arch-card {
+  min-height: 198px;
+  border-top: 3px solid var(--tech);
+  padding: 16px;
+}
+
+.arch-card:nth-child(1) {
+  border-top-color: var(--accent);
+}
+
+.arch-card:nth-child(2) {
+  border-top-color: var(--people);
+}
+
+.arch-card:nth-child(3) {
+  border-top-color: var(--ops);
+}
+
+.arch-card:nth-child(5) {
+  border-top-color: var(--gov);
+}
+
+.arch-card p,
+.arch-row p,
+.security-row p,
+.security-matrix p,
+.arch-step p {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.arch-card h3,
+.arch-row h3,
+.security-matrix h3 {
+  margin-bottom: 7px;
+}
+
+.arch-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 13px;
+}
+
+.arch-tags span {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: #383b41;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 680;
+  padding: 3px 7px;
+}
+
+.arch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.arch-list-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.arch-zone-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.arch-row {
+  padding: 14px;
+}
+
+.security-row {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+}
+
+.security-row span {
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.security-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.security-matrix article {
+  min-height: 142px;
+  padding: 14px;
+}
+
+.arch-step-panel {
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.arch-step-panel h3 {
+  margin-bottom: 12px;
+}
+
+.arch-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.arch-step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  min-height: 128px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  padding: 12px;
+}
+
+.arch-step span {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 780;
+}

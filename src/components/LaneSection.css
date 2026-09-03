@@ -1,0 +1,165 @@
+.lane-heading {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 14px;
+  max-width: 820px;
+  margin: 4px 0 26px;
+}
+
+.lane-heading .lane-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--lane);
+  color: #fff;
+}
+
+.lane-heading p {
+  color: #3a3d43;
+  font-size: 17px;
+  line-height: 1.62;
+}
+
+.process-svg {
+  margin: 4px 0 24px;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 20px;
+  font-family: var(--sans);
+}
+
+.tab {
+  min-width: 118px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 740;
+  padding: 8px 14px;
+  text-align: left;
+}
+
+.tab span {
+  display: block;
+  font-size: 11px;
+  font-weight: 640;
+}
+
+.tab[aria-selected="true"] {
+  border-color: var(--lane);
+  background: var(--lane);
+  color: #fff;
+}
+
+.tab[aria-selected="true"] span {
+  color: rgb(255 255 255 / 74%);
+}
+
+.panel {
+  margin-top: 18px;
+  padding: 24px 26px;
+}
+
+.phead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.posture {
+  color: var(--lane);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.milestones {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.milestones li {
+  display: flex;
+  gap: 12px;
+}
+
+.milestones .m {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  margin-top: 7px;
+  border-radius: 2px;
+  background: var(--lane);
+}
+
+.already {
+  margin-top: 18px;
+  border-left: 3px solid var(--proof);
+  background: var(--proof-dim);
+  color: #244532;
+  font-size: 13.5px;
+  line-height: 1.55;
+  padding: 12px 16px;
+}
+
+/* Governance extras: risk-tiered autonomy */
+.tiers {
+  display: grid;
+  overflow: hidden;
+  margin-top: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: 52px 190px 1fr 1fr;
+  gap: 14px;
+  align-items: baseline;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 14px 16px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.tier:last-child {
+  border-bottom: 0;
+}
+
+.tier .t {
+  color: var(--accent);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 780;
+}
+
+.tier .lv {
+  font-weight: 780;
+}
+
+.tier .ctrl {
+  color: var(--muted);
+}
