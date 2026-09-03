@@ -47,20 +47,21 @@ export const navChapters = [
   { id: "team", label: "The Team", sections: [
     { id: "team-shape", label: "One team, three locations", num: "10" },
     { id: "team-leader", label: "One leader · Pandora in control", num: "11" },
-    { id: "team-skills", label: "Skills & knowledge transfer", num: "12" },
-    { id: "team-capacity", label: "Capacity that compounds", num: "13" }
+    { id: "team-converge", label: "Why two teams? Dev & ops converge", num: "12" },
+    { id: "team-skills", label: "Skills & knowledge transfer", num: "13" },
+    { id: "team-capacity", label: "Capacity that compounds", num: "14" }
   ]},
   { id: "dial", label: "The Dial", sections: [
-    { id: "dial-explorer", label: "The 30-item dial", num: "14" },
-    { id: "walkthroughs", label: "The dial in action", num: "15" },
-    { id: "goals", label: "Your goals, covered", num: "16" }
+    { id: "dial-explorer", label: "The 30-item dial", num: "15" },
+    { id: "walkthroughs", label: "The dial in action", num: "16" },
+    { id: "goals", label: "Your goals, covered", num: "17" }
   ]},
   { id: "journey", label: "The Journey", sections: [
-    { id: "horizons", label: "Horizons, re-anchored", num: "17" },
-    { id: "caution", label: "The cost of caution", num: "18" },
-    { id: "proof", label: "Why this is low-risk", num: "19" },
-    { id: "pandora", label: "Your part", num: "20" },
-    { id: "start", label: "How we start", num: "21" }
+    { id: "horizons", label: "Horizons, re-anchored", num: "18" },
+    { id: "caution", label: "The cost of caution", num: "19" },
+    { id: "proof", label: "Why this is low-risk", num: "20" },
+    { id: "pandora", label: "Your part", num: "21" },
+    { id: "start", label: "How we start", num: "22" }
   ]}
 ];
 
@@ -859,3 +860,22 @@ export const teamAsks: string[] = [
 
 export const teamClose =
   "One accountable leader, one team across three locations, Pandora in control at every gate, capacity compounding, and ownership transferring — the delivery engine that makes the gentle path credible.";
+
+// ── The Team · dev/ops convergence (answers "why two teams?") ─────────────
+export const convergeIntro =
+  "Not two teams — one team, sequenced. The transition stabilises the running service (the support wave) before it takes on change (the dev wave); the destination is a single team that builds and runs. What makes that possible is the agentic dial itself: Level 2/3 operations removes the operational cognitive load that forced development and operations apart, so a build-minded engineer can own what they run without being a full-time ops specialist.";
+
+export interface ConvergeMechanism {
+  title: string;
+  detail: string;
+}
+
+export const convergeMechanisms: ConvergeMechanism[] = [
+  { title: "A layered core, not uniform heroes", detail: "An experienced SRE/DevOps backbone holds 24×7 and the hard incidents; development engineers take on-call for what they build, with agentic ops carrying the toil." },
+  { title: "Rotation & pairing", detail: "Engineers rotate between development and operations, building the build-and-run mindset over the journey rather than hiring for it fully formed." },
+  { title: "Follow-the-sun — 24×7 by design", detail: "Copenhagen, Bucharest and Gurgaon cover the clock, so no individual carries an unsustainable pager — and dialled agentic ops cuts the night wake-ups further." },
+  { title: "Select for mindset, enable the rest", detail: "We screen for ownership and curiosity, then close skills through Gate-0 enablement — the same clinics that build capability build the mindset." }
+];
+
+export const convergeClincher =
+  "So the two-wave transition is the on-ramp to the one team the agentic capability makes possible — dialling up agentic ops is what collapses development and operations into a single agent-supervising team, without burning out the rare full-stack engineer.";

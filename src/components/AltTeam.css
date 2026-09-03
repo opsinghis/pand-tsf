@@ -397,3 +397,51 @@
     flex-basis: 46%;
   }
 }
+
+/* Dev/ops convergence — mechanisms */
+.conv-mechs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.conv-mech {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 13px 15px;
+  font-family: var(--sans);
+}
+
+.conv-mech-no {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--proof);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.conv-mech strong {
+  font-size: 13px;
+}
+
+.conv-mech p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .conv-mechs {
+    grid-template-columns: 1fr;
+  }
+}

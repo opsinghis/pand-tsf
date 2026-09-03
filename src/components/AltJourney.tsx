@@ -19,7 +19,7 @@ import { DataTable, PullQuote, Reveal, Section } from "./primitives";
 
 export function HorizonsSection() {
   return (
-    <Section id="horizons" num="17" title="The journey, re-anchored to the 30 October award">
+    <Section id="horizons" num="18" title="The journey, re-anchored to the 30 October award">
       <p className="sec-sub">
         Four checkpoints — January 2027, April 2027, October 2027, October 2028 — each shown in both lanes. Read Lane 2 at
         three months carefully: it is empty on purpose.
@@ -61,7 +61,7 @@ export function HorizonsSection() {
 
 export function CautionSection() {
   return (
-    <Section id="caution" num="18" title="The cost of caution — shown, not hidden">
+    <Section id="caution" num="19" title="The cost of caution — shown, not hidden">
       <p className="sec-sub">{cautionIntro}</p>
       <DataTable
         headers={["RFP target", "Level 0 · as-is", "Level 1 · assisted", "Level 2 · agentic"]}
@@ -132,7 +132,7 @@ function BenefitCurves() {
 
 export function ProofSection() {
   return (
-    <Section id="proof" num="19" title="Why this is low-risk">
+    <Section id="proof" num="20" title="Why this is low-risk">
       <p className="sec-sub">
         The gentle path is not a bet. The takeover model is proven at Pandora, the fabric already exists, and the coverage
         never depends on anything novel.
@@ -176,7 +176,7 @@ export function ProofSection() {
 
 export function PandoraSection() {
   return (
-    <Section id="pandora" num="20" title="What we need from Pandora — deliberately lighter">
+    <Section id="pandora" num="21" title="What we need from Pandora — deliberately lighter">
       <p className="sec-sub">
         To start this approach, you commit to running a service well — nothing else. Everything agentic remains a decision
         you have not yet made.
@@ -195,7 +195,7 @@ export function PandoraSection() {
 
 export function StartSection() {
   return (
-    <Section id="start" num="21" title="How we start">
+    <Section id="start" num="22" title="How we start">
       <p className="sec-sub">
         Concrete, dated, reversible. The first possible dial moment is also the first possible "not yet" — by design.
       </p>

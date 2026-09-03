@@ -2,6 +2,9 @@ import { BadgeCheck, Check } from "lucide-react";
 import type { CSSProperties } from "react";
 import {
   capacityDrivers,
+  convergeClincher,
+  convergeIntro,
+  convergeMechanisms,
   capacityNote,
   controlBands,
   controlNote,
@@ -122,10 +125,75 @@ function OrgDiagram() {
   );
 }
 
-// ── 12 · Skills, training and knowledge transfer ─────────────────────────
+// ── 12 · One team, sequenced — dev/ops convergence ───────────────────────
+export function ConvergenceSection() {
+  return (
+    <Section id="team-converge" num="12" title="Two waves in transition, one team at the destination">
+      <p className="sec-sub">{convergeIntro}</p>
+      <ConvergenceDiagram />
+      <div className="conv-mechs">
+        {convergeMechanisms.map((mech, index) => (
+          <Reveal className="conv-mech" key={mech.title}>
+            <span className="conv-mech-no">{index + 1}</span>
+            <div>
+              <strong>{mech.title}</strong>
+              <p>{mech.detail}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+      <PullQuote quote={convergeClincher} source="Why the agentic dial resolves the dev/ops question" />
+    </Section>
+  );
+}
+
+function ConvergenceDiagram() {
+  const horizons4 = [
+    { x: 200, date: "Jan 2027" },
+    { x: 420, date: "Apr 2027" },
+    { x: 640, date: "Oct 2027" },
+    { x: 860, date: "Oct 2028" }
+  ];
+  return (
+    <Reveal>
+      <svg className="process-svg" viewBox="0 0 1040 280" role="img" aria-label="Development and operations start as two streams and converge into one build-and-run team by Oct 2028, enabled by agentic ops removing operational cognitive load">
+        <rect x="10" y="10" width="1020" height="260" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
+        <text x="34" y="36" className="svg-label">DEVELOPMENT AND OPERATIONS CONVERGE — ONE BUILD-AND-RUN TEAM</text>
+
+        {horizons4.map((h) => (
+          <line key={h.date} x1={h.x} y1="54" x2={h.x} y2="236" stroke="#E5E2DB" strokeDasharray="3 4" />
+        ))}
+
+        <rect x="34" y="64" width="150" height="38" rx="7" fill="#EFF3EA" stroke="#BBD0AF" />
+        <text x="109" y="87" textAnchor="middle" className="svg-title" fill="#55763F">Development</text>
+        <rect x="34" y="196" width="150" height="38" rx="7" fill="#F8F1E6" stroke="#DDBB8C" />
+        <text x="109" y="219" textAnchor="middle" className="svg-title" fill="#A3671F">Operations · 24×7</text>
+
+        <path d="M184 83 C 420 92 640 120 852 138" fill="none" stroke="#55763F" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
+        <path d="M184 215 C 420 206 640 158 852 138" fill="none" stroke="#A3671F" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
+        <line x1="852" y1="138" x2="1006" y2="138" stroke="#35597B" strokeWidth="7" strokeLinecap="round" />
+
+        <rect x="300" y="116" width="392" height="46" rx="8" fill="#E9F3EC" stroke="#2E7D4F" />
+        <text x="496" y="134" textAnchor="middle" className="svg-small svg-bold" fill="#2E7D4F">Agentic ops (L2/L3) removes the operational cognitive load —</text>
+        <text x="496" y="150" textAnchor="middle" className="svg-small" fill="#3a5a44">so build-minded engineers can own what they run.</text>
+
+        <rect x="836" y="104" width="180" height="68" rx="8" fill="#EDF1F6" stroke="#B6C5D5" />
+        <text x="926" y="126" textAnchor="middle" className="svg-title" fill="#35597B">One team</text>
+        <text x="926" y="144" textAnchor="middle" className="svg-small">build it · run it</text>
+        <text x="926" y="158" textAnchor="middle" className="svg-small">agent-supervised</text>
+
+        {horizons4.map((h) => (
+          <text key={h.date} x={h.x} y="256" textAnchor="middle" className="svg-small svg-bold">{h.date}</text>
+        ))}
+      </svg>
+    </Reveal>
+  );
+}
+
+// ── 13 · Skills, training and knowledge transfer ─────────────────────────
 export function TeamSkillsSection() {
   return (
-    <Section id="team-skills" num="12" title="Skills coverage, training and knowledge transfer">
+    <Section id="team-skills" num="13" title="Skills coverage, training and knowledge transfer">
       <p className="sec-sub">{skillsNote}</p>
       <div className="skills-matrix">
         <div className="sm-head">
@@ -172,7 +240,7 @@ function SkillDots({ value }: { value: number }) {
 // ── 13 · Capacity that compounds ─────────────────────────────────────────
 export function TeamCapacitySection() {
   return (
-    <Section id="team-capacity" num="13" title="Capacity that compounds — more from a leaner, stabler team">
+    <Section id="team-capacity" num="14" title="Capacity that compounds — more from a leaner, stabler team">
       <p className="sec-sub">
         The headline: effective capacity rises each horizon without a matching rise in headcount, and an increasing share
         of it is owned by Pandora. Here is what drives it.
