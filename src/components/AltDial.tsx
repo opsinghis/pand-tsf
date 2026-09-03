@@ -32,7 +32,7 @@ export function DialSection() {
   );
 
   return (
-    <Section id="dial-explorer" num="10" title="The dial: three service levels on every scope item">
+    <Section id="dial-explorer" num="14" title="The dial: three service levels on every scope item">
       <p className="sec-sub">
         All 30 scope items, each with a defined delivery at every level. Everything starts — and can stay — at Level 0.
         Turning any dial is a per-item decision that belongs to Pandora, behind Gate 0 and the item's own gate. The levels
@@ -127,7 +127,7 @@ function DialRow({ item, hidden }: { item: DialItem; hidden: boolean }) {
 
 export function WalkthroughSection() {
   return (
-    <Section id="walkthroughs" num="11" title="The dial in action — two concrete walkthroughs">
+    <Section id="walkthroughs" num="15" title="The dial in action — two concrete walkthroughs">
       <p className="sec-sub">
         The same service, at each level, so the choice is tangible: what you get on day one, what the first dial-up adds,
         and what full agentic would look like — if and when you choose it.
@@ -176,7 +176,7 @@ export function WalkthroughSection() {
 
 export function GoalsSection() {
   return (
-    <Section id="goals" num="12" title="Everything you asked for, on the gentler path — every stated goal traced">
+    <Section id="goals" num="16" title="Everything you asked for, on the gentler path — every stated goal traced">
       <p className="sec-sub">{goalsHeadline}</p>
       <GoalTable title="Data Platform — your stated objectives (8)" rows={goalsB21} />
       <GoalTable title="Integration Platform — your stated objectives (8)" rows={goalsB22} />

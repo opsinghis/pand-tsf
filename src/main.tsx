@@ -13,6 +13,7 @@ import "./components/GatesSection.css";
 import "./components/ClosingSections.css";
 import "./components/LandscapeMap.css";
 import "./components/alternative.css";
+import "./components/AltTeam.css";
 import "./styles/responsive.css";
 import App from "./App";
 

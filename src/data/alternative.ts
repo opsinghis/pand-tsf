@@ -44,17 +44,23 @@ export const navChapters = [
     { id: "lanes-asis", label: "People · Technology · Ops", num: "08" },
     { id: "governance", label: "Governance: two layers", num: "09" }
   ]},
+  { id: "team", label: "The Team", sections: [
+    { id: "team-shape", label: "One team, three locations", num: "10" },
+    { id: "team-leader", label: "One leader · Pandora in control", num: "11" },
+    { id: "team-skills", label: "Skills & knowledge transfer", num: "12" },
+    { id: "team-capacity", label: "Capacity that compounds", num: "13" }
+  ]},
   { id: "dial", label: "The Dial", sections: [
-    { id: "dial-explorer", label: "The 30-item dial", num: "10" },
-    { id: "walkthroughs", label: "The dial in action", num: "11" },
-    { id: "goals", label: "Your goals, covered", num: "12" }
+    { id: "dial-explorer", label: "The 30-item dial", num: "14" },
+    { id: "walkthroughs", label: "The dial in action", num: "15" },
+    { id: "goals", label: "Your goals, covered", num: "16" }
   ]},
   { id: "journey", label: "The Journey", sections: [
-    { id: "horizons", label: "Horizons, re-anchored", num: "13" },
-    { id: "caution", label: "The cost of caution", num: "14" },
-    { id: "proof", label: "Why this is low-risk", num: "15" },
-    { id: "pandora", label: "Your part", num: "16" },
-    { id: "start", label: "How we start", num: "17" }
+    { id: "horizons", label: "Horizons, re-anchored", num: "17" },
+    { id: "caution", label: "The cost of caution", num: "18" },
+    { id: "proof", label: "Why this is low-risk", num: "19" },
+    { id: "pandora", label: "Your part", num: "20" },
+    { id: "start", label: "How we start", num: "21" }
   ]}
 ];
 
@@ -740,3 +746,116 @@ export const footerLines = [
   "Pandora TS&F · Strategic Partner Selection 2027 · Data, Integration & DevOps Platforms — the alternative approach",
   "Companion detail on request: full dial specifications · gate charter template · foundations assessment method · transition plan · the accelerated (July) option"
 ] as const;
+
+// ── The Team — delivery model chapter ────────────────────────────────────
+export const teamIntro =
+  "The engine behind the plan: one team across three locations under a single accountable Sapient leader, with Pandora holding architecture, standards and every gate — and effective capacity that compounds each horizon rather than a rise in headcount.";
+
+export interface TeamLocation {
+  id: string;
+  city: string;
+  kind: string;
+  role: string;
+  roles: string[];
+  lane1: number;
+}
+
+export const teamLocations: TeamLocation[] = [
+  { id: "copenhagen", city: "Copenhagen", kind: "Onsite · Pandora HQ", role: "Leadership, liaison and trust — embedded with your leaders", roles: ["Sapient Delivery Lead", "Solution / Engineering lead", "Rotating SMEs, 1–2× a year"], lane1: 65 },
+  { id: "bucharest", city: "Bucharest", kind: "Nearshore · Romania", role: "Timezone overlap with Copenhagen — senior engineering and fast feedback", roles: ["Senior / lead engineers", "QE / SDET", "Delivery coordination"], lane1: 80 },
+  { id: "gurgaon", city: "Gurgaon", kind: "Offshore · India", role: "Engineering and 24/7 operations scale — the delivery backbone", roles: ["Data · Kafka · DevOps · Cloud engineers", "Development + Operations rotation", "AgentOps skill authoring"], lane1: 88 }
+];
+
+export interface TeamTrack {
+  id: string;
+  name: string;
+  dev: string;
+  ops: string;
+}
+
+export const teamTracks: TeamTrack[] = [
+  { id: "data", name: "Data & Integration", dev: "Data · Kafka · Delta · Unity Catalog", ops: "Streaming ops · DQ · lineage" },
+  { id: "devops", name: "DevOps & Cloud", dev: "CI/CD · GitHub Actions · Terraform", ops: "PAKS/AKS · SRE · 24/7 on-call" },
+  { id: "agentops", name: "AgentOps & Enablement", dev: "Skills authoring · AI tooling", ops: "Evaluations · AI FinOps · adoption" }
+];
+
+export const teamLeaderNote =
+  "One Sapient Delivery Lead is accountable across all three tracks and both lanes — SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager.";
+
+export interface ControlBand {
+  area: string;
+  owner: "pandora" | "sapient" | "joint";
+}
+
+export const controlBands: ControlBand[] = [
+  { area: "Direction & roadmap", owner: "pandora" },
+  { area: "Architecture", owner: "pandora" },
+  { area: "Standards", owner: "pandora" },
+  { area: "Gate 0 / 1 / 2 sign-off", owner: "pandora" },
+  { area: "Improvement backlog", owner: "joint" },
+  { area: "Day-to-day delivery", owner: "sapient" },
+  { area: "Operations & on-call", owner: "sapient" }
+];
+
+export const controlNote =
+  "Control is structural, not promised. Pandora retains Lead and Senior Engineers, architecture, standards and the roadmap; we run the day-to-day. Every gate and every dial-up needs a named Pandora owner's sign-off.";
+
+export interface SkillRow {
+  skill: string;
+  dev: number;
+  ops: number;
+}
+
+export const skillRows: SkillRow[] = [
+  { skill: "Data engineering", dev: 3, ops: 2 },
+  { skill: "Kafka / Confluent", dev: 3, ops: 3 },
+  { skill: "DevOps / CI-CD", dev: 3, ops: 3 },
+  { skill: "Cloud · Kubernetes · Terraform", dev: 3, ops: 3 },
+  { skill: "SRE / Observability", dev: 2, ops: 3 },
+  { skill: "QE / SDET", dev: 3, ops: 2 }
+];
+
+export const skillsNote =
+  "Full coverage from day one across development and operations — including the Kubernetes, Kafka and DevOps fundamentals your RFP flagged as thin, which we both bring and enable your people in.";
+
+export interface KtStep {
+  step: string;
+  detail: string;
+}
+
+export const ktLoop: KtStep[] = [
+  { step: "Acquire", detail: "On-parallel shadow of current teams; tooling and access" },
+  { step: "Document", detail: "Living runbooks, ADRs, architecture and a knowledge wiki" },
+  { step: "Play back", detail: "Reverse-shadow — we play knowledge back to your incumbent SMEs" },
+  { step: "Certify", detail: "Enablement clinics and certifications against readiness thresholds" },
+  { step: "Own", detail: "Pandora can operate any capability we deliver — the acceptance bar" }
+];
+
+export const ktNote =
+  "Knowledge transfer is a designed workstream, not a hope — flowing both ways and across all three locations off one knowledge base, so Gurgaon, Bucharest and Copenhagen operate identically. It doubles as Gate-0 AI-fluency readiness.";
+
+export interface CapacityDriver {
+  at: string;
+  label: string;
+  detail: string;
+}
+
+export const capacityDrivers: CapacityDriver[] = [
+  { at: "Jan 2027", label: "Ramp & stabilise", detail: "Onboarding and transition reach a steady baseline" },
+  { at: "Apr 2027", label: "AI-augmented delivery", detail: "Our own team's AI tooling lifts throughput per engineer — no estate footprint" },
+  { at: "Oct 2027", label: "Dialled AI", detail: "As you turn L1 dials, assisted flows raise platform-team throughput" },
+  { at: "Oct 2028", label: "Owned & optimised", detail: "Reusable patterns and a Pandora-owned CoE; capacity high, our footprint narrowing" }
+];
+
+export const capacityNote =
+  "More delivered, by a leaner and more stable team, an increasing share of it Pandora-owned — the opposite of bringing an army.";
+
+export const teamAsks: string[] = [
+  "Pandora on the selection panels for key roles",
+  "Access and environments for onboarding",
+  "Protected time for enablement clinics",
+  "Named Pandora counterparts per track"
+];
+
+export const teamClose =
+  "One accountable leader, one team across three locations, Pandora in control at every gate, capacity compounding, and ownership transferring — the delivery engine that makes the gentle path credible.";
