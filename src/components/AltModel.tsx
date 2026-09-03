@@ -30,10 +30,37 @@ export function ScopeOverviewSection() {
   return (
     <Section id="scope" num="03" title="Your scope of work — the 30 items, up front">
       <p className="sec-sub">{dialSource}</p>
+
+      <div className="scopemap">
+        <div className="scopemap-total">
+          <strong>30</strong>
+          <span>items of scope work — mapped from your platform deep-dive, nothing added or dropped</span>
+        </div>
+        <div className="scopemap-bar" aria-hidden="true">
+          {groups.map((group) => (
+            <div className={`scopemap-seg ${group.platform}`} style={{ flexGrow: group.items.length }} key={group.platform}>
+              <strong>{group.label}</strong>
+              <span>{group.items.length}</span>
+            </div>
+          ))}
+        </div>
+        <div className="scopemap-themes">
+          <div className="scopemap-theme devops">
+            <span className="scopemap-dot" />
+            Covers shared Kubernetes (PAKS), the developer portal &amp; DevEx, the tooling migrations, and cost, security &amp; DORA.
+          </div>
+          <div className="scopemap-theme data">
+            <span className="scopemap-dot" />
+            Covers a self-serve data platform, Kafka/Nexus integration, one governance &amp; lineage layer, and legacy decommission.
+          </div>
+        </div>
+      </div>
+
       <div className="scope-grid">
         {groups.map((group) => (
-          <div className="scope-col" key={group.platform}>
+          <div className={`scope-col ${group.platform}`} key={group.platform}>
             <div className="scope-col-head">
+              <span className="scope-coldot" />
               <strong>{group.label}</strong>
               <span>{group.items.length} items</span>
             </div>

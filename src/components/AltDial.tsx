@@ -1,5 +1,5 @@
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   dialLevels,
   dialNote,
@@ -132,16 +132,41 @@ export function WalkthroughSection() {
         The same service, at each level, so the choice is tangible: what you get on day one, what the first dial-up adds,
         and what full agentic would look like — if and when you choose it.
       </p>
+      <div className="legend-hint">
+        <span><i className="wt-swatch human" /> Human</span>
+        <span><i className="wt-swatch agent" /> Agent</span>
+        <span>Watch the boundary slide toward the agent as the level rises — the human always holds the gate until L2.</span>
+      </div>
       <div className="wsgrid walk-grid">
         {walkthroughs.map((walkthrough) => (
           <Reveal className="ws walk-card" key={walkthrough.id}>
             <h3>{walkthrough.title}</h3>
-            {walkthrough.steps.map((step) => (
-              <div className="leaves walk-step" key={step.level}>
-                <strong>{step.level}</strong>
-                {step.text}
-              </div>
-            ))}
+            {walkthrough.steps.map((step, index) => {
+              const agentShare = [15, 55, 85][index];
+              const hue = ["--tech", "--ops", "--accent"][index];
+              const boundary = [
+                "Human-run · engineer approves & applies",
+                "AI-assisted · human approves every action",
+                "Agent-run · human reviews outcomes"
+              ][index];
+              return (
+                <div className="wt-level" key={step.level} style={{ "--lv": `var(${hue})` } as CSSProperties}>
+                  <div className="wt-level-head">
+                    <strong>{step.level}</strong>
+                    <span className="wt-boundary">{boundary}</span>
+                  </div>
+                  <div className="wt-splitrow" aria-hidden="true">
+                    <span className="wt-end">Human</span>
+                    <div className="wt-split">
+                      <span className="wt-human" style={{ width: `${100 - agentShare}%` }} />
+                      <span className="wt-agent" style={{ width: `${agentShare}%` }} />
+                    </div>
+                    <span className="wt-end">Agent</span>
+                  </div>
+                  <p className="wt-text">{step.text}</p>
+                </div>
+              );
+            })}
           </Reveal>
         ))}
       </div>

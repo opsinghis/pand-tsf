@@ -1,5 +1,5 @@
 import { CalendarCheck2, Power } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { asIsLanes, dayOneFacts, dialReview, governanceLayers, transitionPlan } from "../data/alternative";
 import { PullQuote, Reveal, Section } from "./primitives";
 
@@ -10,18 +10,32 @@ export function DayOneSection() {
         Transition on the RFP's own mandated plan, re-anchored to the 30 October 2026 award. Your tools, your SLAs, your
         RACI boundary — unchanged. Nothing below requires anything agentic.
       </p>
-      <div className="agenda">
-        <div className="ahead">
-          <h3><CalendarCheck2 size={15} aria-hidden="true" /> Transition on the RFP's mandated timeline</h3>
-          <span>Support 0–60 days · dev 60–120 days · bi-weekly readiness assessments · 50+ parameter cutover</span>
+      <div className="timeline">
+        <div className="tl-award">
+          <CalendarCheck2 size={14} aria-hidden="true" />
+          Contract award · 30 Oct 2026 — mobilisation begins
         </div>
-        {transitionPlan.map((row) => (
-          <div className="arow trow" key={row.phase}>
-            <span className="t">{row.phase}</span>
-            <span className="dur">{row.window}</span>
-            <span>{row.detail}</span>
-          </div>
-        ))}
+        <div className="tl-track">
+          {transitionPlan.map((row, index) => {
+            const hue = ["--tech", "--proof", "--ops", "--proof"][index];
+            const kind = index % 2 === 0 ? "Ramp-up" : "Autonomous";
+            return (
+              <div className="tl-stop" key={row.phase} style={{ "--dot": `var(${hue})` } as CSSProperties}>
+                <div className="tl-marker">
+                  <span className="tl-dot" />
+                  {index < transitionPlan.length - 1 && <span className="tl-connector" />}
+                </div>
+                <span className="tl-window">{row.window}</span>
+                <div className="tl-card">
+                  <span className={`tl-kind ${kind === "Autonomous" ? "live" : ""}`}>{kind}</span>
+                  <strong>{row.phase}</strong>
+                  <p>{row.detail}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <p className="tl-foot">Bi-weekly readiness assessments throughout · 50+ parameter cutover, agreed jointly on evidence</p>
       </div>
       <div className="infra-stack dayone-facts">
         {dayOneFacts.map((fact) => (
