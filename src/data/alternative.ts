@@ -67,23 +67,29 @@ export const hero = {
   question:
     "We would like to know if you can propose an alternative approach to the scope provided, as we found the current approach to be a bit ambitious.",
   attribution: "Your message after the platform deep-dive",
-  ownership: "Fair. We led with the destination; you asked for a safer road. Here it is.",
+  ownership: "Thank you — this is exactly the right challenge, and a welcome one. In the deep dive we showed you the destination but not the road to it, so it read as if we would do all of it from day one. We are grateful for the chance to show the opposite.",
   lede:
-    "We run your platforms as-is from day one — your tools, your processes, your SLAs, the RFP's own transition plan. The agentic fabric stays exactly where you liked it: as the destination. It enters your estate only through readiness gates and your own hand on the dial, one scope item at a time.",
+    "Here is the road we did not show. We run your platforms as they run today — your tools, your processes, your SLAs, the RFP's own transition plan — from day one. The agentic fabric stays exactly where you liked it: the destination. Everything below is how we travel there, step by earned step, at your pace and only ever through gates you control.",
   oneLiner: "The fabric is never a dependency — only a dividend."
 };
 
 export const pillars = [
   {
-    title: "Lane 1 · Run & Deliver",
+    tag: "Lane 1",
+    title: "Run & Deliver",
+    role: "lane" as const,
     body: "Day-one as-is takeover on the RFP's own transition plan, tooling and SLAs. Zero change imposed on Pandora teams. Every scope item has a named conventional delivery path."
   },
   {
-    title: "Lane 2 · Improve & Evolve",
+    tag: "Lane 2",
+    title: "Improve & Evolve",
+    role: "lane" as const,
     body: "The agentic fabric as the continuous-improvement engine. It touches the estate only after readiness gates pass — one scope item at a time, with Pandora holding every dial."
   },
   {
-    title: "Governance under both",
+    tag: "Under both, from day one",
+    title: "Governance",
+    role: "base" as const,
     body: "Service governance live from day one. Agentic governance pre-built but dormant until the first dial-up. Controls always arrive before autonomy."
   }
 ];
