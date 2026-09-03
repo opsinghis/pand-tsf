@@ -1,4 +1,4 @@
-import { BadgeCheck, Check } from "lucide-react";
+import { ArrowLeftRight, BadgeCheck, Check } from "lucide-react";
 import type { CSSProperties } from "react";
 import {
   capacityDrivers,
@@ -10,7 +10,9 @@ import {
   controlNote,
   ktLoop,
   ktNote,
+  skillBridge,
   skillRows,
+  skillTierHeaders,
   skillsNote,
   teamAsks,
   teamClose,
@@ -195,20 +197,48 @@ export function TeamSkillsSection() {
   return (
     <Section id="team-skills" num="13" title="Skills coverage, training and knowledge transfer">
       <p className="sec-sub">{skillsNote}</p>
-      <div className="skills-matrix">
-        <div className="sm-head">
+      <div className="skills-ladder">
+        <div className="sl-shared-band">
+          <span />
+          <strong>Operations extends to T3, where it becomes the same senior engineering skill as development</strong>
+        </div>
+        <div className="sl-head">
           <span>Engineering skill</span>
-          <span>Development</span>
-          <span>Operations</span>
+          {skillTierHeaders.map((tier) => (
+            <span key={tier.label}>
+              <strong>{tier.label}</strong>
+              <small>{tier.detail}</small>
+            </span>
+          ))}
         </div>
         {skillRows.map((row) => (
-          <div className="sm-row" key={row.skill}>
-            <span className="sm-skill">{row.skill}</span>
-            <SkillDots value={row.dev} />
-            <SkillDots value={row.ops} />
+          <div className="sl-row" key={row.skill}>
+            <span className="sl-skill">{row.skill}</span>
+            <span data-tier="Ops T1 · Monitor & route">{row.t1}</span>
+            <span data-tier="Ops T2 · Diagnose & restore">{row.t2}</span>
+            <span className="sl-shared" data-tier="Ops T3 · Engineer fix">{row.t3}</span>
+            <span className="sl-shared" data-tier="Development · Build & change">{row.dev}</span>
           </div>
         ))}
       </div>
+      <Reveal className="l3-bridge">
+        <div className="l3-bridge-copy">
+          <strong>{skillBridge.title}</strong>
+          <p>{skillBridge.detail}</p>
+        </div>
+        <div className="l3-flow" aria-label={skillBridge.flow.join(" to ")}>
+          {skillBridge.flow.map((step, index) => (
+            <div className={`l3-node ${index === 3 || index === 4 ? "shared" : ""}`} key={step}>
+              <span>{step}</span>
+              {index < skillBridge.flow.length - 1 && (
+                <i className={index === 3 ? "swap" : ""} aria-hidden="true">
+                  {index === 3 ? <ArrowLeftRight size={15} /> : "→"}
+                </i>
+              )}
+            </div>
+          ))}
+        </div>
+      </Reveal>
       <h3 className="section-inline-title">Knowledge transfer — a designed loop, so it sticks with Pandora</h3>
       <div className="kt-loop">
         {ktLoop.map((step, index) => (
@@ -224,16 +254,6 @@ export function TeamSkillsSection() {
       </div>
       <div className="already alt-note">{ktNote}</div>
     </Section>
-  );
-}
-
-function SkillDots({ value }: { value: number }) {
-  return (
-    <span className="sm-dots" aria-label={`${value} of 3`}>
-      {[1, 2, 3].map((n) => (
-        <i key={n} className={n <= value ? "on" : ""} />
-      ))}
-    </span>
   );
 }
 

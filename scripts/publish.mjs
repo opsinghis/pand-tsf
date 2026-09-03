@@ -10,7 +10,7 @@ await copyFile(builtHtml, targetHtml);
 const html = await readFile(targetHtml, "utf8");
 await writeFile(
   targetHtml,
-  `<!-- Generated from alternative-site. Edit src/data/journey.ts and run npm run build:publish --workspace @pandav/journey-site. -->\n${html}`,
+  `<!-- Generated from alternative-site. Edit src/data/alternative.ts and run npm run build:publish --workspace @pandav/alternative-site. -->\n${html}`,
   "utf8"
 );
 

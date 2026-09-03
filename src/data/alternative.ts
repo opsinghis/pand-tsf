@@ -803,21 +803,73 @@ export const controlNote =
 
 export interface SkillRow {
   skill: string;
-  dev: number;
-  ops: number;
+  t1: string;
+  t2: string;
+  t3: string;
+  dev: string;
 }
 
 export const skillRows: SkillRow[] = [
-  { skill: "Data engineering", dev: 3, ops: 2 },
-  { skill: "Kafka / Confluent", dev: 3, ops: 3 },
-  { skill: "DevOps / CI-CD", dev: 3, ops: 3 },
-  { skill: "Cloud · Kubernetes · Terraform", dev: 3, ops: 3 },
-  { skill: "SRE / Observability", dev: 2, ops: 3 },
-  { skill: "QE / SDET", dev: 3, ops: 2 }
+  {
+    skill: "Data engineering",
+    t1: "Pipeline alerts, failed-run routing, first checks",
+    t2: "Rerun, quarantine, DQ triage, lineage lookup",
+    t3: "Spark / Delta fix PR, model and job optimisation",
+    dev: "Data-product build, medallion design, reusable templates"
+  },
+  {
+    skill: "Kafka / Confluent",
+    t1: "Lag, schema and connector alerts",
+    t2: "Replay, rebalance, connector restart, config triage",
+    t3: "Connector, schema or consumer fix PR",
+    dev: "Event contracts, producer / consumer engineering"
+  },
+  {
+    skill: "DevOps / CI-CD",
+    t1: "Failed-build routing and known-error checks",
+    t2: "Runner, secret and pipeline recovery",
+    t3: "Workflow / action refactor PR, policy-gate fix",
+    dev: "GitHub migration factory and platform pipeline patterns"
+  },
+  {
+    skill: "Cloud · Kubernetes · Terraform",
+    t1: "Pod, node, quota and certificate monitoring",
+    t2: "Rollback, scale, config restore and access triage",
+    t3: "IaC, Helm or platform fix PR",
+    dev: "PAKS recipes, self-service patterns, platform engineering"
+  },
+  {
+    skill: "SRE / Observability",
+    t1: "Alert intake, severity routing, dashboard checks",
+    t2: "Correlation, RCA draft, runbook-guided restore",
+    t3: "Instrumentation, SLO or reliability fix PR",
+    dev: "Observability-by-design and resilience engineering"
+  },
+  {
+    skill: "QE / SDET",
+    t1: "Smoke-test results and release-health checks",
+    t2: "Regression triage, data-quality failure isolation",
+    t3: "Test-harness and quality-gate fix PR",
+    dev: "Automation strategy, contract tests, CI quality gates"
+  }
 ];
 
 export const skillsNote =
-  "Full coverage from day one across development and operations — including the Kubernetes, Kafka and DevOps fundamentals your RFP flagged as thin, which we both bring and enable your people in.";
+  "Full coverage from day one across development and operations — with operations explicitly spanning T1 monitor-and-route, T2 diagnose-and-restore and T3 engineering fix. T3 is deliberately interchangeable with development for the same skill, so production learning turns into permanent code, IaC, tests and runbook improvements.";
+
+export const skillTierHeaders = [
+  { label: "Ops T1", detail: "Monitor & route" },
+  { label: "Ops T2", detail: "Diagnose & restore" },
+  { label: "Ops T3", detail: "Engineer fix" },
+  { label: "Development", detail: "Build & change" }
+] as const;
+
+export const skillBridge = {
+  title: "T3 is not a support silo",
+  detail:
+    "The same senior engineering pool works L3 production fixes and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
+  flow: ["Incident / request", "Ops T1", "Ops T2", "Ops T3", "Development", "Permanent fix / reusable pattern"]
+};
 
 export interface KtStep {
   step: string;
