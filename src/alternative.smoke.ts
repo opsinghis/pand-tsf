@@ -52,7 +52,7 @@ const count = (re: RegExp) => (markup.match(re) || []).length;
 const structural: Record<string, boolean> = {
   "30 dial rows": count(/class="dial-item"/g) === 30,
   "20 goal rows (8+8+4)": alt.goalsB21.length + alt.goalsB22.length + alt.goalsC2.length === 20,
-  "4 foundation pillars": count(/Foundation pillar/g) === 4,
+  "4 foundation layers + 4 detail panels": count(/aria-controls="fs-panel-/g) === 4 && count(/class="fs-detail"/g) === 4,
   "4 horizon blocks": count(/class="hblock-head"/g) === 4,
   "two governance layers": markup.includes("ACTIVE DAY 1") && markup.includes("DORMANT UNTIL DIAL-UP"),
   "Lane 2 empty at 3 months": count(/hlane2 empty/g) === 1,

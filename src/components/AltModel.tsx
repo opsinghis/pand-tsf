@@ -1,4 +1,5 @@
 import { ShieldCheck } from "lucide-react";
+import { useState, type CSSProperties, type KeyboardEvent } from "react";
 import { changesNote, changesTable, dialLevels, dialSource, foundationPillars, foundationsIntro, foundationsPunchline, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
 import { DataTable, PullQuote, Reveal, Section } from "./primitives";
 import { LandscapeMap } from "./LandscapeMap";
@@ -233,34 +234,108 @@ function SwimlanePlan() {
   );
 }
 
+const foundationHues: Record<string, string> = {
+  infra: "--tech",
+  people: "--people",
+  ops: "--ops",
+  governance: "--gov"
+};
+
 export function FoundationsSection() {
+  const [active, setActive] = useState(foundationPillars[0].id);
+  const topDown = [...foundationPillars].reverse();
+  const activeIndex = foundationPillars.findIndex((pillar) => pillar.id === active);
+
+  const onKey = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const delta = event.key === "ArrowUp" ? 1 : -1; // up = toward the top floor
+    const next = Math.min(foundationPillars.length - 1, Math.max(0, activeIndex + delta));
+    setActive(foundationPillars[next].id);
+  };
+
   return (
     <Section id="foundations" num="05" title="Readiness foundations — Gate 0">
       <p className="sec-sub">{foundationsIntro}</p>
-      <div className="readiness-stack">
-        {foundationPillars.map((pillar) => (
-          <Reveal className="cap-card" key={pillar.id}>
-            <div className="cap-head">
-              <div>
-                <span className="cap-loop">Foundation pillar</span>
-                <h4 className="cap-title">{pillar.title}</h4>
+
+      <div className="fstack-interactive">
+        <div className="fstack">
+          <div className="fs-unlocked">
+            <span>Lane 2 · agentic becomes possible — one dial at a time</span>
+          </div>
+          <div className="fs-uparrow" aria-hidden="true" />
+          <div className="fs-capstone">
+            <ShieldCheck size={15} aria-hidden="true" />
+            Gate 0 · all four layers proven
+          </div>
+          <div className="fs-floors" role="tablist" aria-label="Foundation layers" aria-orientation="vertical">
+            {topDown.map((pillar, topIndex) => {
+              const layerNo = topIndex + 1;
+              const on = active === pillar.id;
+              return (
+                <button
+                  key={pillar.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls={`fs-panel-${pillar.id}`}
+                  tabIndex={on ? 0 : -1}
+                  className={`fs-floor ${on ? "active" : ""}`}
+                  style={{ "--tier": `var(${foundationHues[pillar.id]})` } as CSSProperties}
+                  onClick={() => setActive(pillar.id)}
+                  onKeyDown={onKey}
+                >
+                  <span className="fs-no">{layerNo}</span>
+                  <div className="fs-floor-body">
+                    <strong>{pillar.title}</strong>
+                    <span>{pillar.why}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div className="fs-ground">Your estate, day one — Lane 1 builds all four layers as it runs</div>
+        </div>
+
+        <div className="fs-detail-wrap">
+          {foundationPillars.map((pillar, index) => (
+            <div
+              key={pillar.id}
+              id={`fs-panel-${pillar.id}`}
+              role="tabpanel"
+              className="fs-detail"
+              hidden={active !== pillar.id}
+              style={{ "--tier": `var(${foundationHues[pillar.id]})` } as CSSProperties}
+            >
+              <div className="fs-detail-head">
+                <span className="fs-no fs-no-lg">{foundationPillars.length - index}</span>
+                <div className="fs-detail-title">
+                  <span className="cap-loop">Foundation layer {foundationPillars.length - index} of 4</span>
+                  <h4 className="cap-title">{pillar.title}</h4>
+                </div>
               </div>
-              <span className="chip gap">{pillar.why}</span>
+              <p className="fs-why">{pillar.why}</p>
+              <div className="cap-cols">
+                <div className="cap-col">
+                  <h5 className="cap-col-title already-title">Assess — months 1–3, joint</h5>
+                  <p className="cap-text">{pillar.assess}</p>
+                </div>
+                <div className="cap-col">
+                  <h5 className="cap-col-title netnew-title">Build — months 3–9, inside Lane 1</h5>
+                  <p className="cap-text">{pillar.build}</p>
+                </div>
+              </div>
+              <p className="cap-bottom"><strong>Gate-0 evidence:</strong> {pillar.evidence}</p>
             </div>
-            <div className="cap-cols">
-              <div className="cap-col">
-                <h5 className="cap-col-title already-title">Assess (months 1–3, joint)</h5>
-                <p className="cap-text">{pillar.assess}</p>
-              </div>
-              <div className="cap-col">
-                <h5 className="cap-col-title netnew-title">Build (months 3–9, inside Lane 1)</h5>
-                <p className="cap-text">{pillar.build}</p>
-              </div>
-            </div>
-            <p className="cap-bottom"><strong>Gate-0 evidence:</strong> {pillar.evidence}</p>
-          </Reveal>
-        ))}
+          ))}
+        </div>
       </div>
+
+      <p className="diagram-note fs-note">
+        Click a layer to see how we assess, build and prove it. Each rests on the one beneath — skip a floor and everything
+        above it is built on air, which is exactly why starting with agentic would have been premature.
+      </p>
+
       <Reveal className="gatecard gate-zero">
         <div className="ghead">
           <h3>
