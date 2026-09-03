@@ -652,11 +652,62 @@ export const benefitCurves = {
 };
 
 // ── 14 · Why this is low-risk ────────────────────────────────────────────
-export const proofCards = [
-  { chip: "Proven at Pandora", stat: "100 / 95 / 90 / 97", body: "Our transition record in other Pandora product lines: 100% readiness criteria met, 95%+ documentation and runbooks generated, 90%+ tickets resolved independently in reverse shadow, 97%+ SLA achievement during stabilization." },
-  { chip: "Already built", stat: "0 R&D risk", body: "The fabric is not a promise: Pandav runs on a standard container, the skill library is in production delivery use, the ops loop is designed. Keeping the option ready costs nothing." },
-  { chip: "Named coverage", stat: "30 / 30", body: "Every scope row has a named conventional solution at Level 0. Coverage never depends on anything novel." },
-  { chip: "Goals covered", stat: "12/16 + 3/4", body: "Your Data, Integration and DevOps platform goals fully met at Level 0; the remainder at Level 1 — one of which is your own AI-tooling goal. Nothing requires Level 2." }
+export type ProofViz =
+  | { type: "meters"; items: { label: string; value: number }[] }
+  | { type: "ready"; items: string[] };
+
+export interface ProofCard {
+  chip: string;
+  stat: string;
+  body: string;
+  viz: ProofViz;
+}
+
+export const proofCards: ProofCard[] = [
+  {
+    chip: "Proven at Pandora",
+    stat: "100 / 95 / 90 / 97",
+    body: "Our transition record in other Pandora product lines: 100% readiness criteria met, 95%+ documentation and runbooks generated, 90%+ tickets resolved independently in reverse shadow, 97%+ SLA achievement during stabilization.",
+    viz: {
+      type: "meters",
+      items: [
+        { label: "Readiness criteria met", value: 100 },
+        { label: "Docs & runbooks generated", value: 95 },
+        { label: "Tickets resolved independently", value: 90 },
+        { label: "SLA in stabilization", value: 97 }
+      ]
+    }
+  },
+  {
+    chip: "Already built",
+    stat: "0 R&D risk",
+    body: "The fabric is not a promise: Pandav runs on a standard container, the skill library is in production delivery use, the ops loop is designed. Keeping the option ready costs nothing.",
+    viz: {
+      type: "ready",
+      items: ["Pandav runs on a standard container", "Skill library in production use", "Ops loop designed"]
+    }
+  },
+  {
+    chip: "Named coverage",
+    stat: "30 / 30",
+    body: "Every scope row has a named conventional solution at Level 0. Coverage never depends on anything novel.",
+    viz: {
+      type: "meters",
+      items: [{ label: "Scope items with a named Level-0 solution", value: 100 }]
+    }
+  },
+  {
+    chip: "Goals covered",
+    stat: "12/16 + 3/4",
+    body: "Your Data, Integration and DevOps platform goals fully met at Level 0; the remainder at Level 1 — one of which is your own AI-tooling goal. Nothing requires Level 2.",
+    viz: {
+      type: "meters",
+      items: [
+        { label: "Data & Integration goals met at L0", value: 75 },
+        { label: "DevOps objectives met at L0", value: 75 }
+      ]
+    }
+  }
 ];
 
 // ── 15 · What we need from Pandora ───────────────────────────────────────

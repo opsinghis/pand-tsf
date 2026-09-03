@@ -1,4 +1,5 @@
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, Check } from "lucide-react";
+import type { CSSProperties } from "react";
 import { motion } from "motion/react";
 import {
   askCards,
@@ -110,6 +111,20 @@ function BenefitCurves() {
         <text x="150" y="118" className="svg-small svg-bold" fill="#C43B44">July approach (accelerated, still available)</text>
         <text x="330" y="188" className="svg-small svg-bold" fill="#35597B">This alternative — foundations first</text>
         <text x="700" y="30" className="svg-small svg-bold" fill="#16181D">Same destination</text>
+
+        {/* #9 — the three headline L1 targets, marked where they land on the alternative curve */}
+        <g>
+          <line x1="608" y1="50" x2="608" y2="92" stroke="#5C6066" strokeWidth="1" strokeDasharray="3 3" />
+          <text x="614" y="60" className="svg-small" fill="#5C6066">the gap =</text>
+          <text x="614" y="72" className="svg-small" fill="#5C6066">these L1 wins</text>
+          <circle cx="400" cy="150" r="4.5" fill="#2E7D4F" stroke="#fff" strokeWidth="1.5" />
+          <circle cx="460" cy="134" r="4.5" fill="#2E7D4F" stroke="#fff" strokeWidth="1.5" />
+          <circle cx="520" cy="118" r="4.5" fill="#2E7D4F" stroke="#fff" strokeWidth="1.5" />
+          <line x1="460" y1="139" x2="460" y2="170" stroke="#2E7D4F" strokeWidth="1" strokeDasharray="2 3" />
+          <rect x="246" y="172" width="474" height="32" rx="8" fill="#E9F3EC" stroke="#2E7D4F" />
+          <text x="262" y="186" className="svg-small svg-bold" fill="#2E7D4F">Level 1 (2027) lands the three headline targets:</text>
+          <text x="262" y="198" className="svg-small" fill="#3a5a44">sub-30-min workspaces · minutes-level onboarding · top-quartile DORA — and the dial is yours</text>
+        </g>
       </svg>
     </Reveal>
   );
@@ -127,6 +142,30 @@ export function ProofSection() {
           <Reveal className="proofcard" key={card.stat}>
             <span className="chip live">{card.chip}</span>
             <div className="num">{card.stat}</div>
+            {card.viz.type === "meters" ? (
+              <div className="pv-meters">
+                {card.viz.items.map((meter) => (
+                  <div className="pv-meter" key={meter.label}>
+                    <div className="pv-meter-top">
+                      <span>{meter.label}</span>
+                      <strong>{meter.value}%</strong>
+                    </div>
+                    <div className="pv-track">
+                      <span className="pv-fill" style={{ width: `${meter.value}%` } as CSSProperties} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="pv-ready">
+                {card.viz.items.map((item) => (
+                  <div className="pv-tick" key={item}>
+                    <Check size={13} aria-hidden="true" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             <p>{card.body}</p>
           </Reveal>
         ))}
