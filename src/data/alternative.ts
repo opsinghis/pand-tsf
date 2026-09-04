@@ -792,7 +792,7 @@ export const teamTracks: TeamTrack[] = [
 ];
 
 export const teamLeaderNote =
-  "One Sapient Delivery Lead is accountable across all three tracks and both lanes — SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager.";
+  "One Sapient Delivery Lead is accountable across all three tracks and both lanes — SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager. That single accountable line never becomes a filter: Pandora keeps a standing, transparent line to every track lead in Data, DevOps and Ops — and we actively encourage you to use it.";
 
 export interface ControlBand {
   area: string;

@@ -54,6 +54,21 @@ def box(s,l,t,w,h,fill=WHITE,line=LINE,lw=0.75,shape=MSO_SHAPE.ROUNDED_RECTANGLE
     except Exception: pass
     return c
 
+def dash(shape,val="sysDot"):
+    # python-pptx 1.x has no line-dash enum; set <a:prstDash> directly, in schema order
+    try:
+        from pptx.oxml.ns import qn
+        ln=shape.line._get_or_add_ln()
+        for el in ln.findall(qn('a:prstDash')): ln.remove(el)
+        pd=ln.makeelement(qn('a:prstDash'),{'val':val})
+        fills={qn('a:noFill'),qn('a:solidFill'),qn('a:gradFill'),qn('a:pattFill')}
+        idx=0
+        for i,child in enumerate(ln):
+            if child.tag in fills: idx=i+1; break
+        ln.insert(idx,pd)
+    except Exception: pass
+    return shape
+
 def topbar(s,color=ACC):
     b=box(s,0.7,1.24,0.62,0.05,fill=color,line=None,shape=MSO_SHAPE.RECTANGLE)
     return b
@@ -223,14 +238,17 @@ foot(s,"Read every bar the same way: each location is mostly Lane 1 today. The c
 s=slide(); head(s,"The Team","One leader across all tracks — and Pandora on the wheel",num="09")
 box(s,3.2,1.55,7.0,0.7,fill=RGBColor(0xED,0xF1,0xF6),line=RGBColor(0xB6,0xC5,0xD5))
 txt(s,3.2,1.62,7.0,0.3,("Pandora leadership — retains architecture · standards · roadmap · Lead & Senior Engineers",11.5,TEC,True),align=PP_ALIGN.CENTER)
-txt(s,3.2,2.28,7.0,0.25,("↕ pairs 1:1",10,MUT,True),align=PP_ALIGN.CENTER)
-box(s,3.9,2.55,5.6,0.62,fill=RGBColor(0xF7,0xE9,0xE9),line=RGBColor(0xE4,0xB9,0xBD))
-txt(s,3.9,2.63,5.6,0.4,("One Sapient Delivery Lead — accountable across all tracks, both lanes",12,ACC,True),align=PP_ALIGN.CENTER)
+txt(s,3.2,2.26,7.0,0.22,("↕ pairs 1:1 — one accountable line",9.5,MUT,True),align=PP_ALIGN.CENTER)
+box(s,3.9,2.5,5.6,0.55,fill=RGBColor(0xF7,0xE9,0xE9),line=RGBColor(0xE4,0xB9,0xBD))
+txt(s,3.9,2.57,5.6,0.4,("One Sapient Delivery Lead — accountable across all tracks, both lanes",12,ACC,True),align=PP_ALIGN.CENTER)
+# Pandora's transparent direct-access rail to every track lead — dotted, encouraged, never a filter
+dash(box(s,0.7,3.18,11.85,0.34,fill=RGBColor(0xED,0xF1,0xF6),line=TEC,lw=1.2))
+txt(s,0.7,3.24,11.85,0.24,("Pandora's direct line to every track lead — transparent & encouraged",10.5,TEC,True),align=PP_ALIGN.CENTER)
 for i,tr in enumerate(D["teamTracks"]):
     x=0.7+i*4.05
-    box(s,x,3.4,3.85,1.5); txt(s,x+0.15,3.5,3.55,0.3,(tr["name"],12.5,INK,True),align=PP_ALIGN.CENTER)
-    box(s,x+0.15,3.9,3.55,0.44,fill=RGBColor(0xEF,0xF3,0xEA),line=None); txt(s,x+0.25,3.96,3.4,0.35,("DEV  "+tr["dev"],9.5,PEO,False))
-    box(s,x+0.15,4.4,3.55,0.44,fill=RGBColor(0xF8,0xF1,0xE6),line=None); txt(s,x+0.25,4.46,3.4,0.35,("OPS  "+tr["ops"],9.5,OPS,False))
+    box(s,x,3.62,3.85,1.42); txt(s,x+0.15,3.7,3.55,0.3,(tr["name"],12.5,INK,True),align=PP_ALIGN.CENTER)
+    box(s,x+0.15,4.06,3.55,0.44,fill=RGBColor(0xEF,0xF3,0xEA),line=None); txt(s,x+0.25,4.12,3.4,0.35,("DEV  "+tr["dev"],9.5,PEO,False))
+    box(s,x+0.15,4.54,3.55,0.44,fill=RGBColor(0xF8,0xF1,0xE6),line=None); txt(s,x+0.25,4.6,3.4,0.35,("OPS  "+tr["ops"],9.5,OPS,False))
 # control strip
 txt(s,0.7,5.15,12,0.3,("WHO DECIDES, WHO DOES — CONTROL BY DESIGN",11,MUT,True))
 cb=D["controlBands"]; cw=12.0/len(cb); cmap={"pandora":TEC,"joint":GOV,"sapient":ACC}
