@@ -301,29 +301,34 @@
       "evidence": "Charter signed by named Pandora owners · audit completeness at threshold across a quarter of Lane-1 operations."
     }
   ],
+  "foundationsGateNote": "You just met the three gates. This is the one that needs building — Gate 0 — which is why it, and only it, gets a section of its own. Gates 1 and 2 stay where they were defined: short per-item checks you run at the moment you turn a dial.",
   "foundationsIntro": "Before any agent acts in your estate, four things must already be true: the infrastructure and security posture can contain it, your people can supervise it, your operations can trace and measure it, and your governance can approve it. Lane 1 builds all four as a by-product of running the service well — which is why running as-is first is not a delay on the agentic journey. It is the journey's first leg.",
   "foundationsPunchline": "Agentic-first would not just have been ambitious — it would have been premature. The foundations must exist first, and most of them are already RFP scope.",
+  "gateHandoff": "Notice the asymmetry: of the three gates, only Gate 0 asks us to build anything — the other two are short per-item checks whose evidence lists you have just read in full. That one build-something gate is the whole of the next section.",
   "gateSeries": [
     {
       "id": "g0",
       "name": "Gate 0 · Foundations",
-      "scope": "Passes once, estate-wide",
+      "scope": "One-time · estate-wide",
       "unlocks": "Makes any dial-up possible at all",
-      "evidence": "All four foundation pillars show their evidence: infra & security posture, people AI-fluency, ops trace-and-measure, governance readiness."
+      "evidence": "All four foundation pillars show their evidence: infra & security posture, people AI-fluency, ops trace-and-measure, governance readiness.",
+      "where": "The one gate that asks us to build something — its evidence is the four readiness layers. Detailed in full in the next section."
     },
     {
       "id": "g1",
       "name": "Gate 1 · Assist",
-      "scope": "Passes per scope item",
+      "scope": "Per item · lightweight check",
       "unlocks": "L0 → L1 for that item",
-      "evidence": "Named Pandora owner · audit on for the flow · human-approval path proven · rollback demonstrated."
+      "evidence": "Named Pandora owner · audit on for the flow · human-approval path proven · rollback demonstrated.",
+      "where": "A per-item check — the evidence above is the whole of it. You run it when you dial an item up to L1."
     },
     {
       "id": "g2",
       "name": "Gate 2 · Agentic",
-      "scope": "Passes per scope item",
+      "scope": "Per item · lightweight check",
       "unlocks": "L1 → L2 for that item",
-      "evidence": "Assist track record at L1 · incident drill passed unaided · SLOs held · evaluation pass-rate at threshold."
+      "evidence": "Assist track record at L1 · incident drill passed unaided · SLOs held · evaluation pass-rate at threshold.",
+      "where": "A per-item check of the same shape — run only after that item has a proven track record at L1."
     }
   ],
   "gateZero": {
@@ -693,7 +698,7 @@
         },
         {
           "id": "foundations",
-          "label": "Readiness foundations — Gate 0",
+          "label": "Gate 0 in depth — readiness foundations",
           "num": "05"
         },
         {
@@ -831,7 +836,7 @@
     },
     {
       "id": "foundations",
-      "label": "Readiness foundations — Gate 0",
+      "label": "Gate 0 in depth — readiness foundations",
       "num": "05"
     },
     {
@@ -1513,39 +1518,81 @@
       ]
     }
   ],
+  "skillBridge": {
+    "title": "L3 is not a support silo",
+    "detail": "The same senior engineering pool works L3 production fixes and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
+    "flow": [
+      "Incident / request",
+      "Ops L1",
+      "Ops L2",
+      "Ops L3",
+      "Development",
+      "Permanent fix / reusable pattern"
+    ]
+  },
   "skillRows": [
     {
       "skill": "Data engineering",
-      "dev": 3,
-      "ops": 2
+      "t1": "Pipeline alerts, failed-run routing, first checks",
+      "t2": "Rerun, quarantine, DQ triage, lineage lookup",
+      "t3": "Spark / Delta fix PR, model and job optimisation",
+      "dev": "Data-product build, medallion design, reusable templates"
     },
     {
       "skill": "Kafka / Confluent",
-      "dev": 3,
-      "ops": 3
+      "t1": "Lag, schema and connector alerts",
+      "t2": "Replay, rebalance, connector restart, config triage",
+      "t3": "Connector, schema or consumer fix PR",
+      "dev": "Event contracts, producer / consumer engineering"
     },
     {
       "skill": "DevOps / CI-CD",
-      "dev": 3,
-      "ops": 3
+      "t1": "Failed-build routing and known-error checks",
+      "t2": "Runner, secret and pipeline recovery",
+      "t3": "Workflow / action refactor PR, policy-gate fix",
+      "dev": "GitHub migration factory and platform pipeline patterns"
     },
     {
       "skill": "Cloud · Kubernetes · Terraform",
-      "dev": 3,
-      "ops": 3
+      "t1": "Pod, node, quota and certificate monitoring",
+      "t2": "Rollback, scale, config restore and access triage",
+      "t3": "IaC, Helm or platform fix PR",
+      "dev": "PAKS recipes, self-service patterns, platform engineering"
     },
     {
       "skill": "SRE / Observability",
-      "dev": 2,
-      "ops": 3
+      "t1": "Alert intake, severity routing, dashboard checks",
+      "t2": "Correlation, RCA draft, runbook-guided restore",
+      "t3": "Instrumentation, SLO or reliability fix PR",
+      "dev": "Observability-by-design and resilience engineering"
     },
     {
       "skill": "QE / SDET",
-      "dev": 3,
-      "ops": 2
+      "t1": "Smoke-test results and release-health checks",
+      "t2": "Regression triage, data-quality failure isolation",
+      "t3": "Test-harness and quality-gate fix PR",
+      "dev": "Automation strategy, contract tests, CI quality gates"
     }
   ],
-  "skillsNote": "Full coverage from day one across development and operations — including the Kubernetes, Kafka and DevOps fundamentals your RFP flagged as thin, which we both bring and enable your people in.",
+  "skillTierHeaders": [
+    {
+      "label": "Ops L1",
+      "detail": "Monitor & route"
+    },
+    {
+      "label": "Ops L2",
+      "detail": "Diagnose & restore"
+    },
+    {
+      "label": "Ops L3",
+      "detail": "Engineer fix"
+    },
+    {
+      "label": "Development",
+      "detail": "Build & change"
+    }
+  ],
+  "skillsNote": "Full coverage from day one across development and operations — with operations explicitly spanning L1 monitor-and-route, L2 diagnose-and-restore and L3 engineering fix. L3 is deliberately interchangeable with development for the same skill, so production learning turns into permanent code, IaC, tests and runbook improvements.",
   "startPlan": [
     {
       "when": "Week 0 · on award (30 Oct 2026)",

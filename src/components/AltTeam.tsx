@@ -44,16 +44,28 @@ export function TeamShapeSection() {
                 <li key={role}>{role}</li>
               ))}
             </ul>
-            <div className="loc-lane" title="Lane 1 vs Lane 2 emphasis">
-              <span className="loc-lane1" style={{ width: `${loc.lane1}%` } as CSSProperties}>Lane 1</span>
-              <span className="loc-lane2" style={{ width: `${100 - loc.lane1}%` } as CSSProperties}>L2</span>
+            <div className="loc-lane-block">
+              <span className="loc-lane-cap">Where its effort goes today</span>
+              <div className="loc-lane-key">
+                <span className="lll lane1"><i />Lane 1 · Run &amp; Deliver<b>{loc.lane1}%</b></span>
+                <span className="lll lane2"><i />Lane 2 · Improve &amp; Evolve<b>{100 - loc.lane1}%</b></span>
+              </div>
+              <div
+                className="loc-lane"
+                role="img"
+                aria-label={`Effort at ${loc.city} today: ${loc.lane1}% Lane 1 run and deliver, ${100 - loc.lane1}% Lane 2 improve and evolve`}
+              >
+                <span className="loc-lane1" style={{ width: `${loc.lane1}%` } as CSSProperties} />
+                <span className="loc-lane2" style={{ width: `${100 - loc.lane1}%` } as CSSProperties} />
+              </div>
             </div>
           </Reveal>
         ))}
       </div>
       <p className="diagram-note loc-note">
-        Every location is mostly Lane 1 (run &amp; deliver); the thin Lane 2 sliver is the enablement cell of the same
-        people, and it grows only as you turn dials.
+        Read the bars the same way in every card: each location is <strong>mostly Lane 1</strong> (run &amp; deliver) today.
+        The coral <strong>Lane 2</strong> slice is not a second team — it is the same people doing enablement, and it grows
+        only as you turn dials.
       </p>
     </Section>
   );
@@ -176,7 +188,7 @@ function ConvergenceDiagram() {
         <line x1="852" y1="138" x2="1006" y2="138" stroke="#35597B" strokeWidth="7" strokeLinecap="round" />
 
         <rect x="300" y="116" width="392" height="46" rx="8" fill="#E9F3EC" stroke="#2E7D4F" />
-        <text x="496" y="134" textAnchor="middle" className="svg-small svg-bold" fill="#2E7D4F">Agentic ops (L2/L3) removes the operational cognitive load —</text>
+        <text x="496" y="134" textAnchor="middle" className="svg-small svg-bold" fill="#2E7D4F">Agentic ops (Ops L2/L3) removes the operational cognitive load —</text>
         <text x="496" y="150" textAnchor="middle" className="svg-small" fill="#3a5a44">so build-minded engineers can own what they run.</text>
 
         <rect x="836" y="104" width="180" height="68" rx="8" fill="#EDF1F6" stroke="#B6C5D5" />

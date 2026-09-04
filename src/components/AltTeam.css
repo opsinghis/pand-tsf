@@ -71,23 +71,58 @@
   line-height: 1.45;
 }
 
+.loc-lane-cap {
+  display: block;
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+.loc-lane-key {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.loc-lane-key .lll {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 620;
+  color: #3a3d43;
+}
+
+.loc-lane-key .lll b {
+  margin-left: auto;
+  font-weight: 820;
+  font-variant-numeric: tabular-nums;
+}
+
+.loc-lane-key .lll i {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.loc-lane-key .lane1 i {
+  background: var(--tech);
+}
+
+.loc-lane-key .lane2 i {
+  background: var(--accent);
+}
+
 .loc-lane {
   display: flex;
-  height: 20px;
+  height: 12px;
   border-radius: 5px;
   overflow: hidden;
   border: 1px solid var(--line);
-  font-size: 10px;
-  font-weight: 780;
-}
-
-.loc-lane1,
-.loc-lane2 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  white-space: nowrap;
 }
 
 .loc-lane1 {
@@ -96,6 +131,8 @@
 
 .loc-lane2 {
   background: var(--accent);
+  min-width: 8px;
+  border-left: 1.5px solid var(--card);
 }
 
 .loc-note {

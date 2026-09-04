@@ -141,7 +141,7 @@ for i,g in enumerate(D["gateSeries"]):
     txt(s,x+0.18,4.75,3.5,0.35,(g["name"],13,GRN,True))
     txt(s,x+0.18,5.12,3.5,0.3,(g["scope"],10.5,MUT,True))
     txt(s,x+0.18,5.42,3.5,0.9,(g["unlocks"]+".",11,INK),sp=1.1)
-foot(s,"Are more gates coming? No. Three gate kinds — Gate 0 once (foundations), Gate 1 & Gate 2 per item — every one Pandora-owned.")
+foot(s,"Only Gate 0 asks us to build something — so only Gate 0 gets its own slide (next). Gate 1 & Gate 2 are the short per-item checks above; every gate is Pandora-owned and reversible.")
 
 # 4 · SCOPE
 s=slide(); head(s,"The scope — what we are talking about","Your scope of work: 30 items, 13 DevOps + 17 Data & Integration",num="03")
@@ -155,8 +155,8 @@ txt(s,7.15,2.32,5.4,0.3,("DATA & INTEGRATION PLATFORM · 17 ITEMS",11,GOV,True))
 txt(s,7.15,2.7,5.5,4.0,"\n".join(f"{i}.  {it['name']}" for i,it in enumerate(dat,1)),10,INK,sp=1.03)
 
 # 5 · FOUNDATIONS / GATE 0
-s=slide(); head(s,"Readiness foundations","Gate 0 — before anything agentic, four layers must hold",num="04")
-txt(s,0.7,1.5,12.2,0.6,("Lane 1 builds all four as a by-product of running the service well. Running as-is first is not a delay on the journey — it is its first leg. Agentic-first would not just have been ambitious; it would have been premature.",12.5,MUT),sp=1.15)
+s=slide(); head(s,"Gate 0 in depth","The one gate that needs building — four readiness layers that must hold",num="04")
+txt(s,0.7,1.5,12.2,0.6,("You just met the three gates; this is the one that needs building — which is why it, and only it, gets a slide of its own. Lane 1 builds all four layers as a by-product of running the service well, so running as-is first is not a delay on the journey — it is its first leg.",12.5,MUT),sp=1.15)
 # capstone
 box(s,3.9,2.25,5.5,0.5,fill=GRN,line=None); txt(s,3.9,2.32,5.5,0.4,("GATE 0 · all four layers proven → unlocks Lane 2",12.5,WHITE,True),align=PP_ALIGN.CENTER)
 hues=[GOV,OPS,PEO,TEC]
@@ -210,11 +210,14 @@ for i,loc in enumerate(D["teamLocations"]):
     txt(s,x+0.2,2.22,3.5,0.35,(loc["city"],16,INK,True))
     txt(s,x+0.2,2.6,3.5,0.3,(loc["kind"],10.5,MUT,True))
     txt(s,x+0.2,2.95,3.5,0.7,(loc["role"],11,INK),sp=1.1)
-    bullets(s,x+0.2,3.75,3.5,1.6,loc["roles"],size=10.5,gap=1.15)
-    l1=loc["lane1"]
-    box(s,x+0.2,5.75,3.5*l1/100.0,0.32,fill=TEC,line=None); txt(s,x+0.2,5.79,3.5*l1/100.0,0.24,("Lane 1",9,WHITE,True),align=PP_ALIGN.CENTER)
-    box(s,x+0.2+3.5*l1/100.0,5.75,3.5*(100-l1)/100.0,0.32,fill=ACC,line=None);
-foot(s,"Every location is mostly Lane 1; the thin Lane 2 sliver is the same people, and grows only as you turn dials.")
+    bullets(s,x+0.2,3.7,3.5,1.5,loc["roles"],size=10.5,gap=1.15)
+    l1=loc["lane1"]; l2=100-l1
+    txt(s,x+0.2,5.35,3.5,0.22,("WHERE ITS EFFORT GOES TODAY",8,MUT,True))
+    box(s,x+0.2,5.63,0.14,0.14,fill=TEC,line=None,shape=MSO_SHAPE.RECTANGLE); txt(s,x+0.42,5.59,3.2,0.22,(f"Lane 1 · Run & Deliver  {l1}%",9.5,INK,True))
+    box(s,x+0.2,5.89,0.14,0.14,fill=ACC,line=None,shape=MSO_SHAPE.RECTANGLE); txt(s,x+0.42,5.85,3.2,0.22,(f"Lane 2 · Improve & Evolve  {l2}%",9.5,INK,True))
+    box(s,x+0.2,6.14,3.5*l1/100.0,0.16,fill=TEC,line=None,shape=MSO_SHAPE.RECTANGLE)
+    box(s,x+0.2+3.5*l1/100.0,6.14,max(0.12,3.5*l2/100.0),0.16,fill=ACC,line=None,shape=MSO_SHAPE.RECTANGLE)
+foot(s,"Read every bar the same way: each location is mostly Lane 1 today. The coral Lane 2 slice is not a second team — it is the same people doing enablement, and it grows only as you turn dials.")
 
 # 10 · ONE LEADER + CONTROL
 s=slide(); head(s,"The Team","One leader across all tracks — and Pandora on the wheel",num="09")
@@ -247,22 +250,27 @@ box(s,0.7,3.5,2.4,0.6,fill=RGBColor(0xF8,0xF1,0xE6),line=OPS); txt(s,0.7,3.58,2.
 a1=s.shapes.add_connector(2,Inches(3.1),Inches(2.8),Inches(9.0),Inches(3.3)); a1.line.color.rgb=PEO; a1.line.width=Pt(3)
 a2=s.shapes.add_connector(2,Inches(3.1),Inches(3.8),Inches(9.0),Inches(3.35)); a2.line.color.rgb=OPS; a2.line.width=Pt(3)
 box(s,9.1,2.95,3.5,0.85,fill=RGBColor(0xED,0xF1,0xF6),line=TEC); txt(s,9.1,3.02,3.5,0.7,[("One team",13,TEC,True),("build it · run it · agent-supervised",10,INK,False)],align=PP_ALIGN.CENTER,sp=1.0)
-box(s,3.4,4.35,6.2,0.6,fill=RGBColor(0xE9,0xF3,0xEC),line=GRN); txt(s,3.45,4.42,6.1,0.5,("Agentic ops (L2/L3) removes the operational cognitive load — so build-minded engineers can own what they run.",10.5,GRN,True),align=PP_ALIGN.CENTER,sp=1.0)
+box(s,3.4,4.35,6.2,0.6,fill=RGBColor(0xE9,0xF3,0xEC),line=GRN); txt(s,3.45,4.42,6.1,0.5,("Agentic ops (Ops L2/L3) removes the operational cognitive load — so build-minded engineers can own what they run.",10.5,GRN,True),align=PP_ALIGN.CENTER,sp=1.0)
 # mechanisms 2x2
 for i,m in enumerate(D["convergeMechanisms"]):
     x=0.7+(i%2)*6.15; y=5.15+(i//2)*0.85
     box(s,x,y,5.95,0.78); txt(s,x+0.15,y+0.08,5.65,0.3,(m["title"],11,INK,True)); txt(s,x+0.15,y+0.34,5.65,0.4,(m["detail"],9.3,MUT),sp=1.05)
 
 # 12 · SKILLS + KT
-s=slide(); head(s,"The Team","Skills coverage, and knowledge transfer that sticks",num="11")
-rows=[["Engineering skill","Dev","Ops"]]+[[r["skill"],"●"*r["dev"]+"○"*(3-r["dev"]),"●"*r["ops"]+"○"*(3-r["ops"])] for r in D["skillRows"]]
-table(s,0.7,1.6,6.4,rows,[3.6,1.4,1.4],rowh=0.44,body_size=11)
-txt(s,7.4,1.6,5.3,0.3,("KNOWLEDGE TRANSFER — A DESIGNED LOOP",11,GOV,True))
+s=slide(); head(s,"The Team","Skills coverage — Ops L1→L3 into Development, and knowledge transfer that sticks",num="11")
+# Full-width tier matrix: skill × [Ops L1, Ops L2, Ops L3, Development] — mirrors the site's skills ladder
+thead=["Engineering skill"]+[f"{h['label']} · {h['detail']}" for h in D["skillTierHeaders"]]
+rows=[thead]+[[r["skill"],r["t1"],r["t2"],r["t3"],r["dev"]] for r in D["skillRows"]]
+table(s,0.7,1.55,12.0,rows,[2.2,2.45,2.45,2.45,2.45],rowh=0.5,body_size=7.8,head_size=8.5)
+# KT loop as a horizontal strip beneath the matrix
+txt(s,0.7,5.35,12.0,0.28,("KNOWLEDGE TRANSFER — A DESIGNED LOOP",10.5,GOV,True))
+n=len(D["ktLoop"]); kw=(12.0-(n-1)*0.2)/n
 for i,k in enumerate(D["ktLoop"]):
-    y=1.95+i*0.85; c = GRN if k["step"]=="Own" else GOV
-    box(s,7.4,y,5.3,0.75,fill=(RGBColor(0xE9,0xF3,0xEC) if k["step"]=="Own" else WHITE),line=LINE); box(s,7.4,y,5.3,0.05,fill=c,line=None,shape=MSO_SHAPE.RECTANGLE)
-    txt(s,7.55,y+0.08,5.0,0.3,(f"{i+1}. {k['step']}",11.5,c,True))
-    txt(s,7.55,y+0.36,5.0,0.35,(k["detail"],9.3,MUT),sp=1.0)
+    x=0.7+i*(kw+0.2); c = GRN if k["step"]=="Own" else GOV
+    box(s,x,5.7,kw,1.0,fill=(RGBColor(0xE9,0xF3,0xEC) if k["step"]=="Own" else WHITE),line=LINE)
+    box(s,x,5.7,kw,0.05,fill=c,line=None,shape=MSO_SHAPE.RECTANGLE)
+    txt(s,x+0.12,5.8,kw-0.24,0.3,(f"{i+1}. {k['step']}",10.5,c,True))
+    txt(s,x+0.12,6.08,kw-0.24,0.55,(k["detail"],8.2,MUT),sp=1.0)
 foot(s,"Full coverage day one across dev & ops — incl. the Kubernetes, Kafka & DevOps fundamentals your RFP flagged as thin.")
 
 # 13 · CAPACITY

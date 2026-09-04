@@ -36,7 +36,7 @@ export const navChapters = [
   ]},
   { id: "model", label: "The Model", sections: [
     { id: "twolane", label: "The two-lane model", num: "04" },
-    { id: "foundations", label: "Readiness foundations — Gate 0", num: "05" },
+    { id: "foundations", label: "Gate 0 in depth — readiness foundations", num: "05" },
     { id: "landscape", label: "Know the landscape", num: "06" }
   ]},
   { id: "runasis", label: "Run As-Is", sections: [
@@ -145,6 +145,10 @@ export interface FoundationPillar {
   evidence: string;
 }
 
+// Picks the thread back up from §04's gate series — the reciprocal of gateHandoff
+export const foundationsGateNote =
+  "You just met the three gates. This is the one that needs building — Gate 0 — which is why it, and only it, gets a section of its own. Gates 1 and 2 stay where they were defined: short per-item checks you run at the moment you turn a dial.";
+
 export const foundationsIntro =
   "Before any agent acts in your estate, four things must already be true: the infrastructure and security posture can contain it, your people can supervise it, your operations can trace and measure it, and your governance can approve it. Lane 1 builds all four as a by-product of running the service well — which is why running as-is first is not a delay on the agentic journey. It is the journey's first leg.";
 
@@ -209,28 +213,35 @@ export const gateSeries = [
   {
     id: "g0",
     name: "Gate 0 · Foundations",
-    scope: "Passes once, estate-wide",
+    scope: "One-time · estate-wide",
     unlocks: "Makes any dial-up possible at all",
-    evidence: "All four foundation pillars show their evidence: infra & security posture, people AI-fluency, ops trace-and-measure, governance readiness."
+    evidence: "All four foundation pillars show their evidence: infra & security posture, people AI-fluency, ops trace-and-measure, governance readiness.",
+    where: "The one gate that asks us to build something — its evidence is the four readiness layers. Detailed in full in the next section."
   },
   {
     id: "g1",
     name: "Gate 1 · Assist",
-    scope: "Passes per scope item",
+    scope: "Per item · lightweight check",
     unlocks: "L0 → L1 for that item",
-    evidence: "Named Pandora owner · audit on for the flow · human-approval path proven · rollback demonstrated."
+    evidence: "Named Pandora owner · audit on for the flow · human-approval path proven · rollback demonstrated.",
+    where: "A per-item check — the evidence above is the whole of it. You run it when you dial an item up to L1."
   },
   {
     id: "g2",
     name: "Gate 2 · Agentic",
-    scope: "Passes per scope item",
+    scope: "Per item · lightweight check",
     unlocks: "L1 → L2 for that item",
-    evidence: "Assist track record at L1 · incident drill passed unaided · SLOs held · evaluation pass-rate at threshold."
+    evidence: "Assist track record at L1 · incident drill passed unaided · SLOs held · evaluation pass-rate at threshold.",
+    where: "A per-item check of the same shape — run only after that item has a proven track record at L1."
   }
 ];
 
 export const gatesAnswer =
   "Are more gates coming? No. Three gate kinds is the whole system: Gate 0 passes once for the estate; Gates 1 and 2 pass per item. Every gate has a named owner, written evidence criteria, and a reversible outcome — and no calendar date ever substitutes for a gate.";
+
+// Bridge from §04 (the gates) into §05 (Gate 0 in depth)
+export const gateHandoff =
+  "Notice the asymmetry: of the three gates, only Gate 0 asks us to build anything — the other two are short per-item checks whose evidence lists you have just read in full. That one build-something gate is the whole of the next section.";
 
 export const terminology = [
   ["Lane 1 · Run & Deliver", "The as-is managed service: your tools, your SLAs, the RFP delivered as written. Active from day one, never dependent on Lane 2."],

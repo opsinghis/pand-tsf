@@ -1,6 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { useState, type CSSProperties, type KeyboardEvent } from "react";
-import { changesNote, changesTable, dialSource, foundationPillars, foundationsIntro, foundationsPunchline, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
+import { changesNote, changesTable, dialSource, foundationPillars, foundationsGateNote, foundationsIntro, foundationsPunchline, gateHandoff, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
 import { DataTable, PullQuote, Reveal, Section } from "./primitives";
 import { LandscapeMap } from "./LandscapeMap";
 
@@ -174,13 +174,14 @@ export function TwoLaneSection() {
       <h3 className="section-inline-title">Each gate — scope and evidence</h3>
       <div className="gate-cards">
         {gateSeries.map((gate) => (
-          <Reveal className="gate-card-sm" key={gate.id}>
+          <Reveal className={`gate-card-sm ${gate.id === "g0" ? "gate-primary" : ""}`} key={gate.id}>
             <div className="gate-card-head">
               <strong>{gate.name}</strong>
               <span className="chip live">{gate.scope}</span>
             </div>
             <p className="gate-unlocks">{gate.unlocks}</p>
             <p className="gate-evidence"><strong>Evidence:</strong> {gate.evidence}</p>
+            <p className="gate-where">{gate.where}</p>
           </Reveal>
         ))}
       </div>
@@ -203,6 +204,11 @@ export function TwoLaneSection() {
         quote="Adopt at the speed of trust. If you never turn a dial, you still have a well-run service that hits its SLAs. Every dial you do turn is pure upside — and the fabric is already built, so the option costs nothing to keep open."
         source="The two-lane commitment"
       />
+      <Reveal className="sec-handoff">
+        <span className="sec-handoff-arrow" aria-hidden="true">↓</span>
+        <p>{gateHandoff}</p>
+        <span className="sec-handoff-next">Next · Gate 0 in depth</span>
+      </Reveal>
     </Section>
   );
 }
@@ -338,7 +344,11 @@ export function FoundationsSection() {
   };
 
   return (
-    <Section id="foundations" num="05" title="Readiness foundations — Gate 0">
+    <Section id="foundations" num="05" title="Gate 0 in depth — the four readiness foundations">
+      <div className="sec-pickup">
+        <span className="sec-pickup-from">From the gates ↑</span>
+        <p>{foundationsGateNote}</p>
+      </div>
       <p className="sec-sub">{foundationsIntro}</p>
 
       <div className="fstack-interactive">
