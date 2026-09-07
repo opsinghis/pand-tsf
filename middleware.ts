@@ -13,17 +13,19 @@
 //
 // To change/rotate the password later: edit the env var and redeploy.
 
+import { next } from '@vercel/edge';
+
 export const config = {
   // Protect every route except Vercel's internal analytics beacon.
   matcher: '/((?!_vercel/).*)',
 };
 
-export default function middleware(request: Request): Response | undefined {
+export default function middleware(request: Request): Response {
   const USER = process.env.BASIC_AUTH_USER;
   const PASS = process.env.BASIC_AUTH_PASS;
 
   // If credentials aren't configured yet, don't lock everyone out — pass through.
-  if (!USER || !PASS) return;
+  if (!USER || !PASS) return next();
 
   const header = request.headers.get('authorization');
   if (header && header.startsWith('Basic ')) {
@@ -33,7 +35,7 @@ export default function middleware(request: Request): Response | undefined {
       const user = decoded.slice(0, sep);
       const pass = decoded.slice(sep + 1); // tolerate ':' inside the password
       if (user === USER && pass === PASS) {
-        return; // authenticated → let the request continue to the site
+        return next(); // authenticated → let the request continue to the site
       }
     } catch {
       // malformed header → fall through to the 401 challenge

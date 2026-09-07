@@ -13,6 +13,7 @@
     "build:publish": "npm run build && node scripts/publish.mjs"
   },
   "dependencies": {
+    "@vercel/edge": "^1.2.2",
     "lucide-react": "1.21.0",
     "motion": "13.1.1",
     "react": "19.2.7",
