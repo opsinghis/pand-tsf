@@ -15,11 +15,6 @@
 
 import { next } from '@vercel/edge';
 
-export const config = {
-  // Protect every route except Vercel's internal analytics beacon.
-  matcher: '/((?!_vercel/).*)',
-};
-
 export default function middleware(request: Request): Response {
   const USER = process.env.BASIC_AUTH_USER;
   const PASS = process.env.BASIC_AUTH_PASS;
@@ -42,11 +37,12 @@ export default function middleware(request: Request): Response {
     }
   }
 
+  // NOTE: header values must be Latin-1 (bytes <= 255) — keep the realm ASCII-only
+  // (no em dashes / smart punctuation), or constructing the Response will throw.
   return new Response('Authentication required.', {
     status: 401,
     headers: {
-      'WWW-Authenticate':
-        'Basic realm="Pandora TS&F — Alternative Approach", charset="UTF-8"',
+      'WWW-Authenticate': 'Basic realm="Pandora TSF Alternative Approach"',
     },
   });
 }
