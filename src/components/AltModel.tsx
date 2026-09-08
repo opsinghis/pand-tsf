@@ -312,9 +312,9 @@ export function TwoLaneSection() {
       <h3 className="section-inline-title">See it move — one item through lanes, levels and gates</h3>
       <p className="sec-sub concept-sub">{conceptIntro}</p>
       <ConceptFlow />
+      <SwimlanePlan />
       <h3 className="section-inline-title">The same model, at a glance</h3>
       <LevelGateFlow />
-      <SwimlanePlan />
       <h3 className="section-inline-title">Each gate — scope and evidence</h3>
       <div className="gate-cards">
         {gateSeries.map((gate) => (
