@@ -1,8 +1,149 @@
-import { ShieldCheck } from "lucide-react";
-import { useState, type CSSProperties, type KeyboardEvent } from "react";
-import { changesNote, changesTable, dialSource, foundationPillars, foundationsGateNote, foundationsIntro, foundationsPunchline, gateHandoff, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
+import { ChevronLeft, ChevronRight, Lock, Pause, Play, RotateCcw, ShieldCheck } from "lucide-react";
+import { useEffect, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { changesNote, changesTable, conceptActors, conceptGate0, conceptIntro, conceptStages, conceptTakeaway, dialSource, foundationPillars, foundationsGateNote, foundationsIntro, foundationsPunchline, gateHandoff, gateSeries, gateZero, gatesAnswer, horizons, laneDefinitions, laneRules, platformLabels, scopeDial, terminology } from "../data/alternative";
 import { DataTable, PullQuote, Reveal, Section } from "./primitives";
 import { LandscapeMap } from "./LandscapeMap";
+
+const conceptActorMap = Object.fromEntries(conceptActors.map((a) => [a.id, a]));
+
+function ConceptFlow() {
+  const centers = [10, 30, 50, 70, 90];
+  const last = conceptStages.length - 1;
+  const [active, setActive] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const atEnd = active >= last;
+
+  useEffect(() => {
+    if (!playing) return;
+    if (atEnd) {
+      setPlaying(false);
+      return;
+    }
+    const t = setTimeout(() => setActive((a) => Math.min(a + 1, last)), 1500);
+    return () => clearTimeout(t);
+  }, [playing, active, atEnd, last]);
+
+  const stage = conceptStages[active];
+
+  return (
+    <Reveal className="concept">
+      {/* Stage: lane bands + the rail an item travels along */}
+      <div className="concept-stage">
+        <div className={`concept-lane lane2 ${active >= 2 ? "on" : ""}`}>
+          <span>Lane 2 · Improve &amp; Evolve</span>
+          <small>{active >= 2 ? "engaged — powering this dial-up" : "held ready — engages once a gate passes"}</small>
+        </div>
+
+        <div className="concept-rail">
+          <div className="concept-railline" aria-hidden="true" />
+          <div
+            className="concept-token"
+            style={{ left: `${centers[active]}%` } as CSSProperties}
+            aria-hidden="true"
+          >
+            <span className="concept-token-label">Scope item</span>
+            <span className="concept-token-stem" />
+            <span className="concept-token-dot" />
+          </div>
+          {conceptStages.map((s, i) => {
+            const state = i === active ? "active" : i < active ? "passed" : "todo";
+            return (
+              <button
+                type="button"
+                key={s.id}
+                className={`concept-node ${s.kind} ${state}`}
+                style={{ left: `${centers[i]}%` } as CSSProperties}
+                aria-label={`${s.tag} — ${s.title}`}
+                aria-current={i === active}
+                onClick={() => {
+                  setPlaying(false);
+                  setActive(i);
+                }}
+              >
+                <span className="concept-node-mark">
+                  {s.kind === "gate" ? <Lock size={15} aria-hidden="true" /> : <strong>{s.tag}</strong>}
+                </span>
+                <span className="concept-node-cap">{s.kind === "gate" ? s.tag : s.title.replace(/^Level \d+ — /, "")}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="concept-lane lane1 on">
+          <span>Lane 1 · Run &amp; Deliver</span>
+          <small>always on, from day one — the item never stops being delivered</small>
+        </div>
+
+        <div className="concept-base">
+          <div className="concept-base-head">
+            <ShieldCheck size={14} aria-hidden="true" />
+            <strong>{conceptGate0.name}</strong>
+            <em>{conceptGate0.tag} — passed once for the whole estate</em>
+          </div>
+          <p className="concept-base-detail">{conceptGate0.detail}</p>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="concept-controls">
+        <button type="button" onClick={() => { setPlaying(false); setActive(0); }} disabled={active === 0 && !playing}>
+          <RotateCcw size={15} aria-hidden="true" /> Reset
+        </button>
+        <button type="button" onClick={() => { setPlaying(false); setActive((a) => Math.max(0, a - 1)); }} disabled={active === 0}>
+          <ChevronLeft size={16} aria-hidden="true" /> Back
+        </button>
+        <button type="button" className="primary" onClick={() => { setPlaying(false); setActive((a) => Math.min(last, a + 1)); }} disabled={atEnd}>
+          Turn the dial <ChevronRight size={16} aria-hidden="true" />
+        </button>
+        <button type="button" onClick={() => (atEnd ? (setActive(0), setPlaying(true)) : setPlaying((p) => !p))}>
+          {playing ? <><Pause size={15} aria-hidden="true" /> Pause</> : <><Play size={15} aria-hidden="true" /> Auto-play</>}
+        </button>
+      </div>
+
+      {/* Who does what — all stages rendered; the active one is lit */}
+      <div className="concept-cards" aria-live="polite">
+        {conceptStages.map((s, i) => (
+          <div className={`concept-card ${s.kind} ${i === active ? "active" : ""}`} key={s.id}>
+            <div className="concept-card-head">
+              <span className={`concept-tag ${s.kind}`}>{s.tag}</span>
+              <strong>{s.title}</strong>
+            </div>
+            <span className="concept-card-lane">{s.lane}</span>
+            <p className="concept-who"><span className="concept-eyebrow">Who does what</span>{s.who}</p>
+            <p className="concept-move"><span className="concept-eyebrow">What moves it</span>{s.move}</p>
+            <div className="concept-actors">
+              {s.actors.map((id) => {
+                const a = conceptActorMap[id];
+                return (
+                  <span className="concept-actor" style={{ "--hue": `var(${a.hue})` } as CSSProperties} key={id}>
+                    {a.label}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Actor legend */}
+      <div className="concept-legend">
+        {conceptActors.map((a) => (
+          <span
+            className={`concept-legend-item ${stage.actors.includes(a.id as never) ? "on" : ""}`}
+            style={{ "--hue": `var(${a.hue})` } as CSSProperties}
+            key={a.id}
+          >
+            <i />
+            <strong>{a.label}</strong>
+            <small>{a.role}</small>
+          </span>
+        ))}
+      </div>
+
+      <p className="concept-takeaway">{conceptTakeaway}</p>
+    </Reveal>
+  );
+}
 
 export function ChangesSection() {
   return (
@@ -160,7 +301,6 @@ export function TwoLaneSection() {
         Everything in this approach hangs off one structure: two lanes over a shared governance base. Lane 1 delivers the
         RFP as written. Lane 2 holds the agentic fabric ready — and gates are the only crossing points between them.
       </p>
-      <SwimlanePlan />
       <div className="lane-defs">
         {laneDefinitions.map((lane) => (
           <Reveal className="lane-def" key={lane.id}>
@@ -169,8 +309,12 @@ export function TwoLaneSection() {
           </Reveal>
         ))}
       </div>
-      <h3 className="section-inline-title">The three service levels, and the two gates that move between them</h3>
+      <h3 className="section-inline-title">See it move — one item through lanes, levels and gates</h3>
+      <p className="sec-sub concept-sub">{conceptIntro}</p>
+      <ConceptFlow />
+      <h3 className="section-inline-title">The same model, at a glance</h3>
       <LevelGateFlow />
+      <SwimlanePlan />
       <h3 className="section-inline-title">Each gate — scope and evidence</h3>
       <div className="gate-cards">
         {gateSeries.map((gate) => (

@@ -252,6 +252,79 @@ export const terminology = [
   ["Dial review", "The quarterly 30-minute agenda item in existing governance where every dial position is confirmed, changed — or explicitly kept at \"not yet\"."]
 ] as const;
 
+// ── 03c · The model in motion (interactive concept primer) ───────────────
+export const conceptIntro =
+  "Before the detail, here is the whole model in motion. Follow one scope item as it travels — press \"Turn the dial\" to advance it one step, and watch who does what at each stage. Nothing moves without passing a gate, and Pandora turns every dial.";
+
+export const conceptActors = [
+  { id: "pandora", label: "Pandora", role: "Owns the dial and approves every gate", hue: "--tech" },
+  { id: "ps", label: "Publicis Sapient", role: "Runs the service and proposes the gate evidence", hue: "--accent" },
+  { id: "ai", label: "AI assist", role: "Drafts and recommends — a human still executes", hue: "--ops" },
+  { id: "agent", label: "Agent", role: "Runs a bounded loop behind approval gates", hue: "--proof" }
+] as const;
+
+export const conceptGate0 = {
+  name: "Gate 0 · Foundations",
+  tag: "one-time · estate-wide",
+  detail: "Underneath everything: before any item can move at all, the whole estate passes Gate 0 once — infrastructure & security, people, operations and governance are proven ready. Publicis Sapient proposes the evidence; Pandora approves. After that, items move one at a time."
+};
+
+export const conceptStages = [
+  {
+    id: "l0",
+    kind: "level",
+    tag: "L0",
+    lane: "Lane 1 · Run & Deliver",
+    title: "Level 0 — Run as-is",
+    who: "Publicis Sapient delivers the item conventionally, to your SLAs; your teams work exactly as they do today.",
+    move: "This is the default for all 30 items — an item stays here until you choose to turn its dial.",
+    actors: ["ps"]
+  },
+  {
+    id: "g1",
+    kind: "gate",
+    tag: "Gate 1",
+    lane: "per item · the assist gate",
+    title: "Gate 1 — earn AI-assist",
+    who: "Publicis Sapient proposes the evidence: a named Pandora owner, audit switched on, a proven human-approval path, and rollback demonstrated. Pandora signs off and turns the dial.",
+    move: "Passing Gate 1 moves this one item from L0 to L1. It is reversible at any time.",
+    actors: ["ps", "pandora"]
+  },
+  {
+    id: "l1",
+    kind: "level",
+    tag: "L1",
+    lane: "Lane 2 · Improve & Evolve engaged",
+    title: "Level 1 — AI-assisted",
+    who: "AI drafts and recommends inside the flow; a human still reviews and executes every material action.",
+    move: "Faster and more consistent delivery — with a person firmly on the trigger.",
+    actors: ["ai", "ps"]
+  },
+  {
+    id: "g2",
+    kind: "gate",
+    tag: "Gate 2",
+    lane: "per item · the agentic gate",
+    title: "Gate 2 — earn autonomy",
+    who: "Publicis Sapient proposes the evidence: a proven L1 track record, an incident drill passed unaided, SLOs held, and evaluation pass-rate at threshold. Pandora signs off.",
+    move: "Passing Gate 2 moves this item from L1 to L2 — only after L1 has earned the trust.",
+    actors: ["ps", "pandora"]
+  },
+  {
+    id: "l2",
+    kind: "level",
+    tag: "L2",
+    lane: "Lane 2 · Improve & Evolve",
+    title: "Level 2 — Agentic",
+    who: "A bounded agent runs the loop behind approval gates; a human supervises and can stop or reverse it at any moment.",
+    move: "The destination for an item — governed autonomy, never unattended, always reversible.",
+    actors: ["agent", "pandora"]
+  }
+] as const;
+
+export const conceptTakeaway =
+  "Turn no dials and you still have a well-run service at L0 that hits every SLA. Turn any dial and it is pure upside — and every move is gated, reversible, and yours to make.";
+
 // ── 06 · Day one: run as-is ──────────────────────────────────────────────
 export const transitionPlan = [
   {
