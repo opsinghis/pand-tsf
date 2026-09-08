@@ -333,41 +333,59 @@ export function TeamCapacitySection() {
 
 function CapacityChart() {
   const horizonX = [130, 400, 670, 940];
-  const dates = ["Jan 2027", "Apr 2027", "Oct 2027", "Oct 2028"];
+  const dotY = [214, 176, 130, 60];
+  const tagColors = ["#8A8F96", "#35597B", "#C43B44", "#2E7D4F"];
   return (
     <Reveal className="curves-panel">
       <div className="figure-label">
         <strong>Effective capacity over the journey</strong>
         <span>illustrative — capacity rises while the team stays lean</span>
       </div>
-      <svg viewBox="0 0 1040 320" role="img" aria-label="Capacity chart: effective capacity rises across the four horizons while team size stays flat, and the Pandora-owned share grows">
+      <svg viewBox="0 0 1040 356" role="img" aria-label="Capacity chart: effective capacity rises across the four horizons while team size stays flat, and the Pandora-owned share grows. The gap between capacity and team size is the productivity dividend.">
+        <defs>
+          <marker id="cap-arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+            <path d="M1 1L9 5L1 9Z" fill="#5C6066" />
+          </marker>
+        </defs>
         <rect x="20" y="16" width="1000" height="250" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
 
         {/* Pandora-owned share — rising green area at the base */}
         <path d="M110 250 L110 236 C300 224 500 200 690 176 C820 160 900 150 960 146 L960 250 Z" fill="#2E7D4F" opacity="0.12" />
-        <text x="150" y="242" className="svg-small svg-bold" fill="#2E7D4F">Pandora-owned share ↑</text>
-
-        {/* Effective capacity — steel, rising */}
-        <path d="M130 214 C300 188 470 150 660 112 C790 86 880 70 940 60" fill="none" stroke="#35597B" strokeWidth="3.5" strokeLinecap="round" />
-        <text x="720" y="86" className="svg-small svg-bold" fill="#35597B">Effective capacity</text>
+        <text x="470" y="232" className="svg-small svg-bold" fill="#2E7D4F">Pandora-owned share — grows as capability transfers to you ↑</text>
 
         {/* Team size — muted, flat/declining */}
         <path d="M130 196 C360 194 620 196 940 204" fill="none" stroke="#8A8F96" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="7 5" />
-        <text x="150" y="188" className="svg-small svg-bold" fill="#8A8F96">Team size — flat, then leaner</text>
 
-        {/* the productivity dividend gap */}
-        <line x1="800" y1="74" x2="800" y2="200" stroke="#5C6066" strokeWidth="1" strokeDasharray="3 3" />
-        <text x="808" y="120" className="svg-small svg-bold" fill="#5C6066">productivity</text>
-        <text x="808" y="132" className="svg-small svg-bold" fill="#5C6066">dividend</text>
+        {/* Effective capacity — steel, rising */}
+        <path d="M130 214 C300 188 470 150 660 112 C790 86 880 70 940 60" fill="none" stroke="#35597B" strokeWidth="3.5" strokeLinecap="round" />
+
+        {/* the productivity-dividend bracket: the gap between the two lines */}
+        <line x1="800" y1="86" x2="800" y2="200" stroke="#5C6066" strokeWidth="1.4" markerStart="url(#cap-arr)" markerEnd="url(#cap-arr)" />
+        <rect x="808" y="118" width="150" height="34" rx="6" fill="#FBFAF8" stroke="#D9D5CE" />
+        <text x="816" y="132" className="svg-small svg-bold" fill="#5C6066">Productivity dividend</text>
+        <text x="816" y="145" className="svg-small" fill="#5C6066">more output, same team</text>
+
+        {/* Legend */}
+        <g>
+          <rect x="40" y="30" width="360" height="86" rx="8" fill="#FFFFFF" stroke="#E5E2DB" />
+          <line x1="56" y1="50" x2="86" y2="50" stroke="#35597B" strokeWidth="3.5" strokeLinecap="round" />
+          <text x="96" y="54" className="svg-small svg-bold" fill="#16181D">Effective capacity — what the team can deliver</text>
+          <line x1="56" y1="74" x2="86" y2="74" stroke="#8A8F96" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="7 5" />
+          <text x="96" y="78" className="svg-small svg-bold" fill="#16181D">Team size — headcount (flat, then leaner)</text>
+          <rect x="56" y="92" width="30" height="12" rx="2" fill="#2E7D4F" opacity="0.16" stroke="#2E7D4F" strokeOpacity="0.5" />
+          <text x="96" y="102" className="svg-small svg-bold" fill="#16181D">Pandora-owned share — capability you own</text>
+        </g>
 
         {horizonX.map((x, i) => (
-          <g key={dates[i]}>
+          <g key={capacityDrivers[i].at}>
             <line x1={x} y1="30" x2={x} y2="250" stroke="#E5E2DB" strokeDasharray="3 4" />
-            <circle cx={x} cy={[214, 176, 130, 60][i]} r="4.5" fill="#35597B" stroke="#fff" strokeWidth="1.5" />
-            <text x={x} y="284" textAnchor="middle" className="svg-small svg-bold">{dates[i]}</text>
-            <text x={x} y="300" textAnchor="middle" className="svg-small">{["Ramp", "AI-augmented", "Dialled AI", "Owned"][i]}</text>
+            <circle cx={x} cy={dotY[i]} r="4.5" fill="#35597B" stroke="#fff" strokeWidth="1.5" />
+            <text x={x} y="286" textAnchor="middle" className="svg-small svg-bold">{capacityDrivers[i].at}</text>
+            <text x={x} y="301" textAnchor="middle" className="svg-small">{capacityDrivers[i].label}</text>
+            <text x={x} y="318" textAnchor="middle" className="svg-small svg-bold" fill={tagColors[i]}>{capacityDrivers[i].tag}</text>
           </g>
         ))}
+        <text x="520" y="344" textAnchor="middle" className="svg-small" fill="#8A8F96">Each horizon adds a new source of capacity on the same — or leaner — team.</text>
       </svg>
     </Reveal>
   );

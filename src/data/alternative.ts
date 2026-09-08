@@ -975,13 +975,14 @@ export interface CapacityDriver {
   at: string;
   label: string;
   detail: string;
+  tag: string;
 }
 
 export const capacityDrivers: CapacityDriver[] = [
-  { at: "Jan 2027", label: "Ramp & stabilise", detail: "Onboarding and transition reach a steady baseline" },
-  { at: "Apr 2027", label: "AI-augmented delivery", detail: "Our own team's AI tooling lifts throughput per engineer — no estate footprint" },
-  { at: "Oct 2027", label: "Dialled AI", detail: "As you turn L1 dials, assisted flows raise platform-team throughput" },
-  { at: "Oct 2028", label: "Owned & optimised", detail: "Reusable patterns and a Pandora-owned CoE; capacity high, our footprint narrowing" }
+  { at: "Jan 2027", label: "Ramp & stabilise", detail: "Onboarding and transition reach a steady baseline", tag: "Transition" },
+  { at: "Apr 2027", label: "AI-augmented delivery", detail: "Our own team's AI tooling lifts throughput per engineer — no estate footprint", tag: "Lane 1 · our AI" },
+  { at: "Oct 2027", label: "Dialled AI", detail: "As you turn L1 dials, assisted flows raise platform-team throughput", tag: "Lane 2 · your dials" },
+  { at: "Oct 2028", label: "Owned & optimised", detail: "Reusable patterns and a Pandora-owned CoE; capacity high, our footprint narrowing", tag: "Pandora-owned" }
 ];
 
 export const capacityNote =
