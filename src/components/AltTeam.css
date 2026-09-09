@@ -223,8 +223,8 @@
 .sl-head,
 .sl-row {
   display: grid;
-  grid-template-columns: minmax(170px, 1.08fr) repeat(4, minmax(135px, 1fr));
-  min-width: 920px;
+  grid-template-columns: minmax(168px, 1.05fr) repeat(5, minmax(124px, 1fr));
+  min-width: 1080px;
 }
 
 .sl-shared-band {
@@ -237,7 +237,7 @@
 }
 
 .sl-shared-band strong {
-  grid-column: 4 / 6;
+  grid-column: 4 / 7;
   border-left: 1px solid color-mix(in srgb, var(--tech) 32%, var(--line));
   background: var(--tech-dim);
   color: var(--tech);
@@ -306,6 +306,22 @@
   background: var(--tech-dim);
   color: #243f5a;
   font-weight: 680;
+}
+
+/* Lane 2 · Improve & Evolve backlog column — coral, distinct from the steel ops/dev cluster */
+.sl-improve {
+  border-left-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+  background: color-mix(in srgb, var(--accent) 9%, var(--card));
+  color: #7a2b31;
+  font-weight: 680;
+}
+
+.sl-improve-head strong {
+  color: var(--accent);
+}
+
+.sl-backlog-note {
+  margin-top: 10px;
 }
 
 .l3-bridge {

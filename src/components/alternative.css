@@ -190,6 +190,11 @@
   margin-bottom: 14px;
 }
 
+/* Full-width intro line — spans the diagram width instead of the 72ch reading column */
+.sec-sub.wide {
+  max-width: none;
+}
+
 .concept {
   border: 1px solid var(--line);
   border-radius: 12px;

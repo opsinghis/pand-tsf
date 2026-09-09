@@ -834,7 +834,7 @@ export const footerLines = [
 
 // ── The Team — delivery model chapter ────────────────────────────────────
 export const teamIntro =
-  "The engine behind the plan: one team across three locations under a single accountable Sapient leader, with Pandora holding architecture, standards and every gate — and effective capacity that compounds each horizon rather than a rise in headcount.";
+  "The engine behind the plan: one team across three locations under a single accountable Sapient Engagement Principal — a senior engineering leader — with Pandora holding architecture, standards and every gate, and effective capacity that compounds each horizon rather than a rise in headcount.";
 
 export interface TeamLocation {
   id: string;
@@ -846,7 +846,7 @@ export interface TeamLocation {
 }
 
 export const teamLocations: TeamLocation[] = [
-  { id: "copenhagen", city: "Copenhagen", kind: "Onsite · Pandora HQ", role: "Leadership, liaison and trust — embedded with your leaders", roles: ["Sapient Delivery Lead", "Solution / Engineering lead", "Rotating SMEs, 1–2× a year"], lane1: 65 },
+  { id: "copenhagen", city: "Copenhagen", kind: "Onsite · Pandora HQ", role: "Leadership, liaison and trust — embedded with your leaders", roles: ["Sapient Engagement Principal", "Solution / Engineering lead", "Rotating SMEs, 1–2× a year"], lane1: 65 },
   { id: "bucharest", city: "Bucharest", kind: "Nearshore · Romania", role: "Timezone overlap with Copenhagen — senior engineering and fast feedback", roles: ["Senior / lead engineers", "QE / SDET", "Delivery coordination"], lane1: 80 },
   { id: "gurgaon", city: "Gurgaon", kind: "Offshore · India", role: "Engineering and 24/7 operations scale — the delivery backbone", roles: ["Data · Kafka · DevOps · Cloud engineers", "Development + Operations rotation", "AgentOps skill authoring"], lane1: 88 }
 ];
@@ -854,18 +854,19 @@ export const teamLocations: TeamLocation[] = [
 export interface TeamTrack {
   id: string;
   name: string;
+  sme: string;
   dev: string;
   ops: string;
 }
 
 export const teamTracks: TeamTrack[] = [
-  { id: "data", name: "Data & Integration", dev: "Data · Kafka · Delta · Unity Catalog", ops: "Streaming ops · DQ · lineage" },
-  { id: "devops", name: "DevOps & Cloud", dev: "CI/CD · GitHub Actions · Terraform", ops: "PAKS/AKS · SRE · 24/7 on-call" },
-  { id: "agentops", name: "AgentOps & Enablement", dev: "Skills authoring · AI tooling", ops: "Evaluations · AI FinOps · adoption" }
+  { id: "data", name: "Data & Integration", sme: "Deep SME — Databricks · Kafka · integration", dev: "Data · Kafka · Delta · Unity Catalog", ops: "Streaming ops · DQ · lineage" },
+  { id: "devops", name: "DevOps & Cloud", sme: "Deep SME — Kubernetes · Terraform · CI/CD", dev: "CI/CD · GitHub Actions · Terraform", ops: "PAKS/AKS · SRE · 24/7 on-call" },
+  { id: "agentops", name: "AgentOps & Enablement", sme: "Deep SME — AI platform · evals · FinOps", dev: "Skills authoring · AI tooling", ops: "Evaluations · AI FinOps · adoption" }
 ];
 
 export const teamLeaderNote =
-  "One Sapient Delivery Lead is accountable across all three tracks and both lanes — SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager. That single accountable line never becomes a filter: Pandora keeps a standing, transparent line to every track lead in Data, DevOps and Ops — and we actively encourage you to use it.";
+  "One Sapient Engagement Principal — our senior engineering leader on the account — is accountable across all three tracks and both lanes: SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager. No single person is expected to be the deep expert in everything — so each track carries its own subject-matter expert across DevOps, integration, operations and data; the Principal orchestrates through them, and behind them stands Sapient's senior thought leadership and CoE, specialists on call. That single accountable line never becomes a filter: Pandora keeps a standing, transparent line to every track lead in Data, DevOps and Ops — and we actively encourage you to use it.";
 
 export interface ControlBand {
   area: string;
@@ -890,6 +891,7 @@ export interface SkillRow {
   t1: string;
   t2: string;
   t3: string;
+  improve: string;
   dev: string;
 }
 
@@ -899,6 +901,7 @@ export const skillRows: SkillRow[] = [
     t1: "Pipeline alerts, failed-run routing, first checks",
     t2: "Rerun, quarantine, DQ triage, lineage lookup",
     t3: "Spark / Delta fix PR, model and job optimisation",
+    improve: "Backlog: auto-DQ triage, self-healing reruns, templates as dial-up candidates",
     dev: "Data-product build, medallion design, reusable templates"
   },
   {
@@ -906,6 +909,7 @@ export const skillRows: SkillRow[] = [
     t1: "Lag, schema and connector alerts",
     t2: "Replay, rebalance, connector restart, config triage",
     t3: "Connector, schema or consumer fix PR",
+    improve: "Backlog: self-healing connectors, schema-drift auto-remediation candidates",
     dev: "Event contracts, producer / consumer engineering"
   },
   {
@@ -913,6 +917,7 @@ export const skillRows: SkillRow[] = [
     t1: "Failed-build routing and known-error checks",
     t2: "Runner, secret and pipeline recovery",
     t3: "Workflow / action refactor PR, policy-gate fix",
+    improve: "Backlog: flaky-pipeline auto-remediation, policy-as-code dial-up candidates",
     dev: "GitHub migration factory and platform pipeline patterns"
   },
   {
@@ -920,6 +925,7 @@ export const skillRows: SkillRow[] = [
     t1: "Pod, node, quota and certificate monitoring",
     t2: "Rollback, scale, config restore and access triage",
     t3: "IaC, Helm or platform fix PR",
+    improve: "Backlog: self-heal and auto-scale recipes, drift-correction candidates",
     dev: "PAKS recipes, self-service patterns, platform engineering"
   },
   {
@@ -927,6 +933,7 @@ export const skillRows: SkillRow[] = [
     t1: "Alert intake, severity routing, dashboard checks",
     t2: "Correlation, RCA draft, runbook-guided restore",
     t3: "Instrumentation, SLO or reliability fix PR",
+    improve: "Backlog: auto-RCA, alert-noise reduction, SLO-guard automation candidates",
     dev: "Observability-by-design and resilience engineering"
   },
   {
@@ -934,6 +941,7 @@ export const skillRows: SkillRow[] = [
     t1: "Smoke-test results and release-health checks",
     t2: "Regression triage, data-quality failure isolation",
     t3: "Test-harness and quality-gate fix PR",
+    improve: "Backlog: self-maintaining tests, failure auto-triage, risk-based selection",
     dev: "Automation strategy, contract tests, CI quality gates"
   }
 ];
@@ -945,8 +953,12 @@ export const skillTierHeaders = [
   { label: "Ops L1", detail: "Monitor & route" },
   { label: "Ops L2", detail: "Diagnose & restore" },
   { label: "Ops L3", detail: "Engineer fix" },
+  { label: "Improve & Evolve", detail: "Lane 2 backlog" },
   { label: "Development", detail: "Build & change" }
 ] as const;
+
+export const skillBacklogNote =
+  "Improvement is not only L3's job: L1 and L2 log the recurring toil they see straight into the Lane 2 backlog, and L3, development and agentic then clear it. The backlog is where day-to-day operations becomes the improve-and-evolve engine — every tier feeds it.";
 
 export const skillBridge = {
   title: "L3 is not a support silo",

@@ -10,6 +10,7 @@ import {
   controlNote,
   ktLoop,
   ktNote,
+  skillBacklogNote,
   skillBridge,
   skillRows,
   skillTierHeaders,
@@ -75,7 +76,7 @@ export function TeamShapeSection() {
 export function TeamLeaderSection() {
   return (
     <Section id="team-leader" num="11" title="One leader across all tracks — and Pandora on the wheel">
-      <p className="sec-sub">{teamLeaderNote}</p>
+      <p className="sec-sub wide">{teamLeaderNote}</p>
       <OrgDiagram />
       <h3 className="section-inline-title">Who decides, who does — control by design</h3>
       <div className="control-strip">
@@ -99,60 +100,70 @@ function OrgDiagram() {
   const trackX = [180, 520, 860];
   return (
     <Reveal>
-      <svg className="process-svg" viewBox="0 0 1040 400" role="img" aria-label="Delivery org: Pandora leadership pairs 1:1 with one accountable Sapient Delivery Lead, who runs three tracks (each spanning development and operations); Pandora also keeps a direct, transparent dotted line to every track lead, which is encouraged">
+      <svg className="process-svg" viewBox="0 0 1040 470" role="img" aria-label="Delivery org: Pandora leadership pairs 1:1 with one accountable Sapient Engagement Principal (a senior engineering leader). No one person is the deep expert in everything — each track (Data & Integration, DevOps & Cloud, AgentOps) carries its own subject-matter expert, the Principal orchestrates through them, and draws on Sapient's senior thought leadership and CoE. Pandora also keeps a direct, transparent dotted line to every track lead.">
         <defs>
           <marker id="arrow-org" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </marker>
         </defs>
-        <rect x="10" y="10" width="1020" height="380" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
+        <rect x="10" y="10" width="1020" height="450" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
 
-        <rect x="150" y="28" width="740" height="52" rx="8" fill="#EDF1F6" stroke="#B6C5D5" />
-        <text x="520" y="50" textAnchor="middle" className="svg-title" fill="#35597B">Pandora leadership — Delivery Lead + Engineering Manager</text>
-        <text x="520" y="68" textAnchor="middle" className="svg-small">retains architecture · standards · roadmap · Lead &amp; Senior Engineers</text>
+        <rect x="150" y="28" width="740" height="48" rx="8" fill="#EDF1F6" stroke="#B6C5D5" />
+        <text x="520" y="48" textAnchor="middle" className="svg-title" fill="#35597B">Pandora leadership — Delivery Lead + Engineering Manager</text>
+        <text x="520" y="66" textAnchor="middle" className="svg-small">retains architecture · standards · roadmap · Lead &amp; Senior Engineers</text>
 
-        {/* Primary accountability line: Pandora pairs 1:1 with the Sapient Delivery Lead */}
-        <line x1="520" y1="80" x2="520" y2="98" stroke="#5C6066" strokeWidth="1.8" markerEnd="url(#arrow-org)" />
-        <text x="536" y="94" className="svg-small svg-bold" fill="#5C6066">pairs 1:1</text>
+        {/* Primary accountability line: Pandora pairs 1:1 with the Sapient Engagement Principal */}
+        <line x1="520" y1="76" x2="520" y2="106" stroke="#5C6066" strokeWidth="1.8" markerEnd="url(#arrow-org)" />
+        <text x="536" y="98" className="svg-small svg-bold" fill="#5C6066">pairs 1:1</text>
 
-        <rect x="300" y="98" width="440" height="50" rx="8" fill="#F7E9E9" stroke="#E4B9BD" />
-        <text x="520" y="119" textAnchor="middle" className="svg-title" fill="#C43B44">One Sapient Delivery Lead</text>
-        <text x="520" y="137" textAnchor="middle" className="svg-small">accountable across all tracks · both lanes · SLAs, throughput, capability transfer</text>
+        {/* The Principal — same box height, orchestrator not sole-expert */}
+        <rect x="258" y="108" width="504" height="74" rx="8" fill="#F7E9E9" stroke="#E4B9BD" />
+        <text x="510" y="130" textAnchor="middle" className="svg-title" fill="#C43B44">One Sapient Engagement Principal</text>
+        <text x="510" y="149" textAnchor="middle" className="svg-small">Senior engineering leader · single accountable owner of delivery</text>
+        <text x="510" y="168" textAnchor="middle" className="svg-small">Orchestrates through the track SMEs — SLAs, throughput, capability transfer</text>
+
+        {/* Draws-on: Sapient senior thought leadership behind the Principal */}
+        <line x1="762" y1="146" x2="786" y2="146" stroke="#684E86" strokeWidth="1.7" markerEnd="url(#arrow-org)" />
+        <rect x="788" y="110" width="232" height="72" rx="8" fill="#F1EDF6" stroke="#C8B9DA" />
+        <text x="904" y="128" textAnchor="middle" className="svg-label" fill="#684E86">THE PRINCIPAL DRAWS ON</text>
+        <text x="904" y="146" textAnchor="middle" className="svg-small svg-bold" fill="#684E86">Sapient senior thought</text>
+        <text x="904" y="161" textAnchor="middle" className="svg-small svg-bold" fill="#684E86">leadership · global CoE</text>
+        <text x="904" y="176" textAnchor="middle" className="svg-small" fill="#5C6066">specialists on call, any track</text>
 
         {/* Transparent direct-access rail: Pandora → every track lead (dotted, encouraged) */}
         <g stroke="#35597B" strokeWidth="1.6" strokeDasharray="2 4" fill="none">
-          <line x1="180" y1="80" x2="180" y2="178" />
-          <line x1="860" y1="80" x2="860" y2="178" />
-          <line x1="180" y1="178" x2="860" y2="178" />
-          <line x1="180" y1="178" x2="180" y2="204" markerEnd="url(#arrow-org)" />
-          <line x1="520" y1="178" x2="520" y2="204" markerEnd="url(#arrow-org)" />
-          <line x1="860" y1="178" x2="860" y2="204" markerEnd="url(#arrow-org)" />
+          <line x1="200" y1="76" x2="200" y2="220" />
+          <line x1="180" y1="220" x2="860" y2="220" />
+          <line x1="180" y1="220" x2="180" y2="244" markerEnd="url(#arrow-org)" />
+          <line x1="520" y1="220" x2="520" y2="244" markerEnd="url(#arrow-org)" />
+          <line x1="860" y1="220" x2="860" y2="244" markerEnd="url(#arrow-org)" />
         </g>
-        <rect x="303" y="150" width="434" height="26" rx="13" fill="#EDF1F6" stroke="#35597B" />
-        <text x="520" y="167" textAnchor="middle" className="svg-small svg-bold" fill="#35597B">Pandora's direct line to every lead — transparent &amp; encouraged</text>
 
         {teamTracks.map((track, i) => (
           <g key={track.id}>
-            <line x1="520" y1="148" x2={trackX[i]} y2="206" stroke="#C9CBD0" strokeWidth="1.6" markerEnd="url(#arrow-org)" />
-            <rect x={trackX[i] - 150} y="206" width="300" height="118" rx="8" fill="#FFFFFF" stroke="#E5E2DB" />
-            <text x={trackX[i]} y="232" textAnchor="middle" className="svg-title">{track.name}</text>
-            <rect x={trackX[i] - 138} y="246" width="276" height="32" rx="6" fill="#EFF3EA" stroke="#BBD0AF" />
-            <text x={trackX[i] - 126} y="259" className="svg-small svg-bold" fill="#55763F">DEV</text>
-            <text x={trackX[i] - 126} y="272" className="svg-small">{track.dev}</text>
-            <rect x={trackX[i] - 138} y="284" width="276" height="32" rx="6" fill="#F8F1E6" stroke="#DDBB8C" />
-            <text x={trackX[i] - 126} y="297" className="svg-small svg-bold" fill="#A3671F">OPS</text>
-            <text x={trackX[i] - 126} y="310" className="svg-small">{track.ops}</text>
+            <line x1="510" y1="182" x2={trackX[i]} y2="244" stroke="#C9CBD0" strokeWidth="1.6" markerEnd="url(#arrow-org)" />
+            <rect x={trackX[i] - 150} y="244" width="300" height="152" rx="8" fill="#FFFFFF" stroke="#E5E2DB" />
+            <text x={trackX[i]} y="266" textAnchor="middle" className="svg-title">{track.name}</text>
+            {/* The subject-matter expert that owns this track's depth */}
+            <rect x={trackX[i] - 138} y="276" width="276" height="30" rx="6" fill="#FBF3E3" stroke="#DDBB8C" />
+            <text x={trackX[i] - 126} y="295" className="svg-small svg-bold" fill="#A3671F">{track.sme}</text>
+            <rect x={trackX[i] - 138} y="314" width="276" height="34" rx="6" fill="#EFF3EA" stroke="#BBD0AF" />
+            <text x={trackX[i] - 126} y="328" className="svg-small svg-bold" fill="#55763F">DEV</text>
+            <text x={trackX[i] - 126} y="341" className="svg-small">{track.dev}</text>
+            <rect x={trackX[i] - 138} y="354" width="276" height="34" rx="6" fill="#F8F1E6" stroke="#DDBB8C" />
+            <text x={trackX[i] - 126} y="368" className="svg-small svg-bold" fill="#A3671F">OPS</text>
+            <text x={trackX[i] - 126} y="381" className="svg-small">{track.ops}</text>
           </g>
         ))}
 
-        {/* Legend: distinguish the accountability chain from the transparent access line */}
+        {/* Legend */}
         <g>
-          <line x1="150" y1="352" x2="192" y2="352" stroke="#5C6066" strokeWidth="1.8" />
-          <text x="200" y="356" className="svg-small" fill="#5C6066">Accountability — one Sapient Lead delivers</text>
-          <line x1="560" y1="352" x2="602" y2="352" stroke="#35597B" strokeWidth="1.8" strokeDasharray="2 4" />
-          <text x="610" y="356" className="svg-small" fill="#35597B">Direct access — Pandora sees every lead (encouraged)</text>
+          <line x1="150" y1="422" x2="192" y2="422" stroke="#5C6066" strokeWidth="1.8" />
+          <text x="200" y="426" className="svg-small" fill="#5C6066">Accountability — one Principal, single owner</text>
+          <line x1="560" y1="422" x2="602" y2="422" stroke="#35597B" strokeWidth="1.8" strokeDasharray="2 4" />
+          <text x="610" y="426" className="svg-small" fill="#35597B">Direct access — Pandora sees every lead (encouraged)</text>
         </g>
-        <text x="520" y="378" textAnchor="middle" className="svg-small svg-bold" fill="#35597B">
+        <text x="520" y="446" textAnchor="middle" className="svg-small svg-bold" fill="#35597B">
           Distributed across Gurgaon · Bucharest · Copenhagen — one team, one backlog
         </text>
       </svg>
@@ -233,12 +244,12 @@ export function TeamSkillsSection() {
       <div className="skills-ladder">
         <div className="sl-shared-band">
           <span />
-          <strong>Operations extends to L3, where it becomes the same senior engineering skill as development</strong>
+          <strong>Ops L3, the Lane 2 improvement backlog and Development are one senior-engineering pool — fix → improve → build, same people</strong>
         </div>
         <div className="sl-head">
           <span>Engineering skill</span>
           {skillTierHeaders.map((tier) => (
-            <span key={tier.label}>
+            <span key={tier.label} className={tier.label === "Improve & Evolve" ? "sl-improve-head" : undefined}>
               <strong>{tier.label}</strong>
               <small>{tier.detail}</small>
             </span>
@@ -250,10 +261,12 @@ export function TeamSkillsSection() {
             <span data-tier="Ops L1 · Monitor & route">{row.t1}</span>
             <span data-tier="Ops L2 · Diagnose & restore">{row.t2}</span>
             <span className="sl-shared" data-tier="Ops L3 · Engineer fix">{row.t3}</span>
+            <span className="sl-improve" data-tier="Improve & Evolve · Lane 2 backlog">{row.improve}</span>
             <span className="sl-shared" data-tier="Development · Build & change">{row.dev}</span>
           </div>
         ))}
       </div>
+      <p className="diagram-note sl-backlog-note">{skillBacklogNote}</p>
       <Reveal className="l3-bridge">
         <div className="l3-bridge-copy">
           <strong>{skillBridge.title}</strong>

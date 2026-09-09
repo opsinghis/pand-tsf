@@ -240,15 +240,20 @@ box(s,3.2,1.55,7.0,0.7,fill=RGBColor(0xED,0xF1,0xF6),line=RGBColor(0xB6,0xC5,0xD
 txt(s,3.2,1.62,7.0,0.3,("Pandora leadership — retains architecture · standards · roadmap · Lead & Senior Engineers",11.5,TEC,True),align=PP_ALIGN.CENTER)
 txt(s,3.2,2.26,7.0,0.22,("↕ pairs 1:1 — one accountable line",9.5,MUT,True),align=PP_ALIGN.CENTER)
 box(s,3.9,2.5,5.6,0.55,fill=RGBColor(0xF7,0xE9,0xE9),line=RGBColor(0xE4,0xB9,0xBD))
-txt(s,3.9,2.57,5.6,0.4,("One Sapient Delivery Lead — accountable across all tracks, both lanes",12,ACC,True),align=PP_ALIGN.CENTER)
+txt(s,3.2,2.57,6.1,0.4,("One Sapient Engagement Principal — senior engineering leader; orchestrates through the track SMEs",12,ACC,True),align=PP_ALIGN.CENTER)
+# The Principal draws on Sapient's senior thought leadership / CoE
+box(s,9.55,2.5,3.0,0.6,fill=RGBColor(0xF1,0xED,0xF6),line=RGBColor(0xC8,0xB9,0xDA))
+box(s,9.42,2.77,0.13,0.04,fill=GOV,line=None,shape=MSO_SHAPE.RECTANGLE)
+txt(s,9.65,2.54,2.8,0.52,("Draws on — Sapient senior thought leadership & global CoE",8.5,GOV,True),sp=1.0)
 # Pandora's transparent direct-access rail to every track lead — dotted, encouraged, never a filter
 dash(box(s,0.7,3.18,11.85,0.34,fill=RGBColor(0xED,0xF1,0xF6),line=TEC,lw=1.2))
 txt(s,0.7,3.24,11.85,0.24,("Pandora's direct line to every track lead — transparent & encouraged",10.5,TEC,True),align=PP_ALIGN.CENTER)
 for i,tr in enumerate(D["teamTracks"]):
     x=0.7+i*4.05
-    box(s,x,3.62,3.85,1.42); txt(s,x+0.15,3.7,3.55,0.3,(tr["name"],12.5,INK,True),align=PP_ALIGN.CENTER)
-    box(s,x+0.15,4.06,3.55,0.44,fill=RGBColor(0xEF,0xF3,0xEA),line=None); txt(s,x+0.25,4.12,3.4,0.35,("DEV  "+tr["dev"],9.5,PEO,False))
-    box(s,x+0.15,4.54,3.55,0.44,fill=RGBColor(0xF8,0xF1,0xE6),line=None); txt(s,x+0.25,4.6,3.4,0.35,("OPS  "+tr["ops"],9.5,OPS,False))
+    box(s,x,3.62,3.85,1.42); txt(s,x+0.15,3.66,3.55,0.28,(tr["name"],12,INK,True),align=PP_ALIGN.CENTER)
+    box(s,x+0.15,3.92,3.55,0.32,fill=RGBColor(0xFB,0xF3,0xE3),line=RGBColor(0xDD,0xBB,0x8C)); txt(s,x+0.25,3.97,3.4,0.24,(tr["sme"],8.5,OPS,True))
+    box(s,x+0.15,4.3,3.55,0.34,fill=RGBColor(0xEF,0xF3,0xEA),line=None); txt(s,x+0.25,4.36,3.4,0.26,("DEV  "+tr["dev"],9,PEO,False))
+    box(s,x+0.15,4.68,3.55,0.34,fill=RGBColor(0xF8,0xF1,0xE6),line=None); txt(s,x+0.25,4.74,3.4,0.26,("OPS  "+tr["ops"],9,OPS,False))
 # control strip
 txt(s,0.7,5.15,12,0.3,("WHO DECIDES, WHO DOES — CONTROL BY DESIGN",11,MUT,True))
 cb=D["controlBands"]; cw=12.0/len(cb); cmap={"pandora":TEC,"joint":GOV,"sapient":ACC}
@@ -257,7 +262,7 @@ for i,b in enumerate(cb):
     box(s,x+0.03,5.5,cw-0.06,0.6,fill=cmap[b["owner"]],line=None)
     txt(s,x+0.05,5.56,cw-0.1,0.5,(b["area"],9,WHITE,True),align=PP_ALIGN.CENTER,sp=1.0)
 txt(s,0.7,6.25,12,0.3,("■ Pandora-owned    ■ Joint    ■ Sapient-run",10.5,MUT,True))
-foot(s,"Control is structural: every gate and every dial-up needs a named Pandora owner's sign-off.")
+foot(s,"No one person is the deep expert in everything: each track carries its own SME, the Principal orchestrates through them and draws on Sapient's senior thought leadership — while every gate needs a named Pandora sign-off.")
 
 # 11 · WHY TWO TEAMS — CONVERGENCE
 s=slide(); head(s,"The Team","Why two teams? One team, sequenced — dev & ops converge",num="10")
@@ -278,8 +283,8 @@ for i,m in enumerate(D["convergeMechanisms"]):
 s=slide(); head(s,"The Team","Skills coverage — Ops L1→L3 into Development, and knowledge transfer that sticks",num="11")
 # Full-width tier matrix: skill × [Ops L1, Ops L2, Ops L3, Development] — mirrors the site's skills ladder
 thead=["Engineering skill"]+[f"{h['label']} · {h['detail']}" for h in D["skillTierHeaders"]]
-rows=[thead]+[[r["skill"],r["t1"],r["t2"],r["t3"],r["dev"]] for r in D["skillRows"]]
-table(s,0.7,1.55,12.0,rows,[2.2,2.45,2.45,2.45,2.45],rowh=0.5,body_size=7.8,head_size=8.5)
+rows=[thead]+[[r["skill"],r["t1"],r["t2"],r["t3"],r["improve"],r["dev"]] for r in D["skillRows"]]
+table(s,0.7,1.55,12.15,rows,[1.9,2.05,2.05,2.05,2.05,2.05],rowh=0.52,body_size=7.0,head_size=8.0)
 # KT loop as a horizontal strip beneath the matrix
 txt(s,0.7,5.35,12.0,0.28,("KNOWLEDGE TRANSFER — A DESIGNED LOOP",10.5,GOV,True))
 n=len(D["ktLoop"]); kw=(12.0-(n-1)*0.2)/n

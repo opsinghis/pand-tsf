@@ -54,22 +54,26 @@
     {
       "at": "Jan 2027",
       "label": "Ramp & stabilise",
-      "detail": "Onboarding and transition reach a steady baseline"
+      "detail": "Onboarding and transition reach a steady baseline",
+      "tag": "Transition"
     },
     {
       "at": "Apr 2027",
       "label": "AI-augmented delivery",
-      "detail": "Our own team's AI tooling lifts throughput per engineer — no estate footprint"
+      "detail": "Our own team's AI tooling lifts throughput per engineer — no estate footprint",
+      "tag": "Lane 1 · our AI"
     },
     {
       "at": "Oct 2027",
       "label": "Dialled AI",
-      "detail": "As you turn L1 dials, assisted flows raise platform-team throughput"
+      "detail": "As you turn L1 dials, assisted flows raise platform-team throughput",
+      "tag": "Lane 2 · your dials"
     },
     {
       "at": "Oct 2028",
       "label": "Owned & optimised",
-      "detail": "Reusable patterns and a Pandora-owned CoE; capacity high, our footprint narrowing"
+      "detail": "Reusable patterns and a Pandora-owned CoE; capacity high, our footprint narrowing",
+      "tag": "Pandora-owned"
     }
   ],
   "capacityNote": "More delivered, by a leaner and more stable team, an increasing share of it Pandora-owned — the opposite of bringing an army.",
@@ -170,6 +174,105 @@
     ]
   ],
   "closeLine": "Run as-is from day one. Build the foundations while we run. Earn every step toward agentic — at your pace, behind your gates, with your hand on the dial.",
+  "conceptActors": [
+    {
+      "id": "pandora",
+      "label": "Pandora",
+      "role": "Owns the dial and approves every gate",
+      "hue": "--tech"
+    },
+    {
+      "id": "ps",
+      "label": "Publicis Sapient",
+      "role": "Runs the service and proposes the gate evidence",
+      "hue": "--accent"
+    },
+    {
+      "id": "ai",
+      "label": "AI assist",
+      "role": "Drafts and recommends — a human still executes",
+      "hue": "--ops"
+    },
+    {
+      "id": "agent",
+      "label": "Agent",
+      "role": "Runs a bounded loop behind approval gates",
+      "hue": "--proof"
+    }
+  ],
+  "conceptGate0": {
+    "name": "Gate 0 · Foundations",
+    "tag": "one-time · estate-wide",
+    "detail": "Underneath everything: before any item can move at all, the whole estate passes Gate 0 once — infrastructure & security, people, operations and governance are proven ready. Publicis Sapient proposes the evidence; Pandora approves. After that, items move one at a time."
+  },
+  "conceptIntro": "Before the detail, here is the whole model in motion. Follow one scope item as it travels — press \"Turn the dial\" to advance it one step, and watch who does what at each stage. Nothing moves without passing a gate, and Pandora turns every dial.",
+  "conceptStages": [
+    {
+      "id": "l0",
+      "kind": "level",
+      "tag": "L0",
+      "lane": "Lane 1 · Run & Deliver",
+      "title": "Level 0 — Run as-is",
+      "who": "Publicis Sapient delivers the item conventionally, to your SLAs; your teams work exactly as they do today.",
+      "move": "This is the default for all 30 items — an item stays here until you choose to turn its dial.",
+      "actors": [
+        "ps"
+      ]
+    },
+    {
+      "id": "g1",
+      "kind": "gate",
+      "tag": "Gate 1",
+      "lane": "per item · the assist gate",
+      "title": "Gate 1 — earn AI-assist",
+      "who": "Publicis Sapient proposes the evidence: a named Pandora owner, audit switched on, a proven human-approval path, and rollback demonstrated. Pandora signs off and turns the dial.",
+      "move": "Passing Gate 1 moves this one item from L0 to L1. It is reversible at any time.",
+      "actors": [
+        "ps",
+        "pandora"
+      ]
+    },
+    {
+      "id": "l1",
+      "kind": "level",
+      "tag": "L1",
+      "lane": "Lane 2 · Improve & Evolve engaged",
+      "title": "Level 1 — AI-assisted",
+      "who": "AI drafts and recommends inside the flow; a human still reviews and executes every material action.",
+      "move": "Faster and more consistent delivery — with a person firmly on the trigger.",
+      "actors": [
+        "ai",
+        "ps"
+      ]
+    },
+    {
+      "id": "g2",
+      "kind": "gate",
+      "tag": "Gate 2",
+      "lane": "per item · the agentic gate",
+      "title": "Gate 2 — earn autonomy",
+      "who": "Publicis Sapient proposes the evidence: a proven L1 track record, an incident drill passed unaided, SLOs held, and evaluation pass-rate at threshold. Pandora signs off.",
+      "move": "Passing Gate 2 moves this item from L1 to L2 — only after L1 has earned the trust.",
+      "actors": [
+        "ps",
+        "pandora"
+      ]
+    },
+    {
+      "id": "l2",
+      "kind": "level",
+      "tag": "L2",
+      "lane": "Lane 2 · Improve & Evolve",
+      "title": "Level 2 — Agentic",
+      "who": "A bounded agent runs the loop behind approval gates; a human supervises and can stop or reverse it at any moment.",
+      "move": "The destination for an item — governed autonomy, never unattended, always reversible.",
+      "actors": [
+        "agent",
+        "pandora"
+      ]
+    }
+  ],
+  "conceptTakeaway": "Turn no dials and you still have a well-run service at L0 that hits every SLA. Turn any dial and it is pure upside — and every move is gated, reversible, and yours to make.",
   "controlBands": [
     {
       "area": "Direction & roadmap",
@@ -1518,6 +1621,7 @@
       ]
     }
   ],
+  "skillBacklogNote": "Improvement is not only L3's job: L1 and L2 log the recurring toil they see straight into the Lane 2 backlog, and L3, development and agentic then clear it. The backlog is where day-to-day operations becomes the improve-and-evolve engine — every tier feeds it.",
   "skillBridge": {
     "title": "L3 is not a support silo",
     "detail": "The same senior engineering pool works L3 production fixes and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
@@ -1536,6 +1640,7 @@
       "t1": "Pipeline alerts, failed-run routing, first checks",
       "t2": "Rerun, quarantine, DQ triage, lineage lookup",
       "t3": "Spark / Delta fix PR, model and job optimisation",
+      "improve": "Backlog: auto-DQ triage, self-healing reruns, templates as dial-up candidates",
       "dev": "Data-product build, medallion design, reusable templates"
     },
     {
@@ -1543,6 +1648,7 @@
       "t1": "Lag, schema and connector alerts",
       "t2": "Replay, rebalance, connector restart, config triage",
       "t3": "Connector, schema or consumer fix PR",
+      "improve": "Backlog: self-healing connectors, schema-drift auto-remediation candidates",
       "dev": "Event contracts, producer / consumer engineering"
     },
     {
@@ -1550,6 +1656,7 @@
       "t1": "Failed-build routing and known-error checks",
       "t2": "Runner, secret and pipeline recovery",
       "t3": "Workflow / action refactor PR, policy-gate fix",
+      "improve": "Backlog: flaky-pipeline auto-remediation, policy-as-code dial-up candidates",
       "dev": "GitHub migration factory and platform pipeline patterns"
     },
     {
@@ -1557,6 +1664,7 @@
       "t1": "Pod, node, quota and certificate monitoring",
       "t2": "Rollback, scale, config restore and access triage",
       "t3": "IaC, Helm or platform fix PR",
+      "improve": "Backlog: self-heal and auto-scale recipes, drift-correction candidates",
       "dev": "PAKS recipes, self-service patterns, platform engineering"
     },
     {
@@ -1564,6 +1672,7 @@
       "t1": "Alert intake, severity routing, dashboard checks",
       "t2": "Correlation, RCA draft, runbook-guided restore",
       "t3": "Instrumentation, SLO or reliability fix PR",
+      "improve": "Backlog: auto-RCA, alert-noise reduction, SLO-guard automation candidates",
       "dev": "Observability-by-design and resilience engineering"
     },
     {
@@ -1571,6 +1680,7 @@
       "t1": "Smoke-test results and release-health checks",
       "t2": "Regression triage, data-quality failure isolation",
       "t3": "Test-harness and quality-gate fix PR",
+      "improve": "Backlog: self-maintaining tests, failure auto-triage, risk-based selection",
       "dev": "Automation strategy, contract tests, CI quality gates"
     }
   ],
@@ -1586,6 +1696,10 @@
     {
       "label": "Ops L3",
       "detail": "Engineer fix"
+    },
+    {
+      "label": "Improve & Evolve",
+      "detail": "Lane 2 backlog"
     },
     {
       "label": "Development",
@@ -1614,8 +1728,8 @@
     "Named Pandora counterparts per track"
   ],
   "teamClose": "One accountable leader, one team across three locations, Pandora in control at every gate, capacity compounding, and ownership transferring — the delivery engine that makes the gentle path credible.",
-  "teamIntro": "The engine behind the plan: one team across three locations under a single accountable Sapient leader, with Pandora holding architecture, standards and every gate — and effective capacity that compounds each horizon rather than a rise in headcount.",
-  "teamLeaderNote": "One Sapient Delivery Lead is accountable across all three tracks and both lanes — SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager.",
+  "teamIntro": "The engine behind the plan: one team across three locations under a single accountable Sapient Engagement Principal — a senior engineering leader — with Pandora holding architecture, standards and every gate, and effective capacity that compounds each horizon rather than a rise in headcount.",
+  "teamLeaderNote": "One Sapient Engagement Principal — our senior engineering leader on the account — is accountable across all three tracks and both lanes: SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager. No single person is expected to be the deep expert in everything — so each track carries its own subject-matter expert across DevOps, integration, operations and data; the Principal orchestrates through them, and behind them stands Sapient's senior thought leadership and CoE, specialists on call. That single accountable line never becomes a filter: Pandora keeps a standing, transparent line to every track lead in Data, DevOps and Ops — and we actively encourage you to use it.",
   "teamLocations": [
     {
       "id": "copenhagen",
@@ -1623,7 +1737,7 @@
       "kind": "Onsite · Pandora HQ",
       "role": "Leadership, liaison and trust — embedded with your leaders",
       "roles": [
-        "Sapient Delivery Lead",
+        "Sapient Engagement Principal",
         "Solution / Engineering lead",
         "Rotating SMEs, 1–2× a year"
       ],
@@ -1658,18 +1772,21 @@
     {
       "id": "data",
       "name": "Data & Integration",
+      "sme": "Deep SME — Databricks · Kafka · integration",
       "dev": "Data · Kafka · Delta · Unity Catalog",
       "ops": "Streaming ops · DQ · lineage"
     },
     {
       "id": "devops",
       "name": "DevOps & Cloud",
+      "sme": "Deep SME — Kubernetes · Terraform · CI/CD",
       "dev": "CI/CD · GitHub Actions · Terraform",
       "ops": "PAKS/AKS · SRE · 24/7 on-call"
     },
     {
       "id": "agentops",
       "name": "AgentOps & Enablement",
+      "sme": "Deep SME — AI platform · evals · FinOps",
       "dev": "Skills authoring · AI tooling",
       "ops": "Evaluations · AI FinOps · adoption"
     }
