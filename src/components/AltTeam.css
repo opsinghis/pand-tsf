@@ -324,6 +324,388 @@
   margin-top: 10px;
 }
 
+/* Case movement simulator */
+.skill-case-showcase {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 16px 18px 18px;
+  font-family: var(--sans);
+}
+
+.skill-case-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.skill-case-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.skill-case-head h3 {
+  max-width: 58ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.skill-case-head p {
+  max-width: 82ch;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.skill-case-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.skill-case-controls button,
+.skill-case-tab,
+.skill-case-step {
+  font-family: var(--sans);
+}
+
+.skill-case-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--muted);
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 740;
+}
+
+.skill-case-controls button.primary {
+  border-color: var(--tech);
+  background: var(--tech);
+  color: #fff;
+}
+
+.skill-case-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.44;
+}
+
+.skill-case-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.skill-case-tab {
+  min-height: 78px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.skill-case-tab strong,
+.skill-case-tab span {
+  display: block;
+}
+
+.skill-case-tab strong {
+  font-size: 12.5px;
+}
+
+.skill-case-tab span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.skill-case-tab[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--tech) 42%, var(--line));
+  background: var(--tech-dim);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tech) 24%, transparent);
+}
+
+.skill-case-tab[aria-pressed="true"] strong {
+  color: var(--tech);
+}
+
+.skill-case-rail {
+  --progress: 0%;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(112px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  overflow-x: auto;
+}
+
+.skill-case-line {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line);
+  pointer-events: none;
+}
+
+.skill-case-line i {
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--proof);
+  transition: width 0.22s ease;
+}
+
+.skill-case-step {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  min-height: 96px;
+  min-width: 112px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--card);
+  color: #3a3d43;
+  padding: 0 8px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.skill-case-dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: -1px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--muted);
+  border: 2px solid var(--line);
+  font-size: 11px;
+  font-weight: 820;
+}
+
+.skill-case-step strong {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.skill-case-step small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 680;
+  line-height: 1.25;
+}
+
+.skill-case-step.passed {
+  border-color: color-mix(in srgb, var(--proof) 36%, var(--line));
+  background: var(--proof-dim);
+}
+
+.skill-case-step.passed .skill-case-dot {
+  border-color: var(--proof);
+  background: var(--proof);
+  color: #fff;
+}
+
+.skill-case-step.active {
+  border-color: var(--stage-hue);
+  background: color-mix(in srgb, var(--stage-hue) 11%, var(--card));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--stage-hue) 14%, transparent);
+}
+
+.skill-case-step.active .skill-case-dot {
+  border-color: var(--stage-hue);
+  background: var(--stage-hue);
+  color: #fff;
+}
+
+.skill-case-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.14fr) minmax(270px, 0.86fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.skill-case-active,
+.skill-case-rules {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 14px 16px;
+}
+
+.skill-case-active {
+  border-left: 4px solid var(--stage-hue);
+}
+
+.skill-case-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  border-radius: 999px;
+  background: var(--stage-hue);
+  color: #fff;
+  padding: 4px 9px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.skill-case-active h4,
+.skill-case-rules h4 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.skill-case-title {
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 740;
+  line-height: 1.35;
+}
+
+.skill-case-signal {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.skill-case-facts {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.skill-case-facts p {
+  margin: 0;
+  color: #3a3d43;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.skill-case-facts strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.skill-case-rules ol {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-case-rules li {
+  border-left: 3px solid var(--line);
+  padding-left: 10px;
+  color: var(--muted);
+}
+
+.skill-case-rules li.reached {
+  border-left-color: var(--proof);
+  color: #3a3d43;
+}
+
+.skill-case-rules li.current {
+  border-left-color: var(--accent);
+  background: var(--accent-dim);
+  border-radius: 0 6px 6px 0;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.skill-case-rules strong,
+.skill-case-rules span {
+  display: block;
+}
+
+.skill-case-rules strong {
+  color: var(--ink);
+  font-size: 11.5px;
+}
+
+.skill-case-rules span {
+  margin-top: 2px;
+  font-size: 11.2px;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .skill-case-head,
+  .skill-case-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-case-controls {
+    justify-content: flex-start;
+  }
+
+  .skill-case-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .skill-case-showcase {
+    padding: 14px;
+  }
+
+  .skill-case-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-case-controls button {
+    flex: 1 1 92px;
+    justify-content: center;
+  }
+
+  .skill-case-rail {
+    grid-template-columns: repeat(6, minmax(104px, 1fr));
+  }
+
+  .skill-case-line {
+    left: 52px;
+    right: 52px;
+  }
+}
+
 .l3-bridge {
   display: grid;
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr);
@@ -352,7 +734,7 @@
 
 .l3-flow {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
   align-items: stretch;
 }
@@ -377,6 +759,12 @@
   border-color: color-mix(in srgb, var(--tech) 36%, var(--line));
   background: var(--tech-dim);
   color: #243f5a;
+}
+
+.l3-node.improve {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+  background: color-mix(in srgb, var(--accent) 9%, var(--card));
+  color: #7a2b31;
 }
 
 .l3-node i {

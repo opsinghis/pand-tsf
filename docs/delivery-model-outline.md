@@ -16,7 +16,19 @@ Lane 1 runs on a proven, distributed managed-service engine (Gurgaon scale + nea
 
 ## Proposed placement in the site
 
-A new chapter **"The Team"** (2–3 sections) inserted after **Run As-Is** (§07–09), before **The Dial** — because it answers "who runs Lane 1 and grows Lane 2" right after the reader has seen the two lanes and governance. Alternatively it can live as one dense section. (Decide at review.)
+Add a separate **"Transition coverage"** menu item inside **Run As-Is**, immediately after **Day one** and before the steady-state People · Technology · Operations section. This answers the customer confidence question first: what happens if the outgoing vendor does not hand over everything?
+
+A new chapter **"The Team"** follows **Run As-Is** (§07–10), before **The Dial** — because it answers "who runs Lane 1 and grows Lane 2" right after the reader has seen the two lanes, transition coverage and governance.
+
+## Section 08 — Transition coverage: protected if vendor handover is incomplete
+
+**Message:** Pandora's specific concern is current vendor to self, inside a bounded window, without assuming complete handover. The answer is an evidence-led transition cockpit, not a document-led promise.
+
+- **Interactive examples:** Kafka/Integration topic replay gaps, Databricks lineage gaps, GitHub release-runner gaps, and legacy EDW/BizTalk feeds that should migrate instead of becoming long-term BAU.
+- **Walkthrough rail:** Weeks 0–2 inventory → Weeks 1–6 runtime proof → Day 60 support gate → Days 60–120 development gate → months 4–6 close gaps.
+- **Evidence diagram:** vendor pack → live estate evidence → gap register → gate decision.
+- **Decision buckets:** transition now; transition with controls; hold/defer; retire/migrate. This visibly demonstrates that not everything is transitioned by default.
+- **Confidence mechanism:** each example shows missing handover, independent evidence, coverage uplift, owner, control, and the gate decision.
 
 ---
 
@@ -54,22 +66,23 @@ A new chapter **"The Team"** (2–3 sections) inserted after **Run As-Is** (§07
 
 ## Section D — Skills coverage: the matrix behind the scope
 
-**Message:** the exact engineering skills the scope needs, present across dev and ops, at every location, day one.
+**Message:** the exact engineering skills the scope needs, present across every operating tier and development, from day one.
 
-- **Skills × track grid:** rows = Data engineering · Kafka/Confluent · DevOps/CI-CD · Cloud/Kubernetes/Terraform · SRE/Observability · QE/SDET; columns = Development · Operations; cells = depth/coverage (and where sourced: Gurgaon/nearshore/onsite).
+- **Skills × tier grid:** rows = Data engineering · Kafka/Confluent · DevOps/CI-CD · Cloud/Kubernetes/Terraform · SRE/Observability · QE/SDET; columns = Ops L1 · Ops L2 · Ops L3 · Improve & Evolve · Development.
+- **Left-to-right operating logic:** L1 monitors, logs and routes; L2 diagnoses and restores; L3 engineers the fix; Improve & Evolve converts repeat fixes into Lane-2 backlog items; Development turns them into permanent code, IaC, tests, runbooks and platform patterns.
 - Ties to the RFP's named gaps (Kubernetes, Kafka, DevOps fundamentals) — we bring the depth Pandora flagged as thin, and enable Pandora's people in it.
-- **Visual:** a compact skills-coverage matrix (heat/'●●●' depth) — data / Kafka / DevOps / cloud across dev + ops, so the reader sees full coverage at a glance.
+- **Visual:** a compact skills-coverage matrix plus an interactive case simulator: choose Data, Kafka, DevOps, Cloud/K8s, SRE or QE, then move one genuine case through Signal → L1 → L2 → L3 → Improve & Evolve → Development → permanent fix/reusable pattern.
 
 ## Section E — Training & knowledge sharing (so it sticks with Pandora)
 
-**Message:** knowledge transfer is a designed workstream, not a hope — and it flows both ways and across locations.
+**Message:** knowledge transfer is a designed workstream, not a hope — and it is role-based across L1, L2, L3, improvement and development.
 
 - **Onboarding:** standardized JDs, selection panels (incl. Pandora), buddy system, role-specific onboarding materials (proven model).
-- **Shadow / reverse-shadow:** on-parallel shadow in transition; reverse-shadow where PS plays knowledge back to incumbent SMEs; 50+ parameter readiness before cutover.
-- **Ongoing:** weekly enablement clinics, certifications (leveraging vendor partnerships), champion network, living docs (runbooks, ADRs, architecture, knowledge wiki).
+- **Shadow / reverse-shadow:** on-parallel shadow in transition across L1/L2/L3 and development; reverse-shadow where PS plays knowledge back to incumbent SMEs from alert → restore → fix → backlog → build; 50+ parameter readiness before cutover.
+- **Ongoing:** weekly enablement clinics, certifications (leveraging vendor partnerships), champion network, living docs (tiered runbooks, fix patterns, ADRs, architecture, knowledge wiki).
 - **Cross-location KT:** a single knowledge base and paved runbooks so Gurgaon/nearshore/onsite operate identically; "Pandora staff must be able to operate any vendor-delivered capability" is the acceptance bar.
 - **AI-fluency tie-in:** this is also Gate-0 pillar 2 — enabling Pandora engineers on Copilot/Claude — so training now *is* readiness for later.
-- **Visual:** a knowledge-transfer loop (Acquire → Document → Play back → Certify → Own) with the readiness thresholds, and a small "living docs" motif.
+- **Visual:** a knowledge-transfer loop (Acquire → Document → Play back → Certify → Own) with readiness thresholds by role: operate, restore, fix and build.
 
 ## Section F — Capacity that compounds (the headline visual you asked for)
 

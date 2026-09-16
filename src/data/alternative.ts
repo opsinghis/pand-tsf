@@ -41,27 +41,28 @@ export const navChapters = [
   ]},
   { id: "runasis", label: "Run As-Is", sections: [
     { id: "dayone", label: "Day one: run as-is", num: "07" },
-    { id: "lanes-asis", label: "People · Technology · Ops", num: "08" },
-    { id: "governance", label: "Governance: two layers", num: "09" }
+    { id: "transition-coverage", label: "Transition coverage", num: "08" },
+    { id: "lanes-asis", label: "People · Technology · Ops", num: "09" },
+    { id: "governance", label: "Governance: two layers", num: "10" }
   ]},
   { id: "team", label: "The Team", sections: [
-    { id: "team-shape", label: "One team, three locations", num: "10" },
-    { id: "team-leader", label: "One leader · Pandora in control", num: "11" },
-    { id: "team-converge", label: "Why two teams? Dev & ops converge", num: "12" },
-    { id: "team-skills", label: "Skills & knowledge transfer", num: "13" },
-    { id: "team-capacity", label: "Capacity that compounds", num: "14" }
+    { id: "team-shape", label: "One team, three locations", num: "11" },
+    { id: "team-leader", label: "One leader · Pandora in control", num: "12" },
+    { id: "team-converge", label: "Why two teams? Dev & ops converge", num: "13" },
+    { id: "team-skills", label: "Skills & knowledge transfer", num: "14" },
+    { id: "team-capacity", label: "Capacity that compounds", num: "15" }
   ]},
   { id: "dial", label: "The Dial", sections: [
-    { id: "dial-explorer", label: "The 30-item dial", num: "15" },
-    { id: "walkthroughs", label: "The dial in action", num: "16" },
-    { id: "goals", label: "Your goals, covered", num: "17" }
+    { id: "dial-explorer", label: "The 30-item dial", num: "16" },
+    { id: "walkthroughs", label: "The dial in action", num: "17" },
+    { id: "goals", label: "Your goals, covered", num: "18" }
   ]},
   { id: "journey", label: "The Journey", sections: [
-    { id: "horizons", label: "Horizons, re-anchored", num: "18" },
-    { id: "caution", label: "The cost of caution", num: "19" },
-    { id: "proof", label: "Why this is low-risk", num: "20" },
-    { id: "pandora", label: "Your part", num: "21" },
-    { id: "start", label: "How we start", num: "22" }
+    { id: "horizons", label: "Horizons, re-anchored", num: "19" },
+    { id: "caution", label: "The cost of caution", num: "20" },
+    { id: "proof", label: "Why this is low-risk", num: "21" },
+    { id: "pandora", label: "Your part", num: "22" },
+    { id: "start", label: "How we start", num: "23" }
   ]}
 ];
 
@@ -348,6 +349,58 @@ export const transitionPlan = [
     detail: "Proficient in all dev/ops tasks; proactively lifting quality and delivery efficiency; monthly performance review. Cutover on a 50+ parameter readiness assessment, agreed jointly on evidence."
   }
 ];
+
+export const transitionCoverageIntro =
+  "Pandora's ask is specific: move DevOps, Data and Integration from the current vendor to self within a bounded transition window, without assuming the incumbent hands over everything. We make the running estate, not vendor documents, the source of truth.";
+
+export const transitionCoverageProofPoints = [
+  {
+    value: "0-60",
+    label: "support takeover window",
+    detail: "L1/L2 moves only after access, on-call, P1/P2 routing and gap controls are proven."
+  },
+  {
+    value: "60-120",
+    label: "development takeover window",
+    detail: "Repos, release paths, fix routes and backlog ownership are proven through paired delivery."
+  },
+  {
+    value: "4 decisions",
+    label: "per component",
+    detail: "Transition now, transition with controls, hold/defer, or retire/migrate."
+  },
+  {
+    value: "50+",
+    label: "readiness checks",
+    detail: "Cutover is based on evidence across access, monitoring, documentation, restore, rollback and ownership."
+  }
+] as const;
+
+export const transitionReadinessBuckets = [
+  {
+    bucket: "Transition now",
+    meaning: "Documented enough, access tested, monitoring live, owner known, restore path rehearsed.",
+    decision: "Move to autonomous support."
+  },
+  {
+    bucket: "Transition with controls",
+    meaning: "In scope but missing documentation, SME detail, observability, automation or dependency clarity.",
+    decision: "Take over with added monitoring, hypercare, named escalation and a dated gap plan."
+  },
+  {
+    bucket: "Hold / defer",
+    meaning: "Risk is too high to assume quietly: unknown critical path, missing access, unsafe rollback or unclear ownership.",
+    decision: "Escalate to governance; do not count as fully transitioned until the gate passes."
+  },
+  {
+    bucket: "Retire / migrate",
+    meaning: "The better answer is not long-term takeover but controlled migration, replacement or decommission.",
+    decision: "Move into the relevant migration factory or improvement backlog."
+  }
+] as const;
+
+export const transitionCoverageClose =
+  "No undocumented critical component becomes fully transitioned because time has passed. It passes readiness, moves with named controls, is held behind governance, or becomes a migration/retirement path.";
 
 export const dayOneFacts = [
   { label: "Tooling", value: "Pandora's own table, unchanged: ServiceNow, New Relic, PagerDuty and GitHub (migrations in flight), Terraform, Jira/Confluence, Port.io." },
@@ -901,7 +954,7 @@ export const skillRows: SkillRow[] = [
     t1: "Pipeline alerts, failed-run routing, first checks",
     t2: "Rerun, quarantine, DQ triage, lineage lookup",
     t3: "Spark / Delta fix PR, model and job optimisation",
-    improve: "Backlog: auto-DQ triage, self-healing reruns, templates as dial-up candidates",
+    improve: "Convert recurring fixes into auto-DQ triage, self-healing reruns and templates",
     dev: "Data-product build, medallion design, reusable templates"
   },
   {
@@ -909,7 +962,7 @@ export const skillRows: SkillRow[] = [
     t1: "Lag, schema and connector alerts",
     t2: "Replay, rebalance, connector restart, config triage",
     t3: "Connector, schema or consumer fix PR",
-    improve: "Backlog: self-healing connectors, schema-drift auto-remediation candidates",
+    improve: "Convert repeats into self-healing connectors and schema-drift automation",
     dev: "Event contracts, producer / consumer engineering"
   },
   {
@@ -917,7 +970,7 @@ export const skillRows: SkillRow[] = [
     t1: "Failed-build routing and known-error checks",
     t2: "Runner, secret and pipeline recovery",
     t3: "Workflow / action refactor PR, policy-gate fix",
-    improve: "Backlog: flaky-pipeline auto-remediation, policy-as-code dial-up candidates",
+    improve: "Convert flaky builds into auto-remediation and policy-as-code improvements",
     dev: "GitHub migration factory and platform pipeline patterns"
   },
   {
@@ -925,7 +978,7 @@ export const skillRows: SkillRow[] = [
     t1: "Pod, node, quota and certificate monitoring",
     t2: "Rollback, scale, config restore and access triage",
     t3: "IaC, Helm or platform fix PR",
-    improve: "Backlog: self-heal and auto-scale recipes, drift-correction candidates",
+    improve: "Convert incidents into self-heal, auto-scale and drift-correction patterns",
     dev: "PAKS recipes, self-service patterns, platform engineering"
   },
   {
@@ -933,7 +986,7 @@ export const skillRows: SkillRow[] = [
     t1: "Alert intake, severity routing, dashboard checks",
     t2: "Correlation, RCA draft, runbook-guided restore",
     t3: "Instrumentation, SLO or reliability fix PR",
-    improve: "Backlog: auto-RCA, alert-noise reduction, SLO-guard automation candidates",
+    improve: "Convert operational noise into auto-RCA, alert reduction and SLO guards",
     dev: "Observability-by-design and resilience engineering"
   },
   {
@@ -941,30 +994,30 @@ export const skillRows: SkillRow[] = [
     t1: "Smoke-test results and release-health checks",
     t2: "Regression triage, data-quality failure isolation",
     t3: "Test-harness and quality-gate fix PR",
-    improve: "Backlog: self-maintaining tests, failure auto-triage, risk-based selection",
+    improve: "Convert escaped defects into self-maintaining tests and failure triage",
     dev: "Automation strategy, contract tests, CI quality gates"
   }
 ];
 
 export const skillsNote =
-  "Full coverage from day one across development and operations — with operations explicitly spanning L1 monitor-and-route, L2 diagnose-and-restore and L3 engineering fix. L3 is deliberately interchangeable with development for the same skill, so production learning turns into permanent code, IaC, tests and runbook improvements.";
+  "Read the matrix left to right: Ops L1 monitors, routes and captures patterns; Ops L2 diagnoses and restores; Ops L3 engineers the fix. Recurring L3 fixes then move into the Lane 2 Improve & Evolve backlog and the same senior engineers carry them into development, so production learning becomes permanent code, IaC, tests and runbooks.";
 
 export const skillTierHeaders = [
-  { label: "Ops L1", detail: "Monitor & route" },
+  { label: "Ops L1", detail: "Monitor, log & route" },
   { label: "Ops L2", detail: "Diagnose & restore" },
-  { label: "Ops L3", detail: "Engineer fix" },
-  { label: "Improve & Evolve", detail: "Lane 2 backlog" },
+  { label: "Ops L3", detail: "Fix in code / IaC" },
+  { label: "Improve & Evolve", detail: "Toil into backlog" },
   { label: "Development", detail: "Build & change" }
 ] as const;
 
 export const skillBacklogNote =
-  "Improvement is not only L3's job: L1 and L2 log the recurring toil they see straight into the Lane 2 backlog, and L3, development and agentic then clear it. The backlog is where day-to-day operations becomes the improve-and-evolve engine — every tier feeds it.";
+  "Improvement is fed by every tier, not only L3: L1 records repeat alerts and handoffs, L2 records repeated restore steps, and L3 records root-cause fixes. The Improve & Evolve backlog is where day-to-day operations becomes the improvement engine.";
 
 export const skillBridge = {
-  title: "L3 is not a support silo",
+  title: "L3, Improve & Evolve and Development are one pool",
   detail:
-    "The same senior engineering pool works L3 production fixes and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
-  flow: ["Incident / request", "Ops L1", "Ops L2", "Ops L3", "Development", "Permanent fix / reusable pattern"]
+    "The same senior engineering pool works L3 production fixes, Lane 2 improvement items and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
+  flow: ["Incident / request", "Ops L1", "Ops L2", "Ops L3", "Improve & Evolve", "Development", "Permanent fix / reusable pattern"]
 };
 
 export interface KtStep {
@@ -973,15 +1026,15 @@ export interface KtStep {
 }
 
 export const ktLoop: KtStep[] = [
-  { step: "Acquire", detail: "On-parallel shadow of current teams; tooling and access" },
-  { step: "Document", detail: "Living runbooks, ADRs, architecture and a knowledge wiki" },
-  { step: "Play back", detail: "Reverse-shadow — we play knowledge back to your incumbent SMEs" },
-  { step: "Certify", detail: "Enablement clinics and certifications against readiness thresholds" },
-  { step: "Own", detail: "Pandora can operate any capability we deliver — the acceptance bar" }
+  { step: "Acquire", detail: "Parallel shadow across L1, L2, L3 and development; access, tooling and service maps" },
+  { step: "Document", detail: "Tiered runbooks, fix patterns, ADRs, architecture notes and one knowledge wiki" },
+  { step: "Play back", detail: "Reverse-shadow: we replay incidents, fixes and backlog conversion to Pandora SMEs" },
+  { step: "Certify", detail: "Role-based clinics and readiness checks for operate, restore, fix and build" },
+  { step: "Own", detail: "Pandora can operate, improve and extend anything delivered — the acceptance bar" }
 ];
 
 export const ktNote =
-  "Knowledge transfer is a designed workstream, not a hope — flowing both ways and across all three locations off one knowledge base, so Gurgaon, Bucharest and Copenhagen operate identically. It doubles as Gate-0 AI-fluency readiness.";
+  "Knowledge transfer is role-based and designed into the work: L1 learns the signals, L2 learns restoration, L3 learns fix patterns, and development learns how operational evidence changes the backlog. The same loop runs across Gurgaon, Bucharest and Copenhagen from one knowledge base, and doubles as Gate-0 AI-fluency readiness.";
 
 export interface CapacityDriver {
   at: string;

@@ -280,8 +280,8 @@ for i,m in enumerate(D["convergeMechanisms"]):
     box(s,x,y,5.95,0.78); txt(s,x+0.15,y+0.08,5.65,0.3,(m["title"],11,INK,True)); txt(s,x+0.15,y+0.34,5.65,0.4,(m["detail"],9.3,MUT),sp=1.05)
 
 # 12 · SKILLS + KT
-s=slide(); head(s,"The Team","Skills coverage — Ops L1→L3 into Development, and knowledge transfer that sticks",num="11")
-# Full-width tier matrix: skill × [Ops L1, Ops L2, Ops L3, Development] — mirrors the site's skills ladder
+s=slide(); head(s,"The Team","Skills coverage — Ops L1→L3, Improve & Evolve, Development, and knowledge transfer that sticks",num="11")
+# Full-width tier matrix: skill × [Ops L1, Ops L2, Ops L3, Improve & Evolve, Development] — mirrors the site's skills ladder
 thead=["Engineering skill"]+[f"{h['label']} · {h['detail']}" for h in D["skillTierHeaders"]]
 rows=[thead]+[[r["skill"],r["t1"],r["t2"],r["t3"],r["improve"],r["dev"]] for r in D["skillRows"]]
 table(s,0.7,1.55,12.15,rows,[1.9,2.05,2.05,2.05,2.05,2.05],rowh=0.52,body_size=7.0,head_size=8.0)

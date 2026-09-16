@@ -1,5 +1,5 @@
-import { ArrowLeftRight, BadgeCheck, Check } from "lucide-react";
-import type { CSSProperties } from "react";
+import { ArrowLeftRight, BadgeCheck, Check, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { useState, type CSSProperties } from "react";
 import {
   capacityDrivers,
   convergeClincher,
@@ -24,10 +24,311 @@ import {
 } from "../data/alternative";
 import { PullQuote, Reveal, Section } from "./primitives";
 
-// ── 10 · One team, three locations ───────────────────────────────────────
+const opsCaseStages = [
+  { id: "signal", label: "Signal", short: "Case starts", hue: "--muted" },
+  { id: "l1", label: "Ops L1", short: "Capture & route", hue: "--tech" },
+  { id: "l2", label: "Ops L2", short: "Diagnose & restore", hue: "--ops" },
+  { id: "l3", label: "Ops L3", short: "Engineer fix", hue: "--gov" },
+  { id: "improve", label: "Improve & Evolve", short: "Convert toil", hue: "--accent" },
+  { id: "dev", label: "Development", short: "Build durable capability", hue: "--proof" }
+] as const;
+
+type OpsCaseStageId = (typeof opsCaseStages)[number]["id"];
+
+interface OpsCaseStageCopy {
+  id: OpsCaseStageId;
+  trigger: string;
+  action: string;
+  output: string;
+}
+
+interface OpsCaseExample {
+  id: string;
+  skill: string;
+  caseTitle: string;
+  signal: string;
+  stages: OpsCaseStageCopy[];
+}
+
+const opsCaseExamples: OpsCaseExample[] = [
+  {
+    id: "data",
+    skill: "Data engineering",
+    caseTitle: "Databricks pipeline fails after source schema drift",
+    signal: "The nightly Bronze-to-Silver job fails and the downstream gold table is stale for business reporting.",
+    stages: [
+      {
+        id: "signal",
+        trigger: "A failed-run alert, freshness breach or business ticket appears.",
+        action: "Monitoring captures the failing job, table, source feed and visible business impact.",
+        output: "A production case with enough evidence for the first support tier to route."
+      },
+      {
+        id: "l1",
+        trigger: "The alert is confirmed as a real production issue.",
+        action: "Ops L1 validates the run ID, attaches logs, checks first dashboards and routes to the data queue.",
+        output: "A correctly classified incident with impact, owner, timestamp and initial evidence."
+      },
+      {
+        id: "l2",
+        trigger: "The case needs operational restore steps.",
+        action: "Ops L2 reruns the job, quarantines the bad batch, checks lineage and restores the flow if the runbook covers it.",
+        output: "Service restored, or a precise schema / job defect escalated with triage notes."
+      },
+      {
+        id: "l3",
+        trigger: "Runbook restore is not enough because the defect is in Spark, Delta logic or job configuration.",
+        action: "Ops L3 patches the job, adds validation, performs a safe backfill and updates the runbook.",
+        output: "A production fix PR, backfill evidence and a prevention note."
+      },
+      {
+        id: "improve",
+        trigger: "The same schema-drift pattern has appeared more than once or creates avoidable toil.",
+        action: "The case is converted into an Improve & Evolve backlog item for auto-DQ checks or self-healing reruns.",
+        output: "A prioritised improvement candidate backed by incident evidence."
+      },
+      {
+        id: "dev",
+        trigger: "Pandora prioritises the improvement as reusable capability.",
+        action: "Development builds ingestion templates, data-quality framework changes or medallion design patterns.",
+        output: "A durable platform capability reused by future data products."
+      }
+    ]
+  },
+  {
+    id: "kafka",
+    skill: "Kafka / Confluent",
+    caseTitle: "Connector lag spikes after an incompatible schema change",
+    signal: "A customer-order connector falls behind after a schema change and downstream consumers miss their SLA.",
+    stages: [
+      {
+        id: "signal",
+        trigger: "Lag, schema registry or connector-failure monitoring fires.",
+        action: "Monitoring captures topic, partition, consumer group, schema version and affected connector.",
+        output: "A Kafka case with the failing integration and impact visible."
+      },
+      {
+        id: "l1",
+        trigger: "The alert needs operational ownership.",
+        action: "Ops L1 confirms lag growth, checks known errors and routes the case with topic and connector evidence.",
+        output: "A routed incident with the right Kafka context attached."
+      },
+      {
+        id: "l2",
+        trigger: "The connector may be restorable through standard operations.",
+        action: "Ops L2 restarts the connector, validates offsets, rebalances consumers and replays messages where safe.",
+        output: "Flow restored, or a connector / schema / consumer defect isolated."
+      },
+      {
+        id: "l3",
+        trigger: "The issue is caused by connector code, schema compatibility or consumer handling.",
+        action: "Ops L3 patches connector configuration or code, fixes compatibility handling and validates replay.",
+        output: "A production fix PR and recovered event flow."
+      },
+      {
+        id: "improve",
+        trigger: "Schema drift or connector recovery keeps recurring.",
+        action: "The pattern is moved to Improve & Evolve for self-healing connector checks or schema-drift detection.",
+        output: "A backlog item for automation with clear incident history."
+      },
+      {
+        id: "dev",
+        trigger: "The repeated issue needs a broader engineering pattern.",
+        action: "Development creates event-contract standards, producer / consumer patterns or reusable connector templates.",
+        output: "A reusable integration capability that reduces future incidents."
+      }
+    ]
+  },
+  {
+    id: "devops",
+    skill: "DevOps / CI-CD",
+    caseTitle: "Release pipeline fails after runner or secret change",
+    signal: "A GitHub Actions release blocks deployment after a runner image update or secret rotation.",
+    stages: [
+      {
+        id: "signal",
+        trigger: "A failed workflow, deployment gate or release-health check appears.",
+        action: "Monitoring captures repository, workflow, job, runner, environment and failed step.",
+        output: "A release-blocking case with the failed pipeline path identified."
+      },
+      {
+        id: "l1",
+        trigger: "The build failure needs classification and routing.",
+        action: "Ops L1 checks known-error patterns, confirms business urgency and notifies the release owner.",
+        output: "A routed release incident with known context and affected release window."
+      },
+      {
+        id: "l2",
+        trigger: "The pipeline may be restorable through operational recovery.",
+        action: "Ops L2 repairs runner, cache, secret or environment configuration and retries the pipeline.",
+        output: "Release unblocked, or a workflow / policy defect escalated."
+      },
+      {
+        id: "l3",
+        trigger: "The failed release is caused by workflow logic, shared action or policy-gate code.",
+        action: "Ops L3 patches the workflow, action or gate logic and proves the release path.",
+        output: "A fix PR, passing pipeline and updated release runbook."
+      },
+      {
+        id: "improve",
+        trigger: "The same pipeline failure pattern appears across teams.",
+        action: "The pattern is moved to Improve & Evolve for flaky-pipeline auto-remediation or policy-as-code uplift.",
+        output: "A prioritised improvement with affected repos and failure frequency."
+      },
+      {
+        id: "dev",
+        trigger: "The improvement becomes part of the platform roadmap.",
+        action: "Development builds golden GitHub pipelines, shared actions, migration factory assets or standard policy gates.",
+        output: "A reusable delivery platform capability for future releases."
+      }
+    ]
+  },
+  {
+    id: "cloud",
+    skill: "Cloud / Kubernetes / Terraform",
+    caseTitle: "PAKS service instability after config or certificate rotation",
+    signal: "A service enters CrashLoopBackOff or fails readiness checks after a configuration or certificate change.",
+    stages: [
+      {
+        id: "signal",
+        trigger: "Pod, node, quota, certificate or readiness monitoring fires.",
+        action: "Monitoring captures namespace, deployment, recent change, affected route and current error state.",
+        output: "A platform case with the failing service and blast radius visible."
+      },
+      {
+        id: "l1",
+        trigger: "The service issue needs first-line routing and impact classification.",
+        action: "Ops L1 confirms alert validity, checks dashboards and routes to the cloud / platform queue.",
+        output: "A classified incident with pod state, timestamps and impacted application."
+      },
+      {
+        id: "l2",
+        trigger: "The service may be restorable through standard platform operations.",
+        action: "Ops L2 rolls back, scales, restores config, checks secrets and validates access or quota.",
+        output: "Service restored, or a Helm / Terraform / platform defect identified."
+      },
+      {
+        id: "l3",
+        trigger: "The root cause is in IaC, Helm chart, certificate handling, quota or platform configuration.",
+        action: "Ops L3 patches Terraform, Helm or platform config and validates the deployment path.",
+        output: "A production fix PR, restored service and updated platform runbook."
+      },
+      {
+        id: "improve",
+        trigger: "The incident shows repeatable drift, scaling or certificate toil.",
+        action: "The pattern becomes an Improve & Evolve item for self-heal, autoscale or drift-correction recipes.",
+        output: "A backlog candidate with operational evidence and expected toil reduction."
+      },
+      {
+        id: "dev",
+        trigger: "The improvement is approved as a platform capability.",
+        action: "Development builds PAKS self-service patterns, golden IaC modules or platform engineering workflows.",
+        output: "A standard capability consumed by future services and teams."
+      }
+    ]
+  },
+  {
+    id: "sre",
+    skill: "SRE / Observability",
+    caseTitle: "Alert storm with unclear root cause",
+    signal: "Latency alerts fire across services, but the first dashboards do not explain the cause.",
+    stages: [
+      {
+        id: "signal",
+        trigger: "PagerDuty, New Relic or SLO monitoring fires multiple related alerts.",
+        action: "Monitoring captures alert set, service map, SLO impact and the first time window.",
+        output: "An observability case with severity and affected services visible."
+      },
+      {
+        id: "l1",
+        trigger: "The alert storm needs severity confirmation and routing.",
+        action: "Ops L1 confirms severity, checks the service dashboard and routes to the right resolver group.",
+        output: "A correctly prioritised incident with the alert evidence attached."
+      },
+      {
+        id: "l2",
+        trigger: "The case needs correlation and runbook-guided restoration.",
+        action: "Ops L2 correlates logs, metrics and traces, drafts RCA notes and follows restore runbooks.",
+        output: "Service stabilised, or an instrumentation / SLO / reliability defect isolated."
+      },
+      {
+        id: "l3",
+        trigger: "The issue is caused by missing telemetry, incorrect alert logic or reliability defect.",
+        action: "Ops L3 fixes instrumentation, alert rules, SLO configuration or reliability code.",
+        output: "A fix PR, improved signal and updated RCA / runbook."
+      },
+      {
+        id: "improve",
+        trigger: "The noise or RCA gap is systemic.",
+        action: "The pattern enters Improve & Evolve for alert-noise reduction, auto-RCA or SLO guard candidates.",
+        output: "A measurable improvement candidate with before / after signal quality."
+      },
+      {
+        id: "dev",
+        trigger: "The fix needs to become standard for new services.",
+        action: "Development builds observability-by-design standards, dashboards and resilience patterns.",
+        output: "A reusable reliability standard embedded into future delivery."
+      }
+    ]
+  },
+  {
+    id: "qe",
+    skill: "QE / SDET",
+    caseTitle: "Regression gate fails before release",
+    signal: "A release candidate fails smoke or regression checks because a contract, data setup or environment changed.",
+    stages: [
+      {
+        id: "signal",
+        trigger: "A quality gate, smoke suite or release-health check fails.",
+        action: "Monitoring captures release, test suite, failing scenario, environment and latest commit range.",
+        output: "A release-quality case with the failing path visible."
+      },
+      {
+        id: "l1",
+        trigger: "The failed gate needs validation and release-risk routing.",
+        action: "Ops L1 confirms the failure is current, attaches test evidence and alerts the release owner.",
+        output: "A routed release-risk incident with the failing test context."
+      },
+      {
+        id: "l2",
+        trigger: "The failure needs triage across test data, environment and API contract.",
+        action: "Ops L2 isolates whether the cause is data, environment, dependency, contract or product regression.",
+        output: "Release restored if operational, or a precise quality-engineering defect escalated."
+      },
+      {
+        id: "l3",
+        trigger: "The defect is in test harness, contract validation, quality gate logic or automation.",
+        action: "Ops L3 patches the harness, gate or automation and validates the release signal.",
+        output: "A test / gate fix PR and a reliable pass-fail signal."
+      },
+      {
+        id: "improve",
+        trigger: "The same release-quality failure keeps consuming triage time.",
+        action: "The pattern moves to Improve & Evolve for failure auto-triage, risk-based selection or self-maintaining tests.",
+        output: "A backlog candidate tied to release delay and triage effort."
+      },
+      {
+        id: "dev",
+        trigger: "The quality improvement becomes a delivery-system capability.",
+        action: "Development builds contract-test frameworks, CI quality gates and automation standards.",
+        output: "A reusable quality capability that raises release confidence."
+      }
+    ]
+  }
+];
+
+const opsCaseHandoffs = [
+  { label: "Signal → Ops L1", detail: "A real alert, ticket or monitoring breach needs ownership and evidence capture." },
+  { label: "Ops L1 → Ops L2", detail: "The issue is confirmed and needs diagnosis or runbook-based restoration." },
+  { label: "Ops L2 → Ops L3", detail: "Restore steps are not enough, or the root cause is code, config, IaC, schema, telemetry or test logic." },
+  { label: "Ops L3 → Improve & Evolve", detail: "The fix is repeated, high-toil or worth turning into automation or a reusable pattern." },
+  { label: "Improve & Evolve → Development", detail: "Pandora prioritises it as planned build work, platform capability, migration asset or product change." }
+];
+
+// ── 11 · One team, three locations ───────────────────────────────────────
 export function TeamShapeSection() {
   return (
-    <Section id="team-shape" num="10" title="One team, three locations — not a hand-off">
+    <Section id="team-shape" num="11" title="One team, three locations — not a hand-off">
       <p className="sec-sub">{teamIntro}</p>
       <div className="loc-connector" aria-hidden="true">
         <span>One team · one backlog · one leader · one knowledge base</span>
@@ -72,10 +373,10 @@ export function TeamShapeSection() {
   );
 }
 
-// ── 11 · One leader, Pandora in control ──────────────────────────────────
+// ── 12 · One leader, Pandora in control ──────────────────────────────────
 export function TeamLeaderSection() {
   return (
-    <Section id="team-leader" num="11" title="One leader across all tracks — and Pandora on the wheel">
+    <Section id="team-leader" num="12" title="One leader across all tracks — and Pandora on the wheel">
       <p className="sec-sub wide">{teamLeaderNote}</p>
       <OrgDiagram />
       <h3 className="section-inline-title">Who decides, who does — control by design</h3>
@@ -171,10 +472,10 @@ function OrgDiagram() {
   );
 }
 
-// ── 12 · One team, sequenced — dev/ops convergence ───────────────────────
+// ── 13 · One team, sequenced — dev/ops convergence ───────────────────────
 export function ConvergenceSection() {
   return (
-    <Section id="team-converge" num="12" title="Two waves in transition, one team at the destination">
+    <Section id="team-converge" num="13" title="Two waves in transition, one team at the destination">
       <p className="sec-sub">{convergeIntro}</p>
       <ConvergenceDiagram />
       <div className="conv-mechs">
@@ -236,15 +537,127 @@ function ConvergenceDiagram() {
   );
 }
 
-// ── 13 · Skills, training and knowledge transfer ─────────────────────────
+function SkillCaseShowcase() {
+  const lastStage = opsCaseStages.length - 1;
+  const [activeCaseId, setActiveCaseId] = useState(opsCaseExamples[0].id);
+  const [activeStage, setActiveStage] = useState(0);
+  const activeExample = opsCaseExamples.find((example) => example.id === activeCaseId) ?? opsCaseExamples[0];
+  const stageMeta = opsCaseStages[activeStage];
+  const stageCopy = activeExample.stages[activeStage];
+  const progress = `${(activeStage / lastStage) * 100}%`;
+
+  return (
+    <Reveal className="skill-case-showcase">
+      <div className="skill-case-head">
+        <div>
+          <span className="skill-case-kicker">Operating case simulator</span>
+          <h3>When does a case move from Ops L1 to Ops L2 to Ops L3 to Development?</h3>
+          <p>
+            Choose a real platform case, then move it through the operating tiers. The active card shows who works the case,
+            why it moves, and what output proves the handoff is ready.
+          </p>
+        </div>
+        <div className="skill-case-controls" aria-label="Move the selected operating case">
+          <button type="button" onClick={() => setActiveStage(0)} disabled={activeStage === 0}>
+            <RotateCcw size={15} aria-hidden="true" /> Reset
+          </button>
+          <button type="button" onClick={() => setActiveStage((stage) => Math.max(0, stage - 1))} disabled={activeStage === 0}>
+            <ChevronLeft size={15} aria-hidden="true" /> Back
+          </button>
+          <button type="button" className="primary" onClick={() => setActiveStage((stage) => Math.min(lastStage, stage + 1))} disabled={activeStage === lastStage}>
+            Move case <ChevronRight size={15} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      <div className="skill-case-picker" aria-label="Choose example case">
+        {opsCaseExamples.map((example) => {
+          const active = example.id === activeCaseId;
+          return (
+            <button
+              type="button"
+              key={example.id}
+              className="skill-case-tab"
+              aria-pressed={active}
+              onClick={() => {
+                setActiveCaseId(example.id);
+                setActiveStage(0);
+              }}
+            >
+              <strong>{example.skill}</strong>
+              <span>{example.caseTitle}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        className="skill-case-rail"
+        style={{ "--progress": progress } as CSSProperties}
+        aria-label={`${activeExample.skill}: ${activeExample.caseTitle}`}
+      >
+        <span className="skill-case-line" aria-hidden="true"><i /></span>
+        {opsCaseStages.map((stage, index) => {
+          const state = index === activeStage ? "active" : index < activeStage ? "passed" : "todo";
+          return (
+            <button
+              type="button"
+              key={stage.id}
+              className={`skill-case-step ${stage.id} ${state}`}
+              style={{ "--stage-hue": `var(${stage.hue})` } as CSSProperties}
+              aria-current={index === activeStage}
+              onClick={() => setActiveStage(index)}
+            >
+              <span className="skill-case-dot">{index + 1}</span>
+              <strong>{stage.label}</strong>
+              <small>{stage.short}</small>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="skill-case-detail" aria-live="polite">
+        <div className="skill-case-active" style={{ "--stage-hue": `var(${stageMeta.hue})` } as CSSProperties}>
+          <span className="skill-case-badge">{stageMeta.label}</span>
+          <h4>{activeExample.skill}</h4>
+          <p className="skill-case-title">{activeExample.caseTitle}</p>
+          <p className="skill-case-signal">{activeExample.signal}</p>
+          <div className="skill-case-facts">
+            <p><strong>Trigger</strong>{stageCopy.trigger}</p>
+            <p><strong>Action</strong>{stageCopy.action}</p>
+            <p><strong>Output</strong>{stageCopy.output}</p>
+          </div>
+        </div>
+
+        <div className="skill-case-rules">
+          <h4>Why the case moves</h4>
+          <ol>
+            {opsCaseHandoffs.map((rule, index) => {
+              const reached = activeStage > index;
+              const current = activeStage === index + 1;
+              return (
+                <li className={`${reached ? "reached" : ""} ${current ? "current" : ""}`} key={rule.label}>
+                  <strong>{rule.label}</strong>
+                  <span>{rule.detail}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </div>
+    </Reveal>
+  );
+}
+
+// ── 14 · Skills, training and knowledge transfer ─────────────────────────
 export function TeamSkillsSection() {
   return (
-    <Section id="team-skills" num="13" title="Skills coverage, training and knowledge transfer">
+    <Section id="team-skills" num="14" title="Skills coverage, training and knowledge transfer">
       <p className="sec-sub">{skillsNote}</p>
       <div className="skills-ladder">
         <div className="sl-shared-band">
           <span />
-          <strong>Ops L3, the Lane 2 improvement backlog and Development are one senior-engineering pool — fix → improve → build, same people</strong>
+          <strong>Ops L3, Improve & Evolve and Development share one senior-engineering pool — fix → improve → build, same people</strong>
         </div>
         <div className="sl-head">
           <span>Engineering skill</span>
@@ -267,22 +680,27 @@ export function TeamSkillsSection() {
         ))}
       </div>
       <p className="diagram-note sl-backlog-note">{skillBacklogNote}</p>
+      <SkillCaseShowcase />
       <Reveal className="l3-bridge">
         <div className="l3-bridge-copy">
           <strong>{skillBridge.title}</strong>
           <p>{skillBridge.detail}</p>
         </div>
         <div className="l3-flow" aria-label={skillBridge.flow.join(" to ")}>
-          {skillBridge.flow.map((step, index) => (
-            <div className={`l3-node ${index === 3 || index === 4 ? "shared" : ""}`} key={step}>
-              <span>{step}</span>
-              {index < skillBridge.flow.length - 1 && (
-                <i className={index === 3 ? "swap" : ""} aria-hidden="true">
-                  {index === 3 ? <ArrowLeftRight size={15} /> : "→"}
-                </i>
-              )}
-            </div>
-          ))}
+          {skillBridge.flow.map((step, index) => {
+            const isSharedPool = step === "Ops L3" || step === "Development";
+            const isImprove = step === "Improve & Evolve";
+            return (
+              <div className={`l3-node${isSharedPool ? " shared" : ""}${isImprove ? " improve" : ""}`} key={step}>
+                <span>{step}</span>
+                {index < skillBridge.flow.length - 1 && (
+                  <i className={step === "Ops L3" ? "swap" : ""} aria-hidden="true">
+                    {step === "Ops L3" ? <ArrowLeftRight size={15} /> : "→"}
+                  </i>
+                )}
+              </div>
+            );
+          })}
         </div>
       </Reveal>
       <h3 className="section-inline-title">Knowledge transfer — a designed loop, so it sticks with Pandora</h3>
@@ -303,10 +721,10 @@ export function TeamSkillsSection() {
   );
 }
 
-// ── 13 · Capacity that compounds ─────────────────────────────────────────
+// ── 15 · Capacity that compounds ─────────────────────────────────────────
 export function TeamCapacitySection() {
   return (
-    <Section id="team-capacity" num="14" title="Capacity that compounds — more from a leaner, stabler team">
+    <Section id="team-capacity" num="15" title="Capacity that compounds — more from a leaner, stabler team">
       <p className="sec-sub">
         The headline: effective capacity rises each horizon without a matching rise in headcount, and an increasing share
         of it is owned by Pandora. Here is what drives it.
