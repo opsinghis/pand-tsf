@@ -52,17 +52,20 @@ export const navChapters = [
     { id: "team-skills", label: "Skills & knowledge transfer", num: "14" },
     { id: "team-capacity", label: "Capacity that compounds", num: "15" }
   ]},
+  { id: "commercialsC", label: "Commercials", sections: [
+    { id: "commercials", label: "Commercial model", num: "16" }
+  ]},
   { id: "dial", label: "The Dial", sections: [
-    { id: "dial-explorer", label: "The 30-item dial", num: "16" },
-    { id: "walkthroughs", label: "The dial in action", num: "17" },
-    { id: "goals", label: "Your goals, covered", num: "18" }
+    { id: "dial-explorer", label: "The 30-item dial", num: "17" },
+    { id: "walkthroughs", label: "The dial in action", num: "18" },
+    { id: "goals", label: "Your goals, covered", num: "19" }
   ]},
   { id: "journey", label: "The Journey", sections: [
-    { id: "horizons", label: "Horizons, re-anchored", num: "19" },
-    { id: "caution", label: "The cost of caution", num: "20" },
-    { id: "proof", label: "Why this is low-risk", num: "21" },
-    { id: "pandora", label: "Your part", num: "22" },
-    { id: "start", label: "How we start", num: "23" }
+    { id: "horizons", label: "Horizons, re-anchored", num: "20" },
+    { id: "caution", label: "The cost of caution", num: "21" },
+    { id: "proof", label: "Why this is low-risk", num: "22" },
+    { id: "pandora", label: "Your part", num: "23" },
+    { id: "start", label: "How we start", num: "24" }
   ]}
 ];
 

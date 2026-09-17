@@ -6,6 +6,7 @@ import { AskSectionAlt, CautionSection, FooterAlt, HorizonsSection, PandoraSecti
 import { ChangesSection, FoundationsSection, LandscapeSection, ScopeOverviewSection, TwoLaneSection } from "./components/AltModel";
 import { AsIsLanesSection, DayOneSection, GovernanceSection, TransitionCoverageSection } from "./components/AltRun";
 import { ConvergenceSection, TeamCapacitySection, TeamLeaderSection, TeamShapeSection, TeamSkillsSection } from "./components/AltTeam";
+import { CommercialsSection } from "./components/AltCommercials";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <ConvergenceSection />
         <TeamSkillsSection />
         <TeamCapacitySection />
+        <CommercialsSection />
         <DialSection />
         <WalkthroughSection />
         <GoalsSection />
