@@ -679,230 +679,630 @@ function escapeHtml(value: string | number) {
   });
 }
 
-const exportPalette = {
-  paper: "#f7f8fa",
-  card: "#ffffff",
-  ink: "#16181d",
-  muted: "#626a73",
-  line: "#d9dee6",
-  tech: "#315f92",
-  proof: "#2f7d51",
-  ops: "#a86d1e"
+const inputSheetName = "1. Maturity Input";
+const dashboardSheetName = "2. Radar Dashboard";
+const inputStartRow = 5;
+const dimensionStartColumn = 7;
+const calculatedLevelColumn = 19;
+const weakestScoreColumn = 20;
+const dashboardDimensionStartRow = 12;
+const dashboardDistributionStartRow = 23;
+
+type ZipFileEntry = {
+  path: string;
+  content: string;
 };
 
-function buildRadarSvgMarkup(title: string, values: number[], centerLabel: string, centerSub: string) {
-  const points = values.map((value, index) => radarPoint(index, readinessDimensions.length, value));
-  const polygon = points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
-  const closingPoint = points[0] ? `${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}` : "";
-  const rings = [1, 2, 3, 4, 5]
-    .map(
-      (ring) =>
-        `<circle cx="50" cy="50" r="${((ring / 5) * 42).toFixed(2)}" fill="none" stroke="${exportPalette.line}" stroke-width="0.55" />`
-    )
-    .join("");
-  const axes = readinessDimensions
-    .map((dimension, index) => {
-      const outer = radarPoint(index, readinessDimensions.length, 5);
-      const label = radarPoint(index, readinessDimensions.length, 5.85);
-      const anchor = label.x < 42 ? "end" : label.x > 58 ? "start" : "middle";
-      const baseline = label.y < 44 ? "text-after-edge" : label.y > 56 ? "text-before-edge" : "middle";
-      return `
-        <line x1="50" y1="50" x2="${outer.x.toFixed(2)}" y2="${outer.y.toFixed(2)}" stroke="${exportPalette.muted}" stroke-width="0.45" opacity="0.45" />
-        <text x="${label.x.toFixed(2)}" y="${label.y.toFixed(2)}" text-anchor="${anchor}" dominant-baseline="${baseline}" fill="${exportPalette.muted}" font-family="Arial, sans-serif" font-size="3.4" font-weight="700">${escapeHtml(dimension.label)}</text>
-      `;
-    })
-    .join("");
-
-  return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" viewBox="-9 -9 118 118">
-      <rect x="-9" y="-9" width="118" height="118" rx="4" fill="${exportPalette.paper}" />
-      <text x="50" y="-2.5" text-anchor="middle" fill="${exportPalette.ink}" font-family="Arial, sans-serif" font-size="4.3" font-weight="700">${escapeHtml(title)}</text>
-      ${rings}
-      ${axes}
-      <polygon points="${polygon}" fill="${exportPalette.tech}" opacity="0.22" />
-      <polyline points="${polygon} ${closingPoint}" fill="none" stroke="${exportPalette.tech}" stroke-linejoin="round" stroke-width="1.65" />
-      ${points
-        .map(
-          (point) =>
-            `<circle cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="1.75" fill="${exportPalette.card}" stroke="${exportPalette.tech}" stroke-width="0.9" />`
-        )
-        .join("")}
-      <text x="50" y="48" text-anchor="middle" fill="${exportPalette.ink}" font-family="Arial, sans-serif" font-size="8" font-weight="800">${escapeHtml(centerLabel)}</text>
-      <text x="50" y="54" text-anchor="middle" fill="${exportPalette.muted}" font-family="Arial, sans-serif" font-size="3.5" font-weight="700">${escapeHtml(centerSub)}</text>
-    </svg>
-  `;
+function columnName(index: number) {
+  let column = "";
+  let current = index;
+  while (current > 0) {
+    const remainder = (current - 1) % 26;
+    column = String.fromCharCode(65 + remainder) + column;
+    current = Math.floor((current - 1) / 26);
+  }
+  return column;
 }
 
-function svgDataUri(svg: string) {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+function cellReference(row: number, column: number) {
+  return `${columnName(column)}${row}`;
 }
 
-function buildMaturityWorkbookHtml(dimensionMarks: PlatformDimensionMarks) {
+function absoluteCellReference(row: number, column: number) {
+  return `$${columnName(column)}$${row}`;
+}
+
+function sheetCellReference(sheetName: string, row: number, column: number) {
+  return `'${sheetName}'!${absoluteCellReference(row, column)}`;
+}
+
+function rowScoreExpressions(row: number) {
+  return readinessDimensions.map((_, index) => `VALUE(RIGHT(${cellReference(row, dimensionStartColumn + index)},1))`);
+}
+
+function averageFormulaForRow(row: number) {
+  return `AVERAGE(${rowScoreExpressions(row).join(",")})`;
+}
+
+function minimumFormulaForRow(row: number) {
+  return `MIN(${rowScoreExpressions(row).join(",")})`;
+}
+
+function weakestAreaFormulaForRow(row: number) {
+  const weakestScoreCell = cellReference(row, weakestScoreColumn);
+  const fallback = `"${readinessDimensions[readinessDimensions.length - 1].label}"`;
+  const dimensionChecks = readinessDimensions
+    .slice(0, -1)
+    .reduceRight((formula, dimension, index) => {
+      const scoreExpression = `VALUE(RIGHT(${cellReference(row, dimensionStartColumn + index)},1))`;
+      return `IF(${weakestScoreCell}=${scoreExpression},"${dimension.label}",${formula})`;
+    }, fallback);
+  return `${dimensionChecks}&" M"&${weakestScoreCell}`;
+}
+
+function dimensionAverageFormula(column: number) {
+  const refs = servicePlatforms.map((_, index) => {
+    const row = inputStartRow + index;
+    return `VALUE(RIGHT(${sheetCellReference(inputSheetName, row, column)},1))`;
+  });
+  return `AVERAGE(${refs.join(",")})`;
+}
+
+function cellXml(
+  row: number,
+  column: number,
+  value: string | number,
+  options: { formula?: string; style?: number; type?: "string" | "number" } = {}
+) {
+  const reference = cellReference(row, column);
+  const style = options.style ? ` s="${options.style}"` : "";
+  const formula = options.formula ? `<f>${escapeHtml(options.formula)}</f>` : "";
+  if (options.formula) {
+    const type = typeof value === "string" ? ` t="str"` : "";
+    return `<c r="${reference}"${type}${style}>${formula}<v>${escapeHtml(value)}</v></c>`;
+  }
+  if (options.type === "number" || typeof value === "number") {
+    return `<c r="${reference}"${style}><v>${value}</v></c>`;
+  }
+  return `<c r="${reference}" t="inlineStr"${style}><is><t>${escapeHtml(value)}</t></is></c>`;
+}
+
+function rowXml(row: number, cells: string[]) {
+  return `<row r="${row}">${cells.join("")}</row>`;
+}
+
+function xlsxStylesXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <fonts count="5">
+    <font><sz val="11"/><color rgb="FF16181D"/><name val="Arial"/></font>
+    <font><b/><sz val="16"/><color rgb="FF16181D"/><name val="Arial"/></font>
+    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Arial"/></font>
+    <font><sz val="10"/><color rgb="FF626A73"/><name val="Arial"/></font>
+    <font><b/><sz val="11"/><color rgb="FF315F92"/><name val="Arial"/></font>
+  </fonts>
+  <fills count="6">
+    <fill><patternFill patternType="none"/></fill>
+    <fill><patternFill patternType="gray125"/></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF315F92"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFEAF1F8"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFF6F8FB"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFE9F3EC"/><bgColor indexed="64"/></patternFill></fill>
+  </fills>
+  <borders count="2">
+    <border><left/><right/><top/><bottom/><diagonal/></border>
+    <border>
+      <left style="thin"><color rgb="FFD9DEE6"/></left>
+      <right style="thin"><color rgb="FFD9DEE6"/></right>
+      <top style="thin"><color rgb="FFD9DEE6"/></top>
+      <bottom style="thin"><color rgb="FFD9DEE6"/></bottom>
+      <diagonal/>
+    </border>
+  </borders>
+  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+  <cellXfs count="8">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFill="1" applyBorder="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="4" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="4" fillId="5" borderId="1" xfId="0" applyFill="1" applyBorder="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="3" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1"><alignment vertical="top" wrapText="1"/></xf>
+  </cellXfs>
+  <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+  <dxfs count="0"/>
+  <tableStyles count="0" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleMedium9"/>
+</styleSheet>`;
+}
+
+function inputSheetXml(dimensionMarks: PlatformDimensionMarks) {
+  const headers = [
+    "Domain",
+    "Technology",
+    "Apps / workloads",
+    "Calculated mark",
+    "Radar average",
+    "Weakest area",
+    ...readinessDimensions.map((dimension) => dimension.label),
+    "Decision",
+    "Can live with temporarily",
+    "Must close to mature",
+    "Long-term Pandav path",
+    "Calc level",
+    "Weakest score"
+  ];
+  const dataRows = servicePlatforms.map((platform, index) => {
+    const row = inputStartRow + index;
+    const scores = dimensionMarks[platform.id] ?? dimensionScoresFromHorizon(platform, 1);
+    const summary = platformMaturityFromScores(scores);
+    const scoreCells = readinessDimensions.map((dimension, dimensionIndex) =>
+      cellXml(row, dimensionStartColumn + dimensionIndex, maturityLabel(scores[dimension.id]), { style: 5 })
+    );
+    const plannedWeakest = summary.weakestScore;
+    const cells = [
+      cellXml(row, 1, platform.domain, { style: 4 }),
+      cellXml(row, 2, platform.technology, { style: 4 }),
+      cellXml(row, 3, platform.workloads, { style: 4 }),
+      cellXml(row, 4, maturityLabel(summary.level), { formula: `"M"&${cellReference(row, calculatedLevelColumn)}`, style: 6 }),
+      cellXml(row, 5, Number(summary.average.toFixed(1)), { formula: averageFormulaForRow(row), style: 6 }),
+      cellXml(row, 6, `${summary.weakestDimension.label} ${maturityLabel(plannedWeakest)}`, {
+        formula: weakestAreaFormulaForRow(row),
+        style: 6
+      }),
+      ...scoreCells,
+      cellXml(row, 15, platform.decision, { style: 4 }),
+      cellXml(row, 16, platform.liveWith, { style: 4 }),
+      cellXml(row, 17, platform.mustClose, { style: 4 }),
+      cellXml(row, 18, platform.pandav, { style: 4 }),
+      cellXml(row, calculatedLevelColumn, summary.level, {
+        formula: `FLOOR(MIN(${cellReference(row, 5)},${cellReference(row, weakestScoreColumn)}+1),1)`,
+        style: 7
+      }),
+      cellXml(row, weakestScoreColumn, plannedWeakest, { formula: minimumFormulaForRow(row), style: 7 })
+    ];
+    return rowXml(row, cells);
+  });
+
+  const headerRow = rowXml(4, headers.map((header, index) => cellXml(4, index + 1, header, { style: 3 })));
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <sheetViews>
+    <sheetView workbookViewId="0">
+      <pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/>
+      <selection pane="bottomLeft"/>
+    </sheetView>
+  </sheetViews>
+  <sheetFormatPr defaultRowHeight="18"/>
+  <cols>
+    <col min="1" max="1" width="18" customWidth="1"/>
+    <col min="2" max="2" width="30" customWidth="1"/>
+    <col min="3" max="3" width="42" customWidth="1"/>
+    <col min="4" max="6" width="17" customWidth="1"/>
+    <col min="7" max="14" width="16" customWidth="1"/>
+    <col min="15" max="15" width="24" customWidth="1"/>
+    <col min="16" max="18" width="42" customWidth="1"/>
+    <col min="19" max="20" width="0" hidden="1" customWidth="1"/>
+  </cols>
+  <sheetData>
+    ${rowXml(1, [cellXml(1, 1, "Pandora transition maturity input", { style: 1 })])}
+    ${rowXml(2, [cellXml(2, 1, "Change M0-M5 in the support dimension columns. The dashboard tab recalculates the estate radar and coverage summary.", { style: 2 })])}
+    ${headerRow}
+    ${dataRows.join("")}
+  </sheetData>
+  <autoFilter ref="A4:R${inputStartRow + servicePlatforms.length - 1}"/>
+  <mergeCells count="2">
+    <mergeCell ref="A1:R1"/>
+    <mergeCell ref="A2:R2"/>
+  </mergeCells>
+  <dataValidations count="1">
+    <dataValidation type="list" allowBlank="0" showErrorMessage="1" sqref="G${inputStartRow}:N${inputStartRow + servicePlatforms.length - 1}">
+      <formula1>"M0,M1,M2,M3,M4,M5"</formula1>
+    </dataValidation>
+  </dataValidations>
+  <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
+</worksheet>`;
+}
+
+function dashboardSheetXml(dimensionMarks: PlatformDimensionMarks) {
+  const aggregateValues = aggregateRadarValues(dimensionMarks);
+  const averageMaturity = averageScore(aggregateValues);
+  const radarEndRow = dashboardDimensionStartRow + readinessDimensions.length - 1;
   const platformSummaries = servicePlatforms.map((platform) =>
     platformMaturityFromScores(dimensionMarks[platform.id] ?? dimensionScoresFromHorizon(platform, 1))
   );
-  const aggregateValues = aggregateRadarValues(dimensionMarks);
-  const averageMaturity = averageScore(aggregateValues);
-  const runReadyCount = platformSummaries.filter((summary) => summary.level >= 2).length;
-  const controlledCount = platformSummaries.filter((summary) => summary.level >= 3).length;
-  const proactiveCount = platformSummaries.filter((summary) => summary.level >= 4).length;
-  const pandavReadyCount = platformSummaries.filter((summary) => summary.level >= 5).length;
-  const generatedAt = new Date().toLocaleString();
-  const summaryRadar = svgDataUri(
-    buildRadarSvgMarkup("Aggregate technology maturity", aggregateValues, `M${averageMaturity.toFixed(1)}`, "live estate")
-  );
-
+  const endRow = inputStartRow + servicePlatforms.length - 1;
+  const calcRange = `'${inputSheetName}'!$${columnName(calculatedLevelColumn)}$${inputStartRow}:$${columnName(calculatedLevelColumn)}$${endRow}`;
   const summaryRows = [
-    ["Average maturity", `M${averageMaturity.toFixed(1)}`],
-    ["Run-ready coverage", `${runReadyCount}/${servicePlatforms.length}`],
-    ["Controlled or better", `${controlledCount}/${servicePlatforms.length}`],
-    ["Proactive coverage", `${proactiveCount}/${servicePlatforms.length}`],
-    ["Pandav candidates", `${pandavReadyCount}/${servicePlatforms.length}`]
-  ]
-    .map((row) => `<tr><th>${escapeHtml(row[0])}</th><td>${escapeHtml(row[1])}</td></tr>`)
-    .join("");
-
-  const trackerRows = servicePlatforms
-    .map((platform) => {
-      const scores = dimensionMarks[platform.id] ?? dimensionScoresFromHorizon(platform, 1);
-      const summary = platformMaturityFromScores(scores);
-      const dimensionCells = readinessDimensions
-        .map((dimension) => `<td>${escapeHtml(maturityLabel(scores[dimension.id]))}</td>`)
-        .join("");
-      const trackCells = platform.track
-        .map((_, index) => {
-          const plannedSummary = platformMaturityFromScores(dimensionScoresFromHorizon(platform, index));
-          return `<td>${escapeHtml(maturityLabel(plannedSummary.level))}</td>`;
-        })
-        .join("");
-      return `
-        <tr>
-          <td>${escapeHtml(platform.domain)}</td>
-          <td>${escapeHtml(platform.technology)}</td>
-          <td>${escapeHtml(platform.workloads)}</td>
-          <td>${escapeHtml(maturityLabel(summary.level))}</td>
-          <td>${summary.average.toFixed(1)}</td>
-          <td>${escapeHtml(summary.weakestDimension.label)} ${escapeHtml(maturityLabel(summary.weakestScore))}</td>
-          <td>${escapeHtml(platform.decision)}</td>
-          ${trackCells}
-          ${dimensionCells}
-          <td>${escapeHtml(platform.liveWith)}</td>
-          <td>${escapeHtml(platform.mustClose)}</td>
-          <td>${escapeHtml(platform.pandav)}</td>
-        </tr>
-      `;
+    ["Average maturity score", Number(averageMaturity.toFixed(1)), `AVERAGE(B${dashboardDimensionStartRow}:B${radarEndRow})`],
+    ["Run-ready coverage", `${platformSummaries.filter((summary) => summary.level >= 2).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=2")&"/${servicePlatforms.length}"`],
+    ["Controlled or better", `${platformSummaries.filter((summary) => summary.level >= 3).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=3")&"/${servicePlatforms.length}"`],
+    ["Proactive coverage", `${platformSummaries.filter((summary) => summary.level >= 4).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=4")&"/${servicePlatforms.length}"`],
+    ["Pandav candidates", `${platformSummaries.filter((summary) => summary.level >= 5).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=5")&"/${servicePlatforms.length}"`]
+  ];
+  const rows = [
+    rowXml(1, [cellXml(1, 1, "Pandora transition maturity radar", { style: 1 })]),
+    rowXml(2, [cellXml(2, 1, "This tab is formula-linked to the M0-M5 inputs on the first tab.", { style: 2 })]),
+    rowXml(4, [cellXml(4, 1, "Metric", { style: 3 }), cellXml(4, 2, "Value", { style: 3 })]),
+    ...summaryRows.map((row, index) =>
+      rowXml(5 + index, [
+        cellXml(5 + index, 1, row[0], { style: 4 }),
+        cellXml(5 + index, 2, row[1], { formula: String(row[2]), style: 6 })
+      ])
+    ),
+    rowXml(11, [cellXml(11, 1, "Dimension", { style: 3 }), cellXml(11, 2, "Estate average M-score", { style: 3 })]),
+    ...readinessDimensions.map((dimension, index) => {
+      const row = dashboardDimensionStartRow + index;
+      const column = dimensionStartColumn + index;
+      return rowXml(row, [
+        cellXml(row, 1, dimension.label, { style: 4 }),
+        cellXml(row, 2, Number((aggregateValues[index] ?? 0).toFixed(1)), { formula: dimensionAverageFormula(column), style: 6 })
+      ]);
+    }),
+    rowXml(22, [cellXml(22, 1, "Maturity level", { style: 3 }), cellXml(22, 2, "Technology count", { style: 3 })]),
+    ...maturityLevels.map((level, index) => {
+      const row = dashboardDistributionStartRow + index;
+      const count = platformSummaries.filter((summary) => summary.level === level.level).length;
+      return rowXml(row, [
+        cellXml(row, 1, level.label, { style: 4 }),
+        cellXml(row, 2, count, { formula: `COUNTIF(${calcRange},${level.level})`, style: 6 })
+      ]);
     })
+  ];
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheetViews><sheetView workbookViewId="0"/></sheetViews>
+  <sheetFormatPr defaultRowHeight="18"/>
+  <cols>
+    <col min="1" max="1" width="26" customWidth="1"/>
+    <col min="2" max="2" width="20" customWidth="1"/>
+    <col min="4" max="12" width="13" customWidth="1"/>
+  </cols>
+  <sheetData>${rows.join("")}</sheetData>
+  <mergeCells count="2">
+    <mergeCell ref="A1:B1"/>
+    <mergeCell ref="A2:B2"/>
+  </mergeCells>
+  <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
+  <drawing r:id="rId1"/>
+</worksheet>`;
+}
+
+function chartXml(values: number[]) {
+  const categoryCache = readinessDimensions
+    .map((dimension, index) => `<c:pt idx="${index}"><c:v>${escapeHtml(dimension.label)}</c:v></c:pt>`)
     .join("");
-
-  const lineItemSections = servicePlatforms
-    .map((platform) => {
-      const scores = dimensionMarks[platform.id] ?? dimensionScoresFromHorizon(platform, 1);
-      const summary = platformMaturityFromScores(scores);
-      const values = summary.values;
-      const radarUri = svgDataUri(
-        buildRadarSvgMarkup(platform.technology, values, `M${summary.average.toFixed(1)}`, maturityLabel(summary.level))
-      );
-      const dimensionRows = readinessDimensions
-        .map((dimension, index) => {
-          const value = values[index] ?? 0;
-          return `<tr><th>${escapeHtml(dimension.label)}</th><td>${escapeHtml(maturityLabel(value))}</td><td>${escapeHtml(dimension.short)}</td></tr>`;
-        })
-        .join("");
-      return `
-        <h3>${escapeHtml(platform.technology)}</h3>
-        <table class="line-layout">
-          <tr>
-            <td class="radar-image"><img src="${radarUri}" width="300" height="300" alt="${escapeHtml(platform.technology)} radar" /></td>
-            <td>
-              <table>
-                <tr><th>Domain</th><td>${escapeHtml(platform.domain)}</td></tr>
-                <tr><th>Calculated mark</th><td>${escapeHtml(maturityLabel(summary.level))}</td></tr>
-                <tr><th>Radar average</th><td>${summary.average.toFixed(1)}</td></tr>
-                <tr><th>Weakest area</th><td>${escapeHtml(summary.weakestDimension.label)} ${escapeHtml(maturityLabel(summary.weakestScore))}</td></tr>
-                <tr><th>Decision</th><td>${escapeHtml(platform.decision)}</td></tr>
-                <tr><th>Must close</th><td>${escapeHtml(platform.mustClose)}</td></tr>
-                <tr><th>Pandav path</th><td>${escapeHtml(platform.pandav)}</td></tr>
-              </table>
-              <table>
-                <tr><th>Dimension</th><th>Measured maturity</th><th>Meaning</th></tr>
-                ${dimensionRows}
-              </table>
-            </td>
-          </tr>
-        </table>
-      `;
-    })
+  const valueCache = values
+    .map((value, index) => `<c:pt idx="${index}"><c:v>${Number(value.toFixed(1))}</c:v></c:pt>`)
     .join("");
+  const categoryFormula = `'${dashboardSheetName}'!$A$${dashboardDimensionStartRow}:$A$${dashboardDimensionStartRow + readinessDimensions.length - 1}`;
+  const valueFormula = `'${dashboardSheetName}'!$B$${dashboardDimensionStartRow}:$B$${dashboardDimensionStartRow + readinessDimensions.length - 1}`;
 
-  return `
-    <!doctype html>
-    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
-      <head>
-        <meta charset="utf-8" />
-        <style>
-          body { color: ${exportPalette.ink}; font-family: Arial, sans-serif; }
-          h1 { font-size: 22px; margin: 0 0 4px; }
-          h2 { border-top: 2px solid ${exportPalette.tech}; font-size: 17px; margin: 24px 0 10px; padding-top: 10px; }
-          h3 { color: ${exportPalette.tech}; font-size: 14px; margin: 20px 0 8px; }
-          p { color: ${exportPalette.muted}; font-size: 11px; margin: 0 0 12px; }
-          table { border-collapse: collapse; margin-bottom: 12px; width: 100%; }
-          th { background: ${exportPalette.paper}; color: ${exportPalette.ink}; font-weight: 700; }
-          th, td { border: 1px solid ${exportPalette.line}; font-size: 11px; padding: 6px 8px; text-align: left; vertical-align: top; }
-          .summary-layout td { border: 0; vertical-align: top; }
-          .summary-card { width: 35%; }
-          .radar-image { width: 320px; }
-          .line-layout { page-break-inside: avoid; }
-          .line-layout > tbody > tr > td { border: 1px solid ${exportPalette.line}; }
-        </style>
-      </head>
-      <body>
-        <h1>Pandora transition maturity tracker</h1>
-        <p>Generated from the representative live tracker: ${escapeHtml(generatedAt)}</p>
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <c:lang val="en-US"/>
+  <c:roundedCorners val="0"/>
+  <c:chart>
+    <c:title>
+      <c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US" sz="1200" b="1"/><a:t>Estate maturity radar</a:t></a:r></a:p></c:rich></c:tx>
+      <c:layout/>
+    </c:title>
+    <c:plotArea>
+      <c:layout/>
+      <c:radarChart>
+        <c:radarStyle val="marker"/>
+        <c:varyColors val="0"/>
+        <c:ser>
+          <c:idx val="0"/>
+          <c:order val="0"/>
+          <c:tx><c:v>Estate average M-score</c:v></c:tx>
+          <c:spPr>
+            <a:ln w="25400"><a:solidFill><a:srgbClr val="315F92"/></a:solidFill></a:ln>
+          </c:spPr>
+          <c:marker>
+            <c:symbol val="circle"/>
+            <c:size val="5"/>
+            <c:spPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln w="12700"><a:solidFill><a:srgbClr val="315F92"/></a:solidFill></a:ln></c:spPr>
+          </c:marker>
+          <c:cat>
+            <c:strRef>
+              <c:f>${escapeHtml(categoryFormula)}</c:f>
+              <c:strCache><c:ptCount val="${readinessDimensions.length}"/>${categoryCache}</c:strCache>
+            </c:strRef>
+          </c:cat>
+          <c:val>
+            <c:numRef>
+              <c:f>${escapeHtml(valueFormula)}</c:f>
+              <c:numCache><c:formatCode>0.0</c:formatCode><c:ptCount val="${readinessDimensions.length}"/>${valueCache}</c:numCache>
+            </c:numRef>
+          </c:val>
+        </c:ser>
+        <c:axId val="74130001"/>
+        <c:axId val="74130002"/>
+      </c:radarChart>
+      <c:catAx>
+        <c:axId val="74130001"/>
+        <c:scaling><c:orientation val="minMax"/></c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="b"/>
+        <c:majorTickMark val="none"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:crossAx val="74130002"/>
+        <c:crosses val="autoZero"/>
+        <c:auto val="1"/>
+        <c:lblAlgn val="ctr"/>
+        <c:lblOffset val="100"/>
+      </c:catAx>
+      <c:valAx>
+        <c:axId val="74130002"/>
+        <c:scaling><c:orientation val="minMax"/><c:max val="5"/><c:min val="0"/></c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="l"/>
+        <c:majorGridlines/>
+        <c:numFmt formatCode="0.0" sourceLinked="0"/>
+        <c:majorTickMark val="out"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:crossAx val="74130001"/>
+        <c:crosses val="autoZero"/>
+        <c:crossBetween val="between"/>
+      </c:valAx>
+    </c:plotArea>
+    <c:legend><c:legendPos val="b"/><c:layout/></c:legend>
+    <c:plotVisOnly val="1"/>
+    <c:dispBlanksAs val="gap"/>
+  </c:chart>
+  <c:printSettings><c:headerFooter/><c:pageMargins b="0.75" l="0.7" r="0.7" t="0.75" header="0.3" footer="0.3"/><c:pageSetup/></c:printSettings>
+</c:chartSpace>`;
+}
 
-        <h2>Estate maturity radar</h2>
-        <table class="summary-layout">
-          <tr>
-            <td class="radar-image"><img src="${summaryRadar}" width="330" height="330" alt="Aggregate maturity radar" /></td>
-            <td class="summary-card">
-              <table>${summaryRows}</table>
-            </td>
-          </tr>
-        </table>
+function drawingXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <xdr:twoCellAnchor>
+    <xdr:from><xdr:col>3</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>2</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from>
+    <xdr:to><xdr:col>12</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>23</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>
+    <xdr:graphicFrame macro="">
+      <xdr:nvGraphicFramePr>
+        <xdr:cNvPr id="2" name="Estate maturity radar"/>
+        <xdr:cNvGraphicFramePr/>
+      </xdr:nvGraphicFramePr>
+      <xdr:xfrm>
+        <a:off x="0" y="0"/>
+        <a:ext cx="0" cy="0"/>
+      </xdr:xfrm>
+      <a:graphic>
+        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+          <c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/>
+        </a:graphicData>
+      </a:graphic>
+    </xdr:graphicFrame>
+    <xdr:clientData/>
+  </xdr:twoCellAnchor>
+</xdr:wsDr>`;
+}
 
-        <h2>Technology maturity table</h2>
-        <table>
-          <tr>
-            <th>Domain</th>
-            <th>Technology</th>
-            <th>Apps / workloads</th>
-            <th>Calculated mark</th>
-            <th>Radar average</th>
-            <th>Weakest area</th>
-            <th>Decision</th>
-            ${maturityHorizons.map((horizon) => `<th>${escapeHtml(horizon.label)}</th>`).join("")}
-            ${readinessDimensions.map((dimension) => `<th>${escapeHtml(dimension.label)}</th>`).join("")}
-            <th>Can live with temporarily</th>
-            <th>Must close to mature</th>
-            <th>Long-term Pandav path</th>
-          </tr>
-          ${trackerRows}
-        </table>
+function workbookXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <workbookPr/>
+  <sheets>
+    <sheet name="${inputSheetName}" sheetId="1" r:id="rId1"/>
+    <sheet name="${dashboardSheetName}" sheetId="2" r:id="rId2"/>
+  </sheets>
+  <calcPr calcId="0" fullCalcOnLoad="1" forceFullCalc="1"/>
+</workbook>`;
+}
 
-        <h2>Line item radar catalogue</h2>
-        ${lineItemSections}
-      </body>
-    </html>
-  `;
+function workbookRelsXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+}
+
+function rootRelsXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>`;
+}
+
+function contentTypesXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+  <Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
+  <Override PartName="/xl/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+</Types>`;
+}
+
+function appPropertiesXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Pandav alternative site</Application>
+  <DocSecurity>0</DocSecurity>
+  <ScaleCrop>false</ScaleCrop>
+  <HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>2</vt:i4></vt:variant></vt:vector></HeadingPairs>
+  <TitlesOfParts><vt:vector size="2" baseType="lpstr"><vt:lpstr>${inputSheetName}</vt:lpstr><vt:lpstr>${dashboardSheetName}</vt:lpstr></vt:vector></TitlesOfParts>
+  <Company>Pandora</Company>
+</Properties>`;
+}
+
+function corePropertiesXml() {
+  const timestamp = new Date().toISOString();
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:title>Pandora transition maturity tracker</dc:title>
+  <dc:creator>Pandav alternative site</dc:creator>
+  <cp:lastModifiedBy>Pandav alternative site</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">${timestamp}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">${timestamp}</dcterms:modified>
+</cp:coreProperties>`;
+}
+
+function worksheetDrawingRelsXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>
+</Relationships>`;
+}
+
+function drawingRelsXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml"/>
+</Relationships>`;
+}
+
+function crc32(bytes: Uint8Array) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let index = 0; index < 8; index += 1) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function littleEndian(value: number, bytes: number) {
+  const result = new Uint8Array(bytes);
+  for (let index = 0; index < bytes; index += 1) {
+    result[index] = (value >>> (index * 8)) & 0xff;
+  }
+  return result;
+}
+
+function concatBytes(parts: Uint8Array[]) {
+  const length = parts.reduce((sum, part) => sum + part.length, 0);
+  const output = new Uint8Array(length);
+  let offset = 0;
+  for (const part of parts) {
+    output.set(part, offset);
+    offset += part.length;
+  }
+  return output;
+}
+
+function dosDateParts(date = new Date()) {
+  const year = Math.max(1980, date.getFullYear());
+  const dosTime = (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2);
+  const dosDate = ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate();
+  return { dosTime, dosDate };
+}
+
+function xlsxZip(files: ZipFileEntry[]) {
+  const encoder = new TextEncoder();
+  const { dosTime, dosDate } = dosDateParts();
+  const localParts: Uint8Array[] = [];
+  const centralParts: Uint8Array[] = [];
+  let localOffset = 0;
+
+  files.forEach((file) => {
+    const pathBytes = encoder.encode(file.path);
+    const contentBytes = encoder.encode(file.content);
+    const crc = crc32(contentBytes);
+    const localHeader = concatBytes([
+      littleEndian(0x04034b50, 4),
+      littleEndian(20, 2),
+      littleEndian(0, 2),
+      littleEndian(0, 2),
+      littleEndian(dosTime, 2),
+      littleEndian(dosDate, 2),
+      littleEndian(crc, 4),
+      littleEndian(contentBytes.length, 4),
+      littleEndian(contentBytes.length, 4),
+      littleEndian(pathBytes.length, 2),
+      littleEndian(0, 2),
+      pathBytes
+    ]);
+    localParts.push(localHeader, contentBytes);
+
+    centralParts.push(
+      concatBytes([
+        littleEndian(0x02014b50, 4),
+        littleEndian(20, 2),
+        littleEndian(20, 2),
+        littleEndian(0, 2),
+        littleEndian(0, 2),
+        littleEndian(dosTime, 2),
+        littleEndian(dosDate, 2),
+        littleEndian(crc, 4),
+        littleEndian(contentBytes.length, 4),
+        littleEndian(contentBytes.length, 4),
+        littleEndian(pathBytes.length, 2),
+        littleEndian(0, 2),
+        littleEndian(0, 2),
+        littleEndian(0, 2),
+        littleEndian(0, 2),
+        littleEndian(0, 4),
+        littleEndian(localOffset, 4),
+        pathBytes
+      ])
+    );
+
+    localOffset += localHeader.length + contentBytes.length;
+  });
+
+  const centralDirectory = concatBytes(centralParts);
+  const localDirectory = concatBytes(localParts);
+  const endOfCentralDirectory = concatBytes([
+    littleEndian(0x06054b50, 4),
+    littleEndian(0, 2),
+    littleEndian(0, 2),
+    littleEndian(files.length, 2),
+    littleEndian(files.length, 2),
+    littleEndian(centralDirectory.length, 4),
+    littleEndian(localDirectory.length, 4),
+    littleEndian(0, 2)
+  ]);
+
+  return concatBytes([localDirectory, centralDirectory, endOfCentralDirectory]);
+}
+
+export function buildMaturityWorkbookBlob(dimensionMarks: PlatformDimensionMarks) {
+  const aggregateValues = aggregateRadarValues(dimensionMarks);
+  const files: ZipFileEntry[] = [
+    { path: "[Content_Types].xml", content: contentTypesXml() },
+    { path: "_rels/.rels", content: rootRelsXml() },
+    { path: "docProps/app.xml", content: appPropertiesXml() },
+    { path: "docProps/core.xml", content: corePropertiesXml() },
+    { path: "xl/workbook.xml", content: workbookXml() },
+    { path: "xl/_rels/workbook.xml.rels", content: workbookRelsXml() },
+    { path: "xl/styles.xml", content: xlsxStylesXml() },
+    { path: "xl/worksheets/sheet1.xml", content: inputSheetXml(dimensionMarks) },
+    { path: "xl/worksheets/sheet2.xml", content: dashboardSheetXml(dimensionMarks) },
+    { path: "xl/worksheets/_rels/sheet2.xml.rels", content: worksheetDrawingRelsXml() },
+    { path: "xl/drawings/drawing1.xml", content: drawingXml() },
+    { path: "xl/drawings/_rels/drawing1.xml.rels", content: drawingRelsXml() },
+    { path: "xl/charts/chart1.xml", content: chartXml(aggregateValues) }
+  ];
+  return new Blob([xlsxZip(files)], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
 }
 
 function downloadMaturityWorkbook(dimensionMarks: PlatformDimensionMarks) {
   if (typeof document === "undefined") return;
-  const workbookHtml = buildMaturityWorkbookHtml(dimensionMarks);
-  const blob = new Blob([workbookHtml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = buildMaturityWorkbookBlob(dimensionMarks);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `pandora-transition-maturity-${new Date().toISOString().slice(0, 10)}.xls`;
+  link.download = `pandora-transition-maturity-${new Date().toISOString().slice(0, 10)}.xlsx`;
   document.body.appendChild(link);
   link.click();
   link.remove();
