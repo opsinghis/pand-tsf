@@ -36,6 +36,7 @@ interface CommercialControls {
   runIntensity: number;
   commercialDiscount: number;
   rateCard: RateCard;
+  staffRoleRows: StaffRole[];
   capacityAskRows: CapacityAskRow[];
   capacityRateCard: CapacityRateCard;
   capacityDiscountMode: CapacityDiscountMode;
@@ -490,7 +491,23 @@ const burstPools: BurstPool[] = [
 
 const baseEvolveFte = staffRoles
   .filter((role) => role.bucket === "evolve")
-  .reduce((sum, role) => sum + role.india + role.romania + role.denmark, 0);
+  .reduce((sum, role) => sum + displayRoleFte(role), 0);
+
+function rawRoleFte(role: StaffRole) {
+  return role.india + role.romania + role.denmark;
+}
+
+function displayRoleFte(role: StaffRole) {
+  return locationIds.reduce((sum, locationId) => sum + roundOne(role[locationId]), 0);
+}
+
+function displayBucketFte(rows: StaffRole[], bucket: Exclude<CommercialBucketId, "burst">) {
+  return rows.filter((row) => row.bucket === bucket).reduce((sum, row) => sum + displayRoleFte(row), 0);
+}
+
+function cloneStaffRoles() {
+  return staffRoles.map((row) => ({ ...row }));
+}
 
 function cloneCapacityAskRows() {
   return defaultCapacityAskRows.map((row) => ({ ...row }));
@@ -512,6 +529,7 @@ export const defaultCommercialControls: CommercialControls = {
   runIntensity: 100,
   commercialDiscount: 0,
   rateCard: defaultRateCard,
+  staffRoleRows: cloneStaffRoles(),
   capacityAskRows: cloneCapacityAskRows(),
   capacityRateCard: cloneCapacityRateCard(),
   capacityDiscountMode: "auto",
@@ -649,9 +667,14 @@ export function getCommercialSnapshot(controls: CommercialControls = defaultComm
   const coverage = getCoverageProfile(controls.coverageProfileId);
   const term = getTermOption(controls.termMonths);
   const model = getCommercialModel(controls.modelId);
+  const sourceStaffRows = controls.staffRoleRows;
+  const rawRunFte = sourceStaffRows.filter((row) => row.bucket === "run").reduce((sum, row) => sum + rawRoleFte(row), 0);
+  const rawEvolveFte = sourceStaffRows.filter((row) => row.bucket === "evolve").reduce((sum, row) => sum + rawRoleFte(row), 0);
+  const displayRunBaselineFte = displayBucketFte(sourceStaffRows, "run");
+  const displayEvolveBaselineFte = displayBucketFte(sourceStaffRows, "evolve");
   const runScale = coverage.multiplier * (controls.runIntensity / 100);
-  const evolveScale = controls.evolvePodFte / baseEvolveFte;
-  const staffRows = staffRoles.map((role) => scaledRole(role, role.bucket === "run" ? runScale : evolveScale, controls.rateCard));
+  const evolveScale = rawEvolveFte > 0 ? controls.evolvePodFte / rawEvolveFte : 0;
+  const staffRows = sourceStaffRows.map((role) => scaledRole(role, role.bucket === "run" ? runScale : evolveScale, controls.rateCard));
   const runRows = staffRows.filter((row) => row.bucket === "run");
   const evolveRows = staffRows.filter((row) => row.bucket === "evolve");
   const runMonthly = runRows.reduce((sum, row) => sum + row.monthlyCost, 0);
@@ -763,6 +786,12 @@ export function getCommercialSnapshot(controls: CommercialControls = defaultComm
     runFte,
     evolveFte,
     totalFte: runFte + evolveFte,
+    rawRunFte,
+    rawEvolveFte,
+    displayRunBaselineFte,
+    displayEvolveBaselineFte,
+    runScale,
+    evolveScale,
     monthlyBurstDays,
     includedBurstDays,
     billableBurstDays,
@@ -1115,7 +1144,9 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
     ["Additional discretionary discount", `${snapshot.controls.commercialDiscount}%`],
     [],
     ["Metric", "Value"],
+    ["Run base editable FTE baseline", roundOne(snapshot.displayRunBaselineFte)],
     ["Run base FTE", roundOne(snapshot.runFte)],
+    ["Improve & Evolve editable FTE baseline", roundOne(snapshot.displayEvolveBaselineFte)],
     ["Improve & Evolve FTE", roundOne(snapshot.evolveFte)],
     ["Total staffed FTE", roundOne(snapshot.totalFte)],
     ["Burst days per quarter", roundOne(snapshot.controls.quarterlyBurstDays)],
@@ -1169,6 +1200,18 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
       row.fte.denmark,
       roundOne(row.totalFte),
       Math.round(row.monthlyCost),
+      row.focus
+    ]),
+    [],
+    ["Editable FTE assumptions", "Domain", "Role", "India base FTE", "Romania base FTE", "Denmark base FTE", "Base total FTE", "Focus"],
+    ...snapshot.controls.staffRoleRows.map((row) => [
+      row.bucket === "run" ? "Assured Run Base" : "Improve & Evolve",
+      row.domain,
+      row.role,
+      row.india,
+      row.romania,
+      row.denmark,
+      roundOne(rawRoleFte(row)),
       row.focus
     ]),
     [],
@@ -1346,6 +1389,22 @@ export function CommercialsSection() {
       }
     }));
   };
+  const updateStaffRoleFte = (roleId: string, locationId: LocationId, value: number) => {
+    const safeValue = Number.isFinite(value) ? Math.max(0, value) : 0;
+    setControls((current) => {
+      const changedRole = current.staffRoleRows.find((row) => row.id === roleId);
+      const staffRoleRows = current.staffRoleRows.map((row) => (row.id === roleId ? { ...row, [locationId]: safeValue } : row));
+      const nextEvolvePodFte =
+        changedRole?.bucket === "evolve"
+          ? roundOne(displayBucketFte(staffRoleRows, "evolve"))
+          : current.evolvePodFte;
+      return {
+        ...current,
+        staffRoleRows,
+        evolvePodFte: nextEvolvePodFte
+      };
+    });
+  };
   const updateCapacityCount = (rowId: string, locationId: LocationId, value: number) => {
     const safeValue = Number.isFinite(value) ? Math.max(0, value) : 0;
     setControls((current) => ({
@@ -1369,7 +1428,10 @@ export function CommercialsSection() {
   const resetAssumptions = () =>
     updateControls({
       commercialDiscount: 0,
-      rateCard: defaultRateCard
+      rateCard: defaultRateCard,
+      staffRoleRows: cloneStaffRoles(),
+      evolvePodFte: baseEvolveFte,
+      runIntensity: 100
     });
   const resetCapacityAsk = () =>
     updateControls({
@@ -1378,7 +1440,7 @@ export function CommercialsSection() {
       capacityDiscountMode: "auto",
       capacityManualDiscount: 6
     });
-  const visibleStaffRows = snapshot.staffRows.filter((row) => row.bucket === activeBucketId);
+  const visibleSourceStaffRows = controls.staffRoleRows.filter((row) => row.bucket === activeBucketId);
 
   return (
     <Section id="commercials" num="16" title="Commercials - transparent run cost, engineered down over time">
@@ -1618,6 +1680,57 @@ export function CommercialsSection() {
                   <span role="cell">{unit}</span>
                 </div>
               ))}
+            </div>
+
+            <div className="commercial-fte-assumptions">
+              <div className="commercial-fte-formulas" aria-label="FTE calculation basis">
+                <div>
+                  <span>Run Base build-up</span>
+                  <strong>{formatFte(snapshot.displayRunBaselineFte)} editable baseline to {formatFte(snapshot.runFte)} modelled FTE</strong>
+                  <small>Coverage and run-intensity multiplier: {Math.round(snapshot.runScale * 100)}%; quarter-FTE roles display to one decimal.</small>
+                </div>
+                <div>
+                  <span>Improve & Evolve build-up</span>
+                  <strong>{formatFte(snapshot.displayEvolveBaselineFte)} editable mix to {formatFte(snapshot.evolveFte)} modelled FTE</strong>
+                  <small>The Improve & Evolve slider keeps the total pod size visible while this table controls the role and location mix.</small>
+                </div>
+              </div>
+              <div className="commercial-fte-table" role="table" aria-label="Run Base and Improve FTE assumptions">
+                <div className="commercial-fte-row commercial-fte-head" role="row">
+                  <span role="columnheader">Bucket / role</span>
+                  <span role="columnheader">India</span>
+                  <span role="columnheader">Romania</span>
+                  <span role="columnheader">Denmark</span>
+                  <span role="columnheader">FTE</span>
+                  <span role="columnheader">Cost/mo</span>
+                </div>
+                {controls.staffRoleRows.map((row) => {
+                  const computed = snapshot.staffRows.find((staffRow) => staffRow.id === row.id);
+                  return (
+                    <div className={`commercial-fte-row ${row.bucket}`} role="row" key={row.id}>
+                      <span role="cell">
+                        <strong>{row.bucket === "run" ? "Run Base" : "Improve & Evolve"} - {row.role}</strong>
+                        <small>{row.domain} - {row.focus}</small>
+                      </span>
+                      {locationIds.map((locationId) => (
+                        <label role="cell" key={`${row.id}-${locationId}`}>
+                          <span>{locations[locationId].short}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.25"
+                            value={row[locationId]}
+                            onChange={(event) => updateStaffRoleFte(row.id, locationId, Number(event.currentTarget.value))}
+                            aria-label={`${row.role} ${locations[locationId].label} FTE`}
+                          />
+                        </label>
+                      ))}
+                      <b role="cell">{formatFte(computed?.totalFte ?? rawRoleFte(row))}</b>
+                      <b role="cell">{formatMoney(computed?.monthlyCost ?? 0)}</b>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="commercial-discount-grid">
@@ -1903,20 +2016,35 @@ export function CommercialsSection() {
                   <span role="columnheader">India</span>
                   <span role="columnheader">Romania</span>
                   <span role="columnheader">Denmark</span>
+                  <span role="columnheader">FTE</span>
                   <span role="columnheader">Cost</span>
                 </div>
-                {visibleStaffRows.map((row) => (
-                  <div className="commercial-role-row" role="row" key={row.id}>
-                    <span role="cell">
-                      <strong>{row.role}</strong>
-                      <small>{row.domain} - {row.focus}</small>
-                    </span>
-                    <b role="cell">{formatFte(row.fte.india)}</b>
-                    <b role="cell">{formatFte(row.fte.romania)}</b>
-                    <b role="cell">{formatFte(row.fte.denmark)}</b>
-                    <b role="cell">{formatMoney(row.monthlyCost)}</b>
-                  </div>
-                ))}
+                {visibleSourceStaffRows.map((row) => {
+                  const computed = snapshot.staffRows.find((staffRow) => staffRow.id === row.id);
+                  return (
+                    <div className="commercial-role-row" role="row" key={row.id}>
+                      <span role="cell">
+                        <strong>{row.role}</strong>
+                        <small>{row.domain} - {row.focus}</small>
+                      </span>
+                      {locationIds.map((locationId) => (
+                        <label role="cell" key={`${row.id}-visible-${locationId}`}>
+                          <span>{locations[locationId].short}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.25"
+                            value={row[locationId]}
+                            onChange={(event) => updateStaffRoleFte(row.id, locationId, Number(event.currentTarget.value))}
+                            aria-label={`${row.role} ${locations[locationId].label} FTE`}
+                          />
+                        </label>
+                      ))}
+                      <b role="cell">{formatFte(computed?.totalFte ?? rawRoleFte(row))}</b>
+                      <b role="cell">{formatMoney(computed?.monthlyCost ?? 0)}</b>
+                    </div>
+                  );
+                })}
               </>
             ) : (
               <div className="commercial-burst-list">
