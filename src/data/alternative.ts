@@ -66,6 +66,9 @@ export const navChapters = [
     { id: "proof", label: "Why this is low-risk", num: "22" },
     { id: "pandora", label: "Your part", num: "23" },
     { id: "start", label: "How we start", num: "24" }
+  ]},
+  { id: "faqC", label: "FAQ", sections: [
+    { id: "faq", label: "Customer FAQ", num: "25" }
   ]}
 ];
 

@@ -15,6 +15,7 @@ import "./components/LandscapeMap.css";
 import "./components/alternative.css";
 import "./components/AltTeam.css";
 import "./components/AltCommercials.css";
+import "./components/AltFaq.css";
 import "./styles/responsive.css";
 import App from "./App";
 

@@ -59,6 +59,7 @@ const structural: Record<string, boolean> = {
   "fabric never dropped": markup.includes("agentic fabric") && markup.includes("Gate 0"),
   "landscape map present": count(/ls-item owner-/g) === 11,
   "commercial model present": markup.includes('id="commercials"') && markup.includes("Download Excel"),
+  "FAQ present": markup.includes('id="faq"') && renderedText.includes("Customer Q&A map"),
   "no raw emphasis markers": !renderedText.includes("**")
 };
 const failed = Object.entries(structural).filter(([, ok]) => !ok);
