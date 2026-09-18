@@ -381,6 +381,43 @@
   line-height: 1.35;
 }
 
+.commercial-burst-source {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 14px;
+  border: 1px solid color-mix(in srgb, var(--proof) 32%, var(--line));
+  border-radius: 8px;
+  background: var(--proof-dim);
+  padding: 11px;
+  font-family: var(--sans);
+}
+
+.commercial-burst-source span,
+.commercial-burst-source strong,
+.commercial-burst-source small {
+  display: block;
+}
+
+.commercial-burst-source span {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.commercial-burst-source strong {
+  color: var(--ink);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.commercial-burst-source small {
+  color: #3a3d43;
+  font-size: 10.9px;
+  line-height: 1.35;
+}
+
 .commercial-segments {
   display: grid;
   gap: 7px;
@@ -553,6 +590,51 @@
   margin-top: 13px;
 }
 
+.commercial-shared-rate-note {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  margin-top: 13px;
+  border: 1px solid color-mix(in srgb, var(--proof) 34%, var(--line));
+  border-radius: 8px;
+  background: var(--proof-dim);
+  padding: 11px;
+  font-family: var(--sans);
+}
+
+.commercial-shared-rate-note svg {
+  color: var(--proof);
+  margin-top: 1px;
+}
+
+.commercial-shared-rate-note span,
+.commercial-shared-rate-note strong,
+.commercial-shared-rate-note small {
+  display: block;
+}
+
+.commercial-shared-rate-note span {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.commercial-shared-rate-note strong {
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.commercial-shared-rate-note small {
+  margin-top: 5px;
+  color: #3a3d43;
+  font-size: 10.9px;
+  line-height: 1.35;
+}
+
 .commercial-rate-table {
   margin-top: 13px;
   border: 1px solid var(--line);
@@ -589,6 +671,21 @@
 
 .commercial-rate-row:last-child {
   border-bottom: 0;
+}
+
+.commercial-rate-section-row {
+  grid-template-columns: 1fr;
+  min-height: 34px;
+  background: color-mix(in srgb, var(--tech) 6%, var(--paper));
+  color: var(--tech);
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.commercial-rate-section-row > span {
+  color: var(--tech);
 }
 
 .commercial-rate-row > span {
@@ -1045,10 +1142,10 @@
 
 .commercial-capacity-row {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(138px, 0.42fr) repeat(3, minmax(96px, 0.26fr)) 60px 82px;
+  grid-template-columns: minmax(280px, 1fr) minmax(138px, 0.42fr) repeat(3, minmax(96px, 0.26fr)) 60px 92px 92px;
   gap: 8px;
   align-items: center;
-  min-width: 980px;
+  min-width: 1080px;
   border-bottom: 1px solid var(--line);
   padding: 10px 12px;
   font-family: var(--sans);
@@ -1128,10 +1225,6 @@
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
   text-align: right;
-}
-
-.commercial-capacity-rate-card {
-  margin-top: 13px;
 }
 
 .commercial-scope-band {
@@ -1555,12 +1648,50 @@
 
 .commercial-burst-list {
   display: grid;
-  min-width: 740px;
+  min-width: 820px;
+}
+
+.commercial-burst-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.36fr);
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--proof) 7%, var(--paper));
+  padding: 12px;
+  font-family: var(--sans);
+}
+
+.commercial-burst-summary span,
+.commercial-burst-summary strong,
+.commercial-burst-summary small {
+  display: block;
+}
+
+.commercial-burst-summary span {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.commercial-burst-summary strong {
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
+
+.commercial-burst-summary small {
+  margin-top: 5px;
+  color: #3a3d43;
+  font-size: 10.8px;
+  line-height: 1.35;
 }
 
 .commercial-burst-row {
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) 86px 100px 82px;
+  grid-template-columns: minmax(320px, 1fr) 80px 118px 92px;
   gap: 10px;
   align-items: center;
   border-bottom: 1px solid var(--line);

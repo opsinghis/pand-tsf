@@ -276,6 +276,505 @@ const maturityLevels = [
   { level: 5, label: "M5", title: "Pandav ready", short: "safe automation", hue: "--accent", x: 14, y: 27 }
 ] as const;
 
+const maturityDefinitions = [
+  {
+    label: "M0",
+    title: "Unknown",
+    meaning: "The item is in scope, but support cannot yet accept accountability because evidence is missing or unverified.",
+    evidence: "Missing or untested owner, access, runbook, alert route, dependency map, restore path, rollback path or production behaviour baseline.",
+    example: "A BizTalk flow exists, but retry rules, consumer impact, failure logs and replay ownership are not confirmed."
+  },
+  {
+    label: "M1",
+    title: "Discovered",
+    meaning: "The item is inventoried and the gaps are visible. The team knows what must be closed before normal support.",
+    evidence: "Inventory entry, likely owners, known dependencies, known monitoring source and dated gap plan.",
+    example: "Kafka topics and connectors are listed, but schema owner and replay procedure are still being verified."
+  },
+  {
+    label: "M2",
+    title: "Run-ready",
+    meaning: "Ops L1/L2 can monitor, triage and run known recovery actions with named escalation.",
+    evidence: "Alert route, ServiceNow or PagerDuty mapping, tested access, basic runbook, escalation owner and support handoff.",
+    example: "A Databricks job failure creates a ticket; L2 can rerun it; L3/Data SME is named for unresolved failures."
+  },
+  {
+    label: "M3",
+    title: "Controlled",
+    meaning: "The service is governed, measurable and repeatable, not just technically runnable.",
+    evidence: "SLA mapping, dashboard owner, change route, rollback evidence, runbook quality, RCA route and weekly service review.",
+    example: "GitHub runner failures have alerting, owner, secret rotation path, rollback route and release evidence."
+  },
+  {
+    label: "M4",
+    title: "Proactive",
+    meaning: "The team can spot and reduce risk before repeated incidents hit the business.",
+    evidence: "SLOs, thresholds, trend analysis, problem backlog, RCA patterns, capacity signals and prevention actions.",
+    example: "Kafka consumer lag trend triggers a prevention ticket before an outage and feeds connector tuning."
+  },
+  {
+    label: "M5",
+    title: "Pandav ready",
+    meaning: "The pattern is safe enough for controlled automation or agent-assisted operations with human gates.",
+    evidence: "Approved action policy, audit trail, rollback, automation guardrails, outcome reporting and gate ownership.",
+    example: "New Relic detects a known Kubernetes failure, drafts RCA and proposes approved remediation for human approval."
+  }
+] as const;
+
+interface MaturityInputDimension {
+  id: string;
+  label: string;
+  abbr: string;
+  pillar: string;
+  question: string;
+  start: number;
+  states: readonly [string, string, string, string, string, string];
+}
+
+const maturityInputDimensions: MaturityInputDimension[] = [
+  {
+    id: "scope",
+    label: "Scope & inventory",
+    abbr: "Scope",
+    pillar: "Discovery",
+    question: "Do we know what exists, where it runs and why it matters?",
+    start: 1,
+    states: [
+      "Asset exists by name only; apps, jobs, topics, APIs or environments are not verified.",
+      "Inventory exists with known gaps and criticality assumptions.",
+      "Critical assets, environments and service records are mapped for support.",
+      "Inventory is maintained with owners, tiers and support routing.",
+      "Inventory is linked to health, incidents, changes and dependency trends.",
+      "Inventory is graph-backed and usable by controlled automation."
+    ]
+  },
+  {
+    id: "ownership",
+    label: "Ownership & RACI",
+    abbr: "Own",
+    pillar: "People",
+    question: "Is there a named service, technical and decision owner?",
+    start: 0,
+    states: [
+      "No confirmed owner or escalation path; support would depend on tribal knowledge.",
+      "Likely owner is identified, but RACI and escalation are not confirmed.",
+      "L1/L2/L3 escalation owner is known and reachable.",
+      "RACI is stable across service, change, incident and vendor decisions.",
+      "Ownership quality is reviewed through service governance and recurring gaps are removed.",
+      "Ownership graph is reliable enough for automated routing and assisted decisions."
+    ]
+  },
+  {
+    id: "access",
+    label: "Access & permissions",
+    abbr: "Access",
+    pillar: "Control",
+    question: "Can support access the right systems safely when an incident happens?",
+    start: 1,
+    states: [
+      "Access, break-glass or approval route is unknown or untested.",
+      "Access requirement is listed, but not fully granted or rehearsed.",
+      "Support access is tested for monitoring, triage and standard restore.",
+      "Privileged access, approval, audit and break-glass paths are controlled.",
+      "Access gaps are proactively detected and reviewed before support impact.",
+      "Access checks are policy-driven with auditable automated guardrails."
+    ]
+  },
+  {
+    id: "observability",
+    label: "Observability & alerting",
+    abbr: "Obs",
+    pillar: "Tooling",
+    question: "Are signals visible, routed and actionable by support?",
+    start: 1,
+    states: [
+      "No verified signal, dashboard or alert route for support.",
+      "Telemetry hook exists, but it is not reliably monitored or routed.",
+      "Alert reaches PagerDuty, ServiceNow, Jira, Teams or email with owner and severity.",
+      "Dashboard, alert rationale, runbook link and SLA route are stable.",
+      "SLOs, trends, noise reduction and prevention alerts are active.",
+      "Known alert patterns can trigger governed automation recommendations."
+    ]
+  },
+  {
+    id: "incident",
+    label: "Incident & SLA process",
+    abbr: "SLA",
+    pillar: "Run",
+    question: "Does an issue enter support with severity, clock, comms and escalation?",
+    start: 1,
+    states: [
+      "No proven ticket path, SLA mapping or incident communication route.",
+      "Process is described but not tested for this service.",
+      "L1 can classify, ticket, route and start the SLA clock.",
+      "P1-P4 workflow, comms, escalation and evidence capture are repeatable.",
+      "Incident trends drive problem records and service review action.",
+      "Incident evidence can be summarized and routed by an approved assistant."
+    ]
+  },
+  {
+    id: "runbooks",
+    label: "Runbooks & known errors",
+    abbr: "Runbk",
+    pillar: "Run",
+    question: "Can L1/L2 follow known actions without waiting for one expert?",
+    start: 0,
+    states: [
+      "No usable runbook or known-error record.",
+      "Draft notes exist, but steps, inputs, outputs or risks are incomplete.",
+      "Known recovery actions are documented and usable by L1/L2.",
+      "Runbooks are versioned, linked to alerts and validated through reverse shadow.",
+      "Runbook gaps are mined from incidents and improved every cycle.",
+      "Runbook steps are structured enough for governed automation."
+    ]
+  },
+  {
+    id: "recovery",
+    label: "Recovery, replay & rollback",
+    abbr: "Recover",
+    pillar: "Reliability",
+    question: "Can we restore service, replay data or roll back safely?",
+    start: 0,
+    states: [
+      "Restore, replay, backfill or rollback route is unknown.",
+      "Recovery route is known in theory but not evidenced.",
+      "Basic restore or rerun path is tested with named escalation.",
+      "Rollback, replay and recovery are rehearsed and documented.",
+      "Recovery risk is measured through drills, trend data and error budgets.",
+      "Approved recovery patterns can be suggested with audit and rollback guardrails."
+    ]
+  },
+  {
+    id: "dependencies",
+    label: "Dependency & connectivity",
+    abbr: "Dep",
+    pillar: "Discovery",
+    question: "Do we understand upstream, downstream and network dependencies?",
+    start: 1,
+    states: [
+      "Consumers, producers, network paths or external dependencies are unknown.",
+      "Partial dependency map exists with named unknowns.",
+      "Critical dependencies and escalation contacts are known for support.",
+      "Dependency map is maintained and tied to incidents, changes and releases.",
+      "Connectivity trends and downstream impact are proactively monitored.",
+      "Dependency graph can support impact analysis and automated routing."
+    ]
+  },
+  {
+    id: "change",
+    label: "Change & release control",
+    abbr: "Change",
+    pillar: "Control",
+    question: "Are deployment, approval and rollback paths understood?",
+    start: 1,
+    states: [
+      "Change path, pipeline owner or rollback route is unknown.",
+      "Pipeline exists, but approvals, evidence or fallback are unclear.",
+      "Support knows release calendar, pipeline route and rollback escalation.",
+      "Change approvals, test evidence, rollback and release ownership are controlled.",
+      "Failed-change trends feed release hardening and policy improvements.",
+      "Policy-as-code and assisted change checks can be safely introduced."
+    ]
+  },
+  {
+    id: "security",
+    label: "Security & compliance",
+    abbr: "Sec",
+    pillar: "Control",
+    question: "Are secrets, certificates, data access and audit obligations known?",
+    start: 1,
+    states: [
+      "Security ownership, secrets, certs, RBAC or audit route is not verified.",
+      "Security controls are identified with visible gaps.",
+      "Support can identify security-related failures and escalate safely.",
+      "Secrets, certs, RBAC, audit and policy controls are governed.",
+      "Expiry, drift, access and compliance risks are proactively surfaced.",
+      "Security checks are policy-driven with auditable automation gates."
+    ]
+  },
+  {
+    id: "performance",
+    label: "Performance & capacity",
+    abbr: "Perf",
+    pillar: "Reliability",
+    question: "Do we know normal behaviour, thresholds and capacity risks?",
+    start: 1,
+    states: [
+      "No baseline for latency, job duration, throughput, capacity or lag.",
+      "Baseline is being collected, but thresholds are not trusted.",
+      "Normal behaviour and basic thresholds are known for support triage.",
+      "Capacity and performance dashboards are owned and reviewed.",
+      "Trends predict risk and trigger prevention work.",
+      "Capacity and performance patterns can drive assisted remediation plans."
+    ]
+  },
+  {
+    id: "contracts",
+    label: "Data & contract quality",
+    abbr: "DQ",
+    pillar: "Quality",
+    question: "Are schemas, lineage, DQ checks, API contracts and acceptance rules known?",
+    start: 0,
+    states: [
+      "Schema, lineage, data quality or API contract is unknown.",
+      "Contracts are discovered but incomplete or not validated.",
+      "Critical contracts and DQ checks are known for support triage.",
+      "Contract tests, lineage and DQ ownership are controlled.",
+      "Drift, freshness and contract trends feed prevention backlog.",
+      "Contract impact analysis can support safe assisted change."
+    ]
+  },
+  {
+    id: "knowledge",
+    label: "Knowledge transfer resilience",
+    abbr: "KT",
+    pillar: "People",
+    question: "Is knowledge held by the team rather than one person or vendor?",
+    start: 0,
+    states: [
+      "Knowledge is vendor-held, undocumented or person-dependent.",
+      "KT sessions or notes exist, but playback and reverse shadow are incomplete.",
+      "Backup coverage and reverse-shadow evidence exist for support.",
+      "Knowledge is captured in runbooks, recordings, SMEs and onboarding paths.",
+      "Knowledge gaps are measured and refreshed through service reviews.",
+      "Knowledge base is structured for assisted search and guided execution."
+    ]
+  },
+  {
+    id: "rca",
+    label: "Problem management & RCA",
+    abbr: "RCA",
+    pillar: "Improve",
+    question: "Do repeated incidents turn into permanent fixes?",
+    start: 0,
+    states: [
+      "No RCA history, known-error trend or problem backlog.",
+      "Some RCA notes exist, but recurrence is not tracked.",
+      "Major incidents create RCA and known-error actions.",
+      "Recurring incidents are governed through problem management.",
+      "Trend mining feeds Improve & Evolve backlog and prevention actions.",
+      "RCA drafting and pattern detection can be assisted with controls."
+    ]
+  },
+  {
+    id: "automation",
+    label: "Automation & agentic readiness",
+    abbr: "Auto",
+    pillar: "Automate",
+    question: "Is the pattern safe enough for automation or assisted operations?",
+    start: 0,
+    states: [
+      "No safe automation candidate; action path or rollback is unclear.",
+      "Candidate pattern is identified, but controls are missing.",
+      "Manual runbook exists and can be repeated safely by support.",
+      "Automation candidate has owner, approval path, audit and rollback.",
+      "Automation can be tested against SLOs, policy and incident outcomes.",
+      "Pattern is ready for Pandav/agentic workflow with human gate."
+    ]
+  }
+];
+
+const maturityQualificationPresets = [
+  { label: "M0 handover risk", level: null },
+  { label: "M2 run-ready", level: 2 },
+  { label: "M3 controlled", level: 3 },
+  { label: "M4 proactive", level: 4 },
+  { label: "M5 candidate", level: 5 }
+] as const;
+
+function defaultMaturityInputScores() {
+  return Object.fromEntries(maturityInputDimensions.map((dimension) => [dimension.id, dimension.start])) as Record<string, number>;
+}
+
+function maturityInputScoresForLevel(level: number | null) {
+  if (level === null) return defaultMaturityInputScores();
+  return Object.fromEntries(maturityInputDimensions.map((dimension) => [dimension.id, level])) as Record<string, number>;
+}
+
+function maturityFromInputScores(scores: Record<string, number>) {
+  const values = maturityInputDimensions.map((dimension) => scores[dimension.id] ?? dimension.start);
+  const average = averageScore(values);
+  const weakestScore = Math.min(...values);
+  const level = Math.max(0, Math.min(5, Math.floor(Math.min(average, weakestScore + 1))));
+  const weakestInputs = maturityInputDimensions.filter((dimension) => (scores[dimension.id] ?? dimension.start) === weakestScore);
+  return {
+    level,
+    average,
+    weakestScore,
+    weakestInputs,
+    runReadyCount: values.filter((value) => value >= 2).length,
+    controlledCount: values.filter((value) => value >= 3).length,
+    proactiveCount: values.filter((value) => value >= 4).length,
+    automationReadyCount: values.filter((value) => value >= 5).length
+  };
+}
+
+function MaturityQualificationSimulator() {
+  const [inputScores, setInputScores] = useState<Record<string, number>>(() => defaultMaturityInputScores());
+  const [activeInputId, setActiveInputId] = useState("observability");
+  const activeInput = maturityInputDimensions.find((dimension) => dimension.id === activeInputId) ?? maturityInputDimensions[0];
+  const activeScore = inputScores[activeInput.id] ?? activeInput.start;
+  const summary = maturityFromInputScores(inputScores);
+  const blockerText = summary.weakestInputs.slice(0, 3).map((dimension) => dimension.label).join(", ");
+
+  const setInputScore = (inputId: string, level: number) => {
+    setInputScores((current) => ({ ...current, [inputId]: level }));
+    setActiveInputId(inputId);
+  };
+
+  return (
+    <div className="maturity-qualification-model">
+      <div className="qualification-flow" aria-label="Maturity qualification flow">
+        <div>
+          <span>1</span>
+          <strong>15 evidence inputs</strong>
+          <small>tooling, people, process, recovery and governance</small>
+        </div>
+        <ArrowRight size={16} aria-hidden="true" />
+        <div>
+          <span>2</span>
+          <strong>M0-M5 per input</strong>
+          <small>change any scale to reflect verified evidence</small>
+        </div>
+        <ArrowRight size={16} aria-hidden="true" />
+        <div>
+          <span>3</span>
+          <strong>Area maturity</strong>
+          <small>average score, constrained by weakest input</small>
+        </div>
+        <ArrowRight size={16} aria-hidden="true" />
+        <div>
+          <span>4</span>
+          <strong>Transition decision</strong>
+          <small>transition now, control, hold or migrate</small>
+        </div>
+      </div>
+
+      <div className="qualification-console">
+        <div className="qualification-score-panel">
+          <div className="qualification-score-ring" style={{ "--score": `${summary.level * 20}%` } as CSSProperties}>
+            <span>Area mark</span>
+            <strong>{maturityLabel(summary.level)}</strong>
+            <small>avg M{summary.average.toFixed(1)}</small>
+          </div>
+          <div className="qualification-score-copy">
+            <span className="coverage-kicker">Live maturity calculation</span>
+            <h4>Raise individual inputs and watch the scale move</h4>
+            <p>
+              An area is M0 when one or more critical inputs are unknown. It moves only when evidence improves across enough
+              inputs, not because one dashboard or alert exists.
+            </p>
+            <div className="qualification-metrics">
+              <span>{summary.runReadyCount}/15 M2+</span>
+              <span>{summary.controlledCount}/15 M3+</span>
+              <span>{summary.proactiveCount}/15 M4+</span>
+              <span>{summary.automationReadyCount}/15 M5</span>
+            </div>
+            <small className="qualification-blockers">
+              Weakest at {maturityLabel(summary.weakestScore)}: {blockerText}
+              {summary.weakestInputs.length > 3 ? ` +${summary.weakestInputs.length - 3} more` : ""}
+            </small>
+          </div>
+          <div className="qualification-presets" aria-label="Maturity simulator presets">
+            {maturityQualificationPresets.map((preset) => (
+              <button type="button" key={preset.label} onClick={() => setInputScores(maturityInputScoresForLevel(preset.level))}>
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="qualification-board">
+          <div className="qualification-input-grid" aria-label="Fifteen maturity inputs">
+            {maturityInputDimensions.map((dimension) => {
+              const score = inputScores[dimension.id] ?? dimension.start;
+              return (
+                <div className={`qualification-input-card ${dimension.id === activeInput.id ? "active" : ""}`} key={dimension.id}>
+                  <button type="button" className="qualification-input-main" onClick={() => setActiveInputId(dimension.id)}>
+                    <span>{dimension.pillar}</span>
+                    <strong>{dimension.label}</strong>
+                    <em>{maturityLabel(score)}</em>
+                    <i><b style={{ width: `${score * 20}%` }} /></i>
+                  </button>
+                  <div className="qualification-mini-scale" aria-label={`${dimension.label} maturity scale`}>
+                    {maturityLevels.map((level) => (
+                      <button
+                        type="button"
+                        className={score === level.level ? "active" : ""}
+                        key={`${dimension.id}-${level.label}`}
+                        onClick={() => setInputScore(dimension.id, level.level)}
+                        aria-label={`${dimension.label} ${level.label}`}
+                      >
+                        {level.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <aside className="qualification-active-detail">
+            <span className="coverage-kicker">{activeInput.pillar}</span>
+            <h4>{activeInput.label}</h4>
+            <p>{activeInput.question}</p>
+            <div className="qualification-active-scale" aria-label={`${activeInput.label} selected maturity`}>
+              {maturityLevels.map((level) => (
+                <button
+                  type="button"
+                  className={activeScore === level.level ? "active" : ""}
+                  key={`${activeInput.id}-detail-${level.label}`}
+                  onClick={() => setInputScore(activeInput.id, level.level)}
+                >
+                  <strong>{level.label}</strong>
+                  <span>{level.title}</span>
+                </button>
+              ))}
+            </div>
+            <div className="qualification-state-detail">
+              <span>{activeInput.label} qualifies as {maturityLabel(activeScore)} when</span>
+              <p>{activeInput.states[activeScore]}</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const supportEvidenceFlow = [
+  {
+    stage: "Signal source",
+    owner: "App/platform",
+    evidence: "Metrics, logs, traces, job status, pipeline status, Kafka lag, API errors."
+  },
+  {
+    stage: "Alert rule",
+    owner: "Tooling",
+    evidence: "Threshold, SLO burn, failed job, failed deployment, security or connectivity event."
+  },
+  {
+    stage: "Route and ticket",
+    owner: "Ops L1",
+    evidence: "PagerDuty, ServiceNow, Jira, email/SMS only if governed with owner and SLA."
+  },
+  {
+    stage: "Triage and restore",
+    owner: "Ops L1/L2",
+    evidence: "Impact, severity, runbook step, restart/rerun/backfill, communication and escalation."
+  },
+  {
+    stage: "Engineering fix",
+    owner: "Ops L3",
+    evidence: "Code, config, IaC, schema, connector, pipeline or platform defect fixed safely."
+  },
+  {
+    stage: "Prevention",
+    owner: "Improve & Evolve",
+    evidence: "Recurring pattern removed through automation, SLO tuning, self-healing candidate or agentic recipe."
+  }
+] as const;
+
 const maturityHorizons = [
   { id: "now", label: "Now", title: "Baseline", detail: "current evidence baseline" },
   { id: "d60", label: "Day 60", title: "Run transition", detail: "support takeover gate" },
@@ -1697,6 +2196,7 @@ function RepresentativeMaturityRadar({
 function ServiceMaturityTracker() {
   const [activePlatformId, setActivePlatformId] = useState("kafka");
   const [activeHorizon, setActiveHorizon] = useState(1);
+  const [showMaturityGuide, setShowMaturityGuide] = useState(false);
   const activePlatform = servicePlatforms.find((item) => item.id === activePlatformId) ?? servicePlatforms[0];
   const activeSummary = platformMaturityFromScores(dimensionScoresFromHorizon(activePlatform, activeHorizon));
   const activeLevel = activeSummary.level;
@@ -1714,6 +2214,15 @@ function ServiceMaturityTracker() {
             Each scoped platform is assessed across run dimensions, assigned a transition decision, then moved from today&apos;s
             evidence level toward proactive service and Pandav readiness.
           </p>
+          <button
+            type="button"
+            className={`maturity-guide-toggle ${showMaturityGuide ? "active" : ""}`}
+            aria-expanded={showMaturityGuide}
+            onClick={() => setShowMaturityGuide((current) => !current)}
+          >
+            <ListChecks size={14} aria-hidden="true" />
+            Maturity definitions and tooling evidence
+          </button>
         </div>
         <div className="maturity-horizons" role="tablist" aria-label="Maturity tracking horizon">
           {maturityHorizons.map((horizon, index) => (
@@ -1730,6 +2239,57 @@ function ServiceMaturityTracker() {
           ))}
         </div>
       </div>
+
+      {showMaturityGuide && (
+        <div className="maturity-guide-panel" id="maturity-guide">
+          <div className="maturity-guide-intro">
+            <div>
+              <span className="coverage-kicker">Hidden guide</span>
+              <h4>What M0-M5 means during transition</h4>
+              <p>
+                A platform maturity score is an evidence mark, not an opinion. A service can have good dashboards but still
+                remain low maturity if ownership, replay, rollback, access or escalation is not proven.
+              </p>
+            </div>
+            <div className="maturity-guide-rule">
+              <ShieldCheck size={18} aria-hidden="true" />
+              <span>Maturity is constrained by the weakest operational dimension.</span>
+            </div>
+          </div>
+
+          <MaturityQualificationSimulator />
+
+          <div className="maturity-level-strip" aria-label="M0 to M5 level legend">
+            {maturityDefinitions.map((level) => (
+              <div className="maturity-level-card" key={level.label}>
+                <strong>{level.label}</strong>
+                <span>{level.title}</span>
+                <p>{level.meaning}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="support-flow-panel support-flow-wide">
+            <div className="maturity-guide-subhead">
+              <span className="coverage-kicker">Support process placement</span>
+              <h4>Where the evidence inputs show up in run</h4>
+            </div>
+            <div className="support-flow-steps" aria-label="Support process evidence flow">
+              {supportEvidenceFlow.map((step, index) => (
+                <Fragment key={step.stage}>
+                  <div className="support-flow-step">
+                    <span>{index + 1}</span>
+                    <strong>{step.stage}</strong>
+                    <small>{step.owner}</small>
+                    <p>{step.evidence}</p>
+                  </div>
+                  {index < supportEvidenceFlow.length - 1 && <ArrowRight className="support-flow-arrow" size={15} aria-hidden="true" />}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="maturity-showcase">
         <div className="maturity-cycle-card">
