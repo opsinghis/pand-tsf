@@ -490,6 +490,69 @@
   white-space: nowrap;
 }
 
+.commercial-days-assumption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.28fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 13px;
+  border: 1px solid color-mix(in srgb, var(--proof) 30%, var(--line));
+  border-radius: 8px;
+  background: var(--proof-dim);
+  padding: 12px;
+  font-family: var(--sans);
+}
+
+.commercial-days-assumption span,
+.commercial-days-assumption strong,
+.commercial-days-assumption small {
+  display: block;
+}
+
+.commercial-days-assumption span {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.commercial-days-assumption strong {
+  margin-top: 5px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.commercial-days-assumption small {
+  margin-top: 5px;
+  color: #3a3d43;
+  font-size: 10.8px;
+  line-height: 1.35;
+}
+
+.commercial-days-assumption label {
+  display: grid;
+  gap: 6px;
+}
+
+.commercial-days-assumption input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 820;
+  padding: 8px 10px;
+}
+
+.commercial-capacity-days {
+  margin-top: 13px;
+}
+
 .commercial-rate-table {
   margin-top: 13px;
   border: 1px solid var(--line);
@@ -1605,6 +1668,7 @@
   .commercial-model-cards,
   .commercial-giveget,
   .commercial-bucket-detail,
+  .commercial-days-assumption,
   .commercial-fte-formulas,
   .commercial-discount-grid,
   .commercial-capacity-kpis,

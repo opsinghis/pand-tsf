@@ -30,6 +30,7 @@ interface CommercialControls {
   coverageProfileId: CoverageProfileId;
   modelId: CommercialModelId;
   termMonths: 6 | 12 | 24;
+  billableDaysPerMonth: number;
   automationTarget: number;
   evolvePodFte: number;
   quarterlyBurstDays: number;
@@ -112,18 +113,20 @@ const capacityRateLabels: Record<CapacityRateId, string> = {
   legacyEngineer: "Legacy BizTalk engineer"
 };
 
+const defaultBillableDaysPerMonth = 21;
+
 const defaultRateCard: RateCard = {
-  run: { india: 8500, romania: 13500, denmark: 24000 },
-  evolve: { india: 10500, romania: 16000, denmark: 27500 },
+  run: { india: 405, romania: 643, denmark: 1143 },
+  evolve: { india: 500, romania: 762, denmark: 1310 },
   burst: { india: 775, romania: 1100, denmark: 1650 }
 };
 
 const defaultCapacityRateCard: CapacityRateCard = {
-  seniorEngineer: { india: 10500, romania: 16000, denmark: 27500 },
-  deliveryLead: { india: 12500, romania: 18000, denmark: 32000 },
-  qeEngineer: { india: 8000, romania: 12500, denmark: 22000 },
-  technicalBa: { india: 9500, romania: 14500, denmark: 26000 },
-  legacyEngineer: { india: 9500, romania: 14000, denmark: 26000 }
+  seniorEngineer: { india: 500, romania: 762, denmark: 1310 },
+  deliveryLead: { india: 595, romania: 857, denmark: 1524 },
+  qeEngineer: { india: 381, romania: 595, denmark: 1048 },
+  technicalBa: { india: 452, romania: 690, denmark: 1238 },
+  legacyEngineer: { india: 452, romania: 667, denmark: 1238 }
 };
 
 const coverageProfiles: Array<{ id: CoverageProfileId; label: string; multiplier: number; detail: string }> = [
@@ -523,6 +526,7 @@ export const defaultCommercialControls: CommercialControls = {
   coverageProfileId: "balanced",
   modelId: "dividend",
   termMonths: 12,
+  billableDaysPerMonth: defaultBillableDaysPerMonth,
   automationTarget: 18,
   evolvePodFte: baseEvolveFte,
   quarterlyBurstDays: 48,
@@ -556,15 +560,23 @@ function formatMoneyFull(value: number) {
   return `EUR ${Math.round(value).toLocaleString("en-GB")}`;
 }
 
-function roleCostFromRateCard(role: StaffRole, fte: Record<LocationId, number>, rateCard: RateCard) {
-  return locationIds.reduce((sum, locationId) => sum + fte[locationId] * rateCard[role.bucket][locationId], 0);
+function roleCostFromRateCard(
+  role: StaffRole,
+  fte: Record<LocationId, number>,
+  rateCard: RateCard,
+  billableDaysPerMonth: number
+) {
+  return locationIds.reduce(
+    (sum, locationId) => sum + fte[locationId] * rateCard[role.bucket][locationId] * billableDaysPerMonth,
+    0
+  );
 }
 
 function blendedBurstDayRate(pool: BurstPool, rateCard: RateCard) {
   return locationIds.reduce((sum, locationId) => sum + pool.locationMix[locationId] * rateCard.burst[locationId], 0);
 }
 
-function scaledRole(role: StaffRole, scale: number, rateCard: RateCard): ScaledStaffRole {
+function scaledRole(role: StaffRole, scale: number, rateCard: RateCard, billableDaysPerMonth: number): ScaledStaffRole {
   const fte = {
     india: roundOne(role.india * scale),
     romania: roundOne(role.romania * scale),
@@ -578,12 +590,15 @@ function scaledRole(role: StaffRole, scale: number, rateCard: RateCard): ScaledS
     focus: role.focus,
     fte,
     totalFte: fte.india + fte.romania + fte.denmark,
-    monthlyCost: roleCostFromRateCard(role, fte, rateCard)
+    monthlyCost: roleCostFromRateCard(role, fte, rateCard, billableDaysPerMonth)
   };
 }
 
-function capacityRowCost(row: CapacityAskRow, rateCard: CapacityRateCard) {
-  return locationIds.reduce((sum, locationId) => sum + row[locationId] * rateCard[row.rateId][locationId], 0);
+function capacityRowCost(row: CapacityAskRow, rateCard: CapacityRateCard, billableDaysPerMonth: number) {
+  return locationIds.reduce(
+    (sum, locationId) => sum + row[locationId] * rateCard[row.rateId][locationId] * billableDaysPerMonth,
+    0
+  );
 }
 
 function recommendedCapacityDiscount(totalFte: number) {
@@ -613,7 +628,7 @@ function getCapacityAskSnapshot(controls: CommercialControls) {
       ...row,
       fte,
       totalFte: locationIds.reduce((sum, locationId) => sum + row[locationId], 0),
-      monthlyCost: capacityRowCost(row, controls.capacityRateCard)
+      monthlyCost: capacityRowCost(row, controls.capacityRateCard, controls.billableDaysPerMonth)
     };
   });
   const totalFte = rows.reduce((sum, row) => sum + row.totalFte, 0);
@@ -674,7 +689,9 @@ export function getCommercialSnapshot(controls: CommercialControls = defaultComm
   const displayEvolveBaselineFte = displayBucketFte(sourceStaffRows, "evolve");
   const runScale = coverage.multiplier * (controls.runIntensity / 100);
   const evolveScale = rawEvolveFte > 0 ? controls.evolvePodFte / rawEvolveFte : 0;
-  const staffRows = sourceStaffRows.map((role) => scaledRole(role, role.bucket === "run" ? runScale : evolveScale, controls.rateCard));
+  const staffRows = sourceStaffRows.map((role) =>
+    scaledRole(role, role.bucket === "run" ? runScale : evolveScale, controls.rateCard, controls.billableDaysPerMonth)
+  );
   const runRows = staffRows.filter((row) => row.bucket === "run");
   const evolveRows = staffRows.filter((row) => row.bucket === "evolve");
   const runMonthly = runRows.reduce((sum, row) => sum + row.monthlyCost, 0);
@@ -1139,6 +1156,8 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
     ["Selected model", snapshot.model.label],
     ["Coverage profile", snapshot.coverage.label],
     ["Contract term", `${snapshot.controls.termMonths} months`],
+    ["Pricing unit", "EUR per person day"],
+    ["Billable days per month", roundOne(snapshot.controls.billableDaysPerMonth)],
     ["Automation target", `${snapshot.controls.automationTarget}%`],
     ["Run staffing intensity", `${snapshot.controls.runIntensity}%`],
     ["Additional discretionary discount", `${snapshot.controls.commercialDiscount}%`],
@@ -1154,26 +1173,26 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
     ["Included burst days per quarter", roundOne(snapshot.includedBurstDays)],
     ["Billable burst days per quarter", roundOne(snapshot.billableBurstDays)],
     ["Billable burst monthly equivalent", roundOne(snapshot.monthlyBillableBurstDays)],
-    ["Run base monthly", Math.round(snapshot.runMonthly)],
-    ["Improve & Evolve monthly", Math.round(snapshot.evolveMonthly)],
-    ["Burst monthly", Math.round(snapshot.burstMonthly)],
-    ["Gross monthly", Math.round(snapshot.grossMonthly)],
+    ["Run base monthly equivalent", Math.round(snapshot.runMonthly)],
+    ["Improve & Evolve monthly equivalent", Math.round(snapshot.evolveMonthly)],
+    ["Burst monthly equivalent", Math.round(snapshot.burstMonthly)],
+    ["Gross monthly equivalent", Math.round(snapshot.grossMonthly)],
     ["Term discount monthly", Math.round(snapshot.termDiscount)],
     ["Model discount monthly", Math.round(snapshot.modelDiscount)],
     ["Automation dividend monthly", Math.round(snapshot.automationDividend)],
     ["Additional discount monthly", Math.round(snapshot.commercialDiscountAmount)],
     ["Automation fund value monthly", Math.round(snapshot.automationFund)],
     ["Included burst value monthly", Math.round(snapshot.includedBurstValue)],
-    ["Net monthly after all discounts/dividend", Math.round(snapshot.netMonthly)],
+    ["Net monthly equivalent after all discounts/dividend", Math.round(snapshot.netMonthly)],
     ["Year-one net", Math.round(snapshot.yearOneNet)],
     ["Target run FTE after maturity", roundOne(snapshot.targetRunFte)],
     [],
     ["Customer ask capacity FTE", roundOne(snapshot.capacityAsk.totalFte)],
-    ["Customer ask gross monthly", Math.round(snapshot.capacityAsk.grossMonthly)],
+    ["Customer ask gross monthly equivalent", Math.round(snapshot.capacityAsk.grossMonthly)],
     ["Customer ask discount mode", snapshot.controls.capacityDiscountMode === "auto" ? "Auto volume band" : "Manual"],
     ["Customer ask discount applied", `${snapshot.capacityAsk.discountPercent}%`],
     ["Customer ask discount monthly", Math.round(snapshot.capacityAsk.discountAmount)],
-    ["Customer ask net monthly", Math.round(snapshot.capacityAsk.netMonthly)],
+    ["Customer ask net monthly equivalent", Math.round(snapshot.capacityAsk.netMonthly)],
     ["Customer ask net quarterly", Math.round(snapshot.capacityAsk.quarterlyNet)],
     ["Customer ask net annual", Math.round(snapshot.capacityAsk.annualNet)],
     [],
@@ -1190,7 +1209,7 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
   ];
 
   const staffingRows: Array<Array<string | number>> = [
-    ["Bucket", "Domain", "Role", "India FTE", "Romania FTE", "Denmark FTE", "Total FTE", "Monthly cost", "Focus"],
+    ["Bucket", "Domain", "Role", "India FTE", "Romania FTE", "Denmark FTE", "Total FTE", "Monthly equivalent cost", "Focus"],
     ...snapshot.staffRows.map((row) => [
       row.bucket === "run" ? "Assured Run Base" : "Improve & Evolve",
       row.domain,
@@ -1225,7 +1244,7 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
       "Romania days",
       "Denmark days",
       "Blended day rate",
-      "Monthly cost",
+      "Monthly equivalent cost",
       "Trigger"
     ],
     ...snapshot.burstRows.map((row) => [
@@ -1261,20 +1280,20 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
   ];
 
   const rateCardRows: Array<Array<string | number>> = [
-    ["Rate card assumption", "India", "Romania", "Denmark", "Unit"],
+    ["Day rate card assumption", "India", "Romania", "Denmark", "Unit"],
     [
       "Assured Run Base staffing",
       snapshot.controls.rateCard.run.india,
       snapshot.controls.rateCard.run.romania,
       snapshot.controls.rateCard.run.denmark,
-      "EUR per FTE month"
+      "EUR per person day"
     ],
     [
       "Improve & Evolve staffing",
       snapshot.controls.rateCard.evolve.india,
       snapshot.controls.rateCard.evolve.romania,
       snapshot.controls.rateCard.evolve.denmark,
-      "EUR per FTE month"
+      "EUR per person day"
     ],
     [
       "Burst engineering capacity",
@@ -1283,6 +1302,9 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
       snapshot.controls.rateCard.burst.denmark,
       "EUR per person day"
     ],
+    ["Billable days per month", roundOne(snapshot.controls.billableDaysPerMonth)],
+    ["Staffed monthly equivalent formula", "FTE x day rate x billable days/month"],
+    ["Burst monthly equivalent formula", "Billable quarterly burst days x day rate / 3"],
     [],
     ["Discount assumption", "Value"],
     ["Additional discretionary discount", `${snapshot.controls.commercialDiscount}%`],
@@ -1291,17 +1313,19 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
 
   const capacityRows: Array<Array<string | number>> = [
     ["Customer shared capacity request"],
+    ["Pricing unit", "EUR per person day"],
+    ["Billable days per month", roundOne(snapshot.controls.billableDaysPerMonth)],
     ["Total FTE", roundOne(snapshot.capacityAsk.totalFte)],
-    ["Gross monthly", Math.round(snapshot.capacityAsk.grossMonthly)],
+    ["Gross monthly equivalent", Math.round(snapshot.capacityAsk.grossMonthly)],
     ["Discount mode", snapshot.controls.capacityDiscountMode === "auto" ? "Auto volume band" : "Manual"],
     ["Volume band", snapshot.capacityAsk.volumeBand],
     ["Discount applied", `${snapshot.capacityAsk.discountPercent}%`],
     ["Discount monthly", Math.round(snapshot.capacityAsk.discountAmount)],
-    ["Net monthly", Math.round(snapshot.capacityAsk.netMonthly)],
+    ["Net monthly equivalent", Math.round(snapshot.capacityAsk.netMonthly)],
     ["Net quarterly", Math.round(snapshot.capacityAsk.quarterlyNet)],
     ["Net annual", Math.round(snapshot.capacityAsk.annualNet)],
     [],
-    ["Domain", "Request / skill", "Rate category", "India FTE", "Romania FTE", "Denmark FTE", "Total FTE", "Gross monthly", "Notes"],
+    ["Domain", "Request / skill", "Rate category", "India FTE", "Romania FTE", "Denmark FTE", "Total FTE", "Gross monthly equivalent", "Notes"],
     ...snapshot.capacityAsk.rows.map((row) => [
       row.domain,
       row.request,
@@ -1314,7 +1338,7 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
       row.note
     ]),
     [],
-    ["Domain", "FTE", "Gross monthly"],
+    ["Domain", "FTE", "Gross monthly equivalent"],
     ...snapshot.capacityAsk.domainTotals.map((row) => [row.domain, roundOne(row.fte), Math.round(row.monthlyCost)]),
     [],
     ["Skill rate card", "India", "Romania", "Denmark", "Unit"],
@@ -1323,7 +1347,7 @@ function commercialWorkbookSheets(snapshot: CommercialSnapshot) {
       snapshot.controls.capacityRateCard[rateId].india,
       snapshot.controls.capacityRateCard[rateId].romania,
       snapshot.controls.capacityRateCard[rateId].denmark,
-      "EUR per FTE month"
+      "EUR per person day"
     ])
   ];
 
@@ -1389,6 +1413,10 @@ export function CommercialsSection() {
       }
     }));
   };
+  const updateBillableDaysPerMonth = (value: number) => {
+    const safeValue = Number.isFinite(value) ? Math.min(31, Math.max(1, value)) : defaultBillableDaysPerMonth;
+    updateControls({ billableDaysPerMonth: safeValue });
+  };
   const updateStaffRoleFte = (roleId: string, locationId: LocationId, value: number) => {
     const safeValue = Number.isFinite(value) ? Math.max(0, value) : 0;
     setControls((current) => {
@@ -1428,6 +1456,7 @@ export function CommercialsSection() {
   const resetAssumptions = () =>
     updateControls({
       commercialDiscount: 0,
+      billableDaysPerMonth: defaultBillableDaysPerMonth,
       rateCard: defaultRateCard,
       staffRoleRows: cloneStaffRoles(),
       evolvePodFte: baseEvolveFte,
@@ -1437,6 +1466,7 @@ export function CommercialsSection() {
     updateControls({
       capacityAskRows: cloneCapacityAskRows(),
       capacityRateCard: cloneCapacityRateCard(),
+      billableDaysPerMonth: defaultBillableDaysPerMonth,
       capacityDiscountMode: "auto",
       capacityManualDiscount: 6
     });
@@ -1464,7 +1494,7 @@ export function CommercialsSection() {
               onClick={() => setShowAssumptions((current) => !current)}
             >
               <SlidersHorizontal size={15} aria-hidden="true" />
-              Rate card & discount
+              Day rates & discount
             </button>
             <button
               type="button"
@@ -1484,7 +1514,7 @@ export function CommercialsSection() {
 
         <div className="commercial-kpis" aria-label="Commercial summary">
           <div>
-            <span>Steady monthly net</span>
+            <span>Monthly equivalent net</span>
             <strong>{formatMoney(snapshot.netMonthly)}</strong>
             <small>after term discount, automation dividend and optional commercial discount</small>
           </div>
@@ -1640,29 +1670,56 @@ export function CommercialsSection() {
             <div className="commercial-assumptions-head">
               <div>
                 <span className="coverage-kicker">Hidden commercial assumptions</span>
-                <h4>Rate card and discretionary discount controls</h4>
-                <p>Use this only when you want to show how location mix, rate-card movement or a top-level discount changes the live economics.</p>
+                <h4>Day rate card and discretionary discount controls</h4>
+                <p>
+                  Use this only when you want to show how location mix, day-rate movement, billable-days assumptions or a
+                  top-level discount changes the live economics.
+                </p>
               </div>
               <button type="button" onClick={resetAssumptions}>Reset assumptions</button>
             </div>
 
+            <div className="commercial-days-assumption">
+              <div>
+                <span>Billing basis</span>
+                <strong>Day rate card x staffed FTE x billable days/month</strong>
+                <small>Monthly and annual values are derived outputs; the editable commercial unit is now EUR per person day.</small>
+              </div>
+              <label>
+                <span>Billable days / month</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="31"
+                  step="0.5"
+                  value={controls.billableDaysPerMonth}
+                  onChange={(event) => updateBillableDaysPerMonth(Number(event.currentTarget.value))}
+                  aria-label="Billable days per month"
+                />
+              </label>
+            </div>
+
             <div className="commercial-rate-table" role="table" aria-label="Commercial rate card assumptions">
               <div className="commercial-rate-head" role="row">
-                <span role="columnheader">Rate card</span>
+                <span role="columnheader">Day rate card</span>
                 {locationIds.map((locationId) => (
                   <span role="columnheader" key={locationId}>{locations[locationId].label}</span>
                 ))}
                 <span role="columnheader">Unit</span>
               </div>
               {([
-                ["run", "Base staffing", "EUR / FTE month"],
-                ["evolve", "Improve & Evolve", "EUR / FTE month"],
+                ["run", "Base staffing", "EUR / person day"],
+                ["evolve", "Improve & Evolve", "EUR / person day"],
                 ["burst", "Support burst capacity", "EUR / person day"]
               ] as Array<[RateBucketId, string, string]>).map(([bucket, label, unit]) => (
                 <div className="commercial-rate-row" role="row" key={bucket}>
                   <span role="cell">
                     <strong>{label}</strong>
-                    <small>{bucket === "burst" ? "applied to quarterly drawdown by location mix" : "applied to staffed FTE by location"}</small>
+                    <small>
+                      {bucket === "burst"
+                        ? "applied to quarterly drawdown by location mix"
+                        : `multiplied by staffed FTE and ${controls.billableDaysPerMonth} billable days/month`}
+                    </small>
                   </span>
                   {locationIds.map((locationId) => (
                     <label role="cell" key={`${bucket}-${locationId}`}>
@@ -1670,7 +1727,7 @@ export function CommercialsSection() {
                       <input
                         type="number"
                         min="0"
-                        step={bucket === "burst" ? "25" : "250"}
+                        step="5"
                         value={controls.rateCard[bucket][locationId]}
                         onChange={(event) => updateRate(bucket, locationId, Number(event.currentTarget.value))}
                         aria-label={`${label} ${locations[locationId].label} rate`}
@@ -1702,7 +1759,7 @@ export function CommercialsSection() {
                   <span role="columnheader">Romania</span>
                   <span role="columnheader">Denmark</span>
                   <span role="columnheader">FTE</span>
-                  <span role="columnheader">Cost/mo</span>
+                  <span role="columnheader">Monthly equiv.</span>
                 </div>
                 {controls.staffRoleRows.map((row) => {
                   const computed = snapshot.staffRows.find((staffRow) => staffRow.id === row.id);
@@ -1751,7 +1808,7 @@ export function CommercialsSection() {
                 <div>
                   <span>Current discount impact</span>
                   <strong>{formatMoney(snapshot.commercialDiscountAmount)} / month</strong>
-                  <small>Net monthly moves to {formatMoney(snapshot.netMonthly)} with the current assumptions.</small>
+                  <small>Net monthly equivalent moves to {formatMoney(snapshot.netMonthly)} with the current assumptions.</small>
                 </div>
               </div>
             </div>
@@ -1765,8 +1822,8 @@ export function CommercialsSection() {
                 <span className="coverage-kicker">Hidden burst capacity calculator</span>
                 <h4>Customer ask cost calculator</h4>
                 <p>
-                  Seeded with the latest customer list. Counts can be moved across locations, rates can be changed by skill
-                  type, and the discount can follow an automatic volume band or a manual negotiation position.
+                  Seeded with the latest customer list. Counts can be moved across locations, day rates can be changed by
+                  skill type, and the discount can follow an automatic volume band or a manual negotiation position.
                 </p>
               </div>
               <button type="button" onClick={resetCapacityAsk}>Reset customer ask</button>
@@ -1779,9 +1836,9 @@ export function CommercialsSection() {
                 <small>{formatFte(snapshot.capacityAsk.locationTotals.india)} India, {formatFte(snapshot.capacityAsk.locationTotals.romania)} Romania, {formatFte(snapshot.capacityAsk.locationTotals.denmark)} Denmark</small>
               </div>
               <div>
-                <span>Gross monthly</span>
+                <span>Gross monthly equivalent</span>
                 <strong>{formatMoney(snapshot.capacityAsk.grossMonthly)}</strong>
-                <small>before customer ask discount</small>
+                <small>day rates x FTE x {controls.billableDaysPerMonth} days</small>
               </div>
               <div>
                 <span>Applied discount</span>
@@ -1789,7 +1846,7 @@ export function CommercialsSection() {
                 <small>{snapshot.capacityAsk.volumeBand}</small>
               </div>
               <div>
-                <span>Net monthly</span>
+                <span>Net monthly equivalent</span>
                 <strong>{formatMoney(snapshot.capacityAsk.netMonthly)}</strong>
                 <small>{formatMoneyFull(snapshot.capacityAsk.discountAmount)} discount per month</small>
               </div>
@@ -1798,6 +1855,26 @@ export function CommercialsSection() {
                 <strong>{formatMoney(snapshot.capacityAsk.quarterlyNet)}</strong>
                 <small>{formatMoney(snapshot.capacityAsk.annualNet)} annual run-rate</small>
               </div>
+            </div>
+
+            <div className="commercial-days-assumption commercial-capacity-days">
+              <div>
+                <span>Customer ask billing basis</span>
+                <strong>{controls.billableDaysPerMonth} billable days/month</strong>
+                <small>The skill prices below are day rates; monthly, quarterly and annual values are derived from this assumption.</small>
+              </div>
+              <label>
+                <span>Billable days / month</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="31"
+                  step="0.5"
+                  value={controls.billableDaysPerMonth}
+                  onChange={(event) => updateBillableDaysPerMonth(Number(event.currentTarget.value))}
+                  aria-label="Customer ask billable days per month"
+                />
+              </label>
             </div>
 
             <div className="commercial-capacity-layout">
@@ -1837,7 +1914,7 @@ export function CommercialsSection() {
                     <em>
                       {controls.capacityDiscountMode === "auto"
                         ? `Auto uses ${snapshot.capacityAsk.volumeBand}; switch to manual to override.`
-                        : "Manual override applied after the gross monthly cost is calculated."}
+                        : "Manual override applied after the gross monthly-equivalent cost is calculated."}
                     </em>
                   </label>
                 </div>
@@ -1851,7 +1928,7 @@ export function CommercialsSection() {
                   <span role="columnheader">Romania</span>
                   <span role="columnheader">Denmark</span>
                   <span role="columnheader">Total</span>
-                  <span role="columnheader">Cost/mo</span>
+                  <span role="columnheader">Monthly equiv.</span>
                 </div>
                 {snapshot.capacityAsk.rows.map((row) => (
                   <div className="commercial-capacity-row" role="row" key={row.id}>
@@ -1900,14 +1977,14 @@ export function CommercialsSection() {
                       <input
                         type="number"
                         min="0"
-                        step="250"
+                        step="5"
                         value={controls.capacityRateCard[rateId][locationId]}
                         onChange={(event) => updateCapacityRate(rateId, locationId, Number(event.currentTarget.value))}
-                        aria-label={`${capacityRateLabels[rateId]} ${locations[locationId].label} monthly rate`}
+                        aria-label={`${capacityRateLabels[rateId]} ${locations[locationId].label} day rate`}
                       />
                     </label>
                   ))}
-                  <span role="cell">EUR / FTE month</span>
+                  <span role="cell">EUR / person day</span>
                 </div>
               ))}
             </div>
@@ -2069,7 +2146,7 @@ export function CommercialsSection() {
       <Reveal className="commercial-close-note">
         <BadgeCheck size={18} aria-hidden="true" />
         <span>
-          This is deliberately not a rate-card story. The base service is staffed to protect transition; the Improve & Evolve
+          This is deliberately not just a day-rate story. The base service is staffed to protect transition; the Improve & Evolve
           pod is funded to shrink repeated work; burst capacity keeps scarce engineering skills available without turning
           them into permanent cost.
         </span>
