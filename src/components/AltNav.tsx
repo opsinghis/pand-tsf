@@ -36,6 +36,9 @@ export function AltNav() {
       <motion.div className="reading-progress" style={{ scaleX: progressScale }} />
       <div className="topnav-inner">
         <span className="brand">{brand}</span>
+        <span className="page-switch" aria-label="View mode">
+          <a href="/presentation#overview">Presentation</a>
+        </span>
         <span className="now-indicator" aria-live="polite">
           <em>{activeSection.num}</em> {activeSection.label}
         </span>
