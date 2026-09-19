@@ -84,23 +84,31 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("Shubhra") &&
     presentationMarkup.includes("Global Chief Delivery Officer, Publicis Sapient") &&
     presentationMarkup.includes("Subject: People + Product Strategy, Organization Transformation, People Transformation"),
-  "presentation includes Nexus RFS proof": presentationMarkup.includes("113 activities") &&
-    presentationMarkup.includes("4 phases") &&
-    presentationMarkup.includes("11 gates rationalized to 5"),
+  "presentation cover includes Pandora brand imagery": presentationMarkup.includes("/pandora/model1.webp") &&
+    presentationMarkup.includes("/pandora/model2.webp") &&
+    presentationMarkup.includes("Transition with the brand in the room."),
+  "presentation keeps Nexus and Fabric proof in journey": presentationMarkup.includes("113 activities") &&
+    presentationMarkup.includes("4-phase model") &&
+    presentationMarkup.includes("Agentic fabric at scale") &&
+    presentationMarkup.includes("Fabric: graph, policy, evidence ledger"),
   "presentation includes journey until now": presentationMarkup.includes("May 2026") &&
     presentationMarkup.includes("August 2026") &&
     presentationMarkup.includes("September 2026") &&
     presentationMarkup.includes("1 October 2026") &&
     presentationMarkup.includes("Site Visit"),
   "presentation P03 mirrors revised approach": presentationMarkup.includes("P03 | 10:45 - 12:15") &&
-    (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 2 &&
-    (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 2 &&
-    (presentationMarkup.match(/North star only after gates/g) || []).length >= 2 &&
+    (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 1 &&
+    (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 1 &&
+    (presentationMarkup.match(/North star only after gates/g) || []).length >= 1 &&
     presentationMarkup.includes("Watch gate control") &&
     presentationMarkup.includes("See dial in action"),
-  "presentation proof modals available": presentationMarkup.includes("Open lifecycle evidence") &&
-    presentationMarkup.includes("Open fabric image") &&
-    presentationMarkup.includes("Open proof"),
+  "presentation proof modals available": (presentationMarkup.match(/Open proof/g) || []).length >= 3,
+  "deleted standalone pages absent": !presentationMarkup.includes('id="nexus-proof"') &&
+    !presentationMarkup.includes('href="#nexus-proof"') &&
+    !presentationMarkup.includes('id="fabric-architecture"') &&
+    !presentationMarkup.includes('href="#fabric-architecture"') &&
+    !presentationMarkup.includes('id="revised-approach"') &&
+    !presentationMarkup.includes('href="#revised-approach"'),
   "presentation page references available": presentationMarkup.includes("P00 | Presentation mode") &&
     presentationMarkup.includes("P01 | 9:45 - 11:00") &&
     presentationMarkup.includes("P02 | 10:45 - 12:15") &&
@@ -123,14 +131,24 @@ if (failed.length > 0) {
 // Dist checks
 const htmlPath = resolve(import.meta.dirname, "../dist/index.html");
 const videoPath = resolve(import.meta.dirname, "../dist/video/gatedcontrol.mp4");
+const pandoraModel1Path = resolve(import.meta.dirname, "../dist/pandora/model1.webp");
+const pandoraModel2Path = resolve(import.meta.dirname, "../dist/pandora/model2.webp");
 const html = readFileSync(htmlPath, "utf8");
 const size = statSync(htmlPath).size;
 const videoSize = statSync(videoPath).size;
+const pandoraModel1Size = statSync(pandoraModel1Path).size;
+const pandoraModel2Size = statSync(pandoraModel2Path).size;
 if (/(?:src|href)="http|url\(http/i.test(html)) throw new Error("Build is not self-contained");
 if (/[\u00c2\u00c3]/.test(html)) throw new Error("Possible mojibake in built HTML");
 if (!/data:image\/(?:webp|jpeg|png)/.test(html)) throw new Error("Build has no inlined presentation images");
 if (!html.includes("/video/gatedcontrol.mp4")) throw new Error("Presentation video route missing from built HTML");
+if (!html.includes("/pandora/model1.webp") || !html.includes("/pandora/model2.webp")) {
+  throw new Error("Pandora cover image routes missing from built HTML");
+}
 if (videoSize < 10_000) throw new Error(`Presentation video asset missing or too small: ${videoSize} bytes`);
+if (pandoraModel1Size < 5_000 || pandoraModel2Size < 5_000) {
+  throw new Error(`Pandora cover assets missing or too small: ${pandoraModel1Size} / ${pandoraModel2Size} bytes`);
+}
 const budget = 1_200_000;
 if (size > budget) throw new Error(`Build is ${size} bytes, over budget`);
 

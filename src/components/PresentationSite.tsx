@@ -10,7 +10,6 @@ import {
   Gauge,
   GitBranch,
   HelpCircle,
-  Layers3,
   MapPinned,
   Maximize2,
   Network,
@@ -19,8 +18,8 @@ import {
   X,
   Zap
 } from "lucide-react";
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import { brand, horizons, navChapters, navSections } from "../data/alternative";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { brand, horizons, navSections } from "../data/alternative";
 import { defaultCommercialControls, getCommercialSnapshot } from "./AltCommercials";
 
 const fabricArchitecture = new URL("../assets/presentation/agentic-fabric-architecture.webp", import.meta.url).href;
@@ -41,8 +40,6 @@ type PresentationVisual =
   | "exec"
   | "recap"
   | "rfs"
-  | "nexus"
-  | "fabric"
   | "transition"
   | "maturity"
   | "booth"
@@ -229,42 +226,6 @@ const presentationChapters: PresentationChapter[] = [
   },
   {
     id: "revised-approach-p03",
-    time: "10:45 - 12:15",
-    agenda: "Revised proposal, open Q&A",
-    title: "Revised Approach",
-    headline: "Same north star. Safer adoption path.",
-    punch: "We run as-is first, stabilise, transform through maturity gates, then evolve only the items that have earned the move.",
-    talkTrack: ["As-is transition", "Stabilisation baseline", "Transformation by evidence", "North star only after gates"],
-    tone: "ops",
-    visual: "transition",
-    detailIds: ["dayone", "transition-coverage", "lanes-asis", "governance", "horizons"]
-  },
-  {
-    id: "nexus-proof",
-    time: "10:45 - 12:15",
-    agenda: "Revised proposal, open Q&A",
-    title: "Nexus Proof",
-    headline: "Nexus showed how ceremony collapses while gates stay.",
-    punch: "The RFS work reduced a 113-activity, 9-phase lifecycle into 4 phases without pretending governance disappears.",
-    talkTrack: ["113 activities audited", "11 gates rationalized to 5", "Discover, Build, Deploy, Operate", "Governance retained where judgment matters"],
-    tone: "proof",
-    visual: "nexus",
-    detailIds: ["changes", "twolane", "foundations", "walkthroughs"]
-  },
-  {
-    id: "fabric-architecture",
-    time: "10:45 - 12:15",
-    agenda: "Revised proposal, open Q&A",
-    title: "Agentic Fabric",
-    headline: "The RFP response scaled Nexus into a governed fabric.",
-    punch: "Teams, ServiceNow, Port, GitHub, observability and FinOps become front doors into agents backed by graph memory, policy and evidence.",
-    talkTrack: ["Teams-based governance", "Graph and ontology core", "ServiceNow evidence ledger", "Connected estate across AKS, Databricks, Kafka and Kong"],
-    tone: "gov",
-    visual: "fabric",
-    detailIds: ["twolane", "foundations", "landscape", "governance"]
-  },
-  {
-    id: "revised-approach",
     time: "10:45 - 12:15",
     agenda: "Revised proposal, open Q&A",
     title: "Revised Approach",
@@ -1093,8 +1054,6 @@ function VisualFor({
   if (kind === "exec") return <ExecutivePlaceholderVisual />;
   if (kind === "recap") return <RecapVisual onOpenLightbox={onOpenLightbox} />;
   if (kind === "rfs") return <RfsSummaryVisual />;
-  if (kind === "nexus") return <NexusCollapseVisual onOpenLightbox={onOpenLightbox} />;
-  if (kind === "fabric") return <FabricVisual onOpenLightbox={onOpenLightbox} />;
   if (kind === "transition") {
     return (
       <TransitionVisual
@@ -1128,7 +1087,6 @@ export function BackToPresentationLink() {
 }
 
 export function PresentationSite() {
-  const coveredSections = useMemo(() => navChapters.flatMap((chapter) => chapter.sections), []);
   const [lightbox, setLightbox] = useState<LightboxContent | null>(null);
   const allLinkedIds = new Set(presentationChapters.flatMap((chapter) => chapter.detailIds));
   const unlinkedSections = navSections.filter((section) => !allLinkedIds.has(section.id));
@@ -1169,10 +1127,18 @@ export function PresentationSite() {
           </div>
         </div>
         <div className="pres-hero-board">
-          <div className="pres-board-core">
-            <Layers3 size={28} aria-hidden="true" />
-            <strong>One flow</strong>
-            <span>{coveredSections.length} detailed sections linked</span>
+          <div className="pres-pandora-visual" aria-label="Pandora branded workshop visual">
+            <figure>
+              <img src="/pandora/model1.webp" alt="Pandora jewellery campaign model wearing layered necklaces" />
+            </figure>
+            <figure>
+              <img src="/pandora/model2.webp" alt="Pandora jewellery campaign model wearing gold bracelets" />
+            </figure>
+            <div>
+              <span>Pandora TS&F</span>
+              <strong>Transition with the brand in the room.</strong>
+              <small>DevOps · Data · Integration</small>
+            </div>
           </div>
           <AgendaVisual />
         </div>
