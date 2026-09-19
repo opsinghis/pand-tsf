@@ -37,6 +37,10 @@ function collectStrings(value: unknown, out: string[]): void {
 const markup = renderToStaticMarkup(createElement(App));
 const renderedText = normalize(toText(markup));
 const presentationMarkup = renderToStaticMarkup(createElement(PresentationSite));
+const vercelConfig = JSON.parse(readFileSync(resolve(import.meta.dirname, "../vercel.json"), "utf8")) as {
+  rewrites?: Array<{ source: string; destination: string }>;
+};
+const vercelRewrites = vercelConfig.rewrites ?? [];
 
 const allStrings: string[] = [];
 collectStrings(alt, allStrings);
@@ -107,6 +111,8 @@ const structural: Record<string, boolean> = {
     (presentationMarkup.match(/Open proof/g) || []).length >= 3,
   "presentation deep links return": presentationMarkup.includes("from=presentation") &&
     presentationMarkup.includes("return="),
+  "vercel presentation rewrite": vercelRewrites.some((rewrite) => rewrite.source === "/presentation" && rewrite.destination === "/index.html") &&
+    vercelRewrites.some((rewrite) => rewrite.source === "/presentation/:path*" && rewrite.destination === "/index.html"),
   "no raw emphasis markers": !renderedText.includes("**")
 };
 const failed = Object.entries(structural).filter(([, ok]) => !ok);
@@ -116,10 +122,15 @@ if (failed.length > 0) {
 
 // Dist checks
 const htmlPath = resolve(import.meta.dirname, "../dist/index.html");
+const videoPath = resolve(import.meta.dirname, "../dist/video/gatedcontrol.mp4");
 const html = readFileSync(htmlPath, "utf8");
 const size = statSync(htmlPath).size;
+const videoSize = statSync(videoPath).size;
 if (/(?:src|href)="http|url\(http/i.test(html)) throw new Error("Build is not self-contained");
 if (/[\u00c2\u00c3]/.test(html)) throw new Error("Possible mojibake in built HTML");
+if (!/data:image\/(?:webp|jpeg|png)/.test(html)) throw new Error("Build has no inlined presentation images");
+if (!html.includes("/video/gatedcontrol.mp4")) throw new Error("Presentation video route missing from built HTML");
+if (videoSize < 10_000) throw new Error(`Presentation video asset missing or too small: ${videoSize} bytes`);
 const budget = 1_200_000;
 if (size > budget) throw new Error(`Build is ${size} bytes, over budget`);
 
