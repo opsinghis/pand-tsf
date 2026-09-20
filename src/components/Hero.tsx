@@ -36,7 +36,7 @@ export function Hero() {
           <AgenticFabricDiagram />
           <MobileFabricFlow />
           <p className="diagram-note">
-            The core translates user language into controlled graph queries, resolves context and policy, then performs only
+            The core translates user language into governed graph queries, resolves context and policy, then performs only
             the actions that governance allows.
           </p>
         </Reveal>

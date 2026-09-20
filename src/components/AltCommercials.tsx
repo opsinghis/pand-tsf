@@ -110,7 +110,7 @@ const defaultDayRateCard: DayRateCard = {
 const coverageProfiles: Array<{ id: CoverageProfileId; label: string; multiplier: number; detail: string }> = [
   {
     id: "core",
-    label: "Core controlled",
+    label: "Core governed",
     multiplier: 0.88,
     detail: "Lean transition coverage with critical after-hours route."
   },
@@ -192,7 +192,7 @@ const commercialBuckets = [
     Icon: Users,
     summary: "Ops L1, L2 and L3 capacity across DevOps, Data and Integration.",
     customerFunds: "Predictable base team, tri-country coverage and SLA ownership.",
-    valueReturned: "Stable service, transition control and a measured baseline for reduction."
+    valueReturned: "Stable service, transition risk mitigation and a measured baseline for reduction."
   },
   {
     id: "evolve",
@@ -306,7 +306,7 @@ const defaultCapacityAskRows: CapacityAskRow[] = [
     india: 0,
     romania: 0,
     denmark: 1,
-    note: "Onsite Denmark coordination for legacy discovery, transition control and vendor interface."
+    note: "Onsite Denmark coordination for legacy discovery, transition risk mitigation and vendor interface."
   },
   {
     id: "ask-biztalk-engineers",
@@ -395,7 +395,7 @@ const staffRoles: StaffRole[] = [
     id: "governance",
     bucket: "run",
     domain: "Governance",
-    role: "Service governance and transition control",
+    role: "Service governance and transition risk mitigation",
     india: 1,
     romania: 0.5,
     denmark: 1,
@@ -439,7 +439,7 @@ const staffRoles: StaffRole[] = [
     india: 1,
     romania: 0.5,
     denmark: 0.25,
-    focus: "Kafka lag prevention, schema-drift controls, API contract health and connector recovery."
+    focus: "Kafka lag prevention, schema-drift guardrails, API contract health and connector recovery."
   }
 ];
 
@@ -1590,7 +1590,7 @@ export function CommercialsSection() {
             <div className="commercial-assumptions-head">
               <div>
                 <span className="coverage-kicker">Hidden commercial assumptions</span>
-                <h4>Unified day rate card and discretionary discount controls</h4>
+                <h4>Unified day rate card and discretionary discount settings</h4>
                 <p>
                   Use this only when you want to show how base staffing rates, Improve & Evolve rates, customer ask skill
                   rates, billable-days assumptions or a top-level discount change the live economics.
@@ -1691,7 +1691,7 @@ export function CommercialsSection() {
                 <div>
                   <span>Improve & Evolve build-up</span>
                   <strong>{formatFte(snapshot.displayEvolveBaselineFte)} editable mix to {formatFte(snapshot.evolveFte)} modelled FTE</strong>
-                  <small>The Improve & Evolve slider keeps the total pod size visible while this table controls the role and location mix.</small>
+                  <small>The Improve & Evolve slider keeps the total pod size visible while this table sets the role and location mix.</small>
                 </div>
               </div>
               <div className="commercial-fte-table" role="table" aria-label="Run Base and Improve FTE assumptions">
@@ -1805,7 +1805,7 @@ export function CommercialsSection() {
                 <span>Shared rate source</span>
                 <strong>Uses the unified day rate card</strong>
                 <small>
-                  Skill day rates and billable days/month are controlled in Day rates & discount. Current basis:
+                  Skill day rates and billable days/month are managed in Day rates & discount. Current basis:
                   {` ${controls.billableDaysPerMonth}`} billable days/month.
                 </small>
               </div>

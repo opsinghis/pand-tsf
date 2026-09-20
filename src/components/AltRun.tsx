@@ -44,8 +44,8 @@ const coverageStages = [
 ] as const;
 
 type CoverageStageId = (typeof coverageStages)[number]["id"];
-type CoverageDecision = "Transition now" | "Transition with controls" | "Hold / defer" | "Retire / migrate";
-type DecisionTone = "now" | "control" | "hold" | "migrate";
+export type CoverageDecision = "Transition now" | "Transition with Risk Mitigation" | "Hold / defer" | "Retire / migrate";
+export type DecisionTone = "now" | "control" | "hold" | "migrate";
 
 interface CoverageStep {
   id: CoverageStageId;
@@ -79,13 +79,13 @@ const transitionCases: CoverageCase[] = [
     title: "Order events connector has no replay rule",
     ask: "Can we take over a critical event flow if the outgoing vendor cannot explain every topic, owner or connector dependency?",
     Icon: Network,
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     handoverPercent: 42,
     coveredPercent: 86,
     gap: "Topic owner missing, replay authority unclear, connector dependency undocumented.",
     owner: "Sapient L2/L3 with Pandora Integration owner",
-    control: "Replay rehearsal, schema contract capture, connector restart path and two-week hypercare.",
+    control: "Replay rehearsal, schema contract capture, connector restart path, named L2/L3 owner and two-week hypercare.",
     missing: ["topic owner", "replay rule", "connector dependency"],
     evidence: ["Schema Registry", "consumer lag", "connector config", "producer repos"],
     steps: [
@@ -103,7 +103,7 @@ const transitionCases: CoverageCase[] = [
       },
       {
         id: "support",
-        action: "Move to L1/L2 support with named controls.",
+        action: "Move to L1/L2 support with named risk mitigations.",
         evidence: "Runbook, alert route, replay approval and escalation path are signed off.",
         confidence: "The flow can transition, but not blindly."
       },
@@ -115,7 +115,7 @@ const transitionCases: CoverageCase[] = [
       },
       {
         id: "close",
-        action: "Burn down the control or keep it visible in governance.",
+        action: "Burn down the residual risk or keep it visible in governance.",
         evidence: "Replay drill passed, owner confirmed and connector dashboard live.",
         confidence: "The component exits transition only when the evidence says it should."
       }
@@ -145,7 +145,7 @@ const transitionCases: CoverageCase[] = [
       },
       {
         id: "probe",
-        action: "Run a controlled backfill rehearsal.",
+        action: "Run a governed backfill rehearsal.",
         evidence: "A replay candidate, quarantine path and data freshness check are tested before takeover.",
         confidence: "The missing runbook is reconstructed from runtime proof."
       },
@@ -165,7 +165,7 @@ const transitionCases: CoverageCase[] = [
         id: "close",
         action: "Exit when the pipeline can be operated and rebuilt.",
         evidence: "Lineage confirmed, backfill drill passed, data owner signed off.",
-        confidence: "The component moves only when the customer risk is controlled."
+        confidence: "The component moves only when the customer risk is mitigated."
       }
     ]
   },
@@ -199,7 +199,7 @@ const transitionCases: CoverageCase[] = [
       },
       {
         id: "support",
-        action: "Accept into support with standard release controls.",
+        action: "Accept into support with standard release safeguards.",
         evidence: "L1/L2 alert route and L3 fix route are ready for failed builds.",
         confidence: "This can transition now because evidence beats the missing notes."
       },
@@ -242,7 +242,7 @@ const transitionCases: CoverageCase[] = [
       {
         id: "probe",
         action: "Test restart, duplicate handling and failure visibility.",
-        evidence: "A controlled run shows where the legacy path can and cannot be operated safely.",
+        evidence: "A governed run shows where the legacy path can and cannot be operated safely.",
         confidence: "The residual risk is measured, not assumed."
       },
       {
@@ -271,7 +271,7 @@ const maturityLevels = [
   { level: 0, label: "M0", title: "Unknown", short: "vendor-dependent", hue: "--accent", x: 50, y: 7 },
   { level: 1, label: "M1", title: "Discovered", short: "inventory + gaps", hue: "--ops", x: 86, y: 27 },
   { level: 2, label: "M2", title: "Run-ready", short: "L1/L2 can run", hue: "--tech", x: 86, y: 70 },
-  { level: 3, label: "M3", title: "Controlled", short: "run with controls", hue: "--gov", x: 50, y: 91 },
+  { level: 3, label: "M3", title: "Risk-mitigated", short: "run with safeguards", hue: "--gov", x: 50, y: 91 },
   { level: 4, label: "M4", title: "Proactive", short: "SLO + prevention", hue: "--proof", x: 14, y: 70 },
   { level: 5, label: "M5", title: "Pandav ready", short: "safe automation", hue: "--accent", x: 14, y: 27 }
 ] as const;
@@ -300,7 +300,7 @@ const maturityDefinitions = [
   },
   {
     label: "M3",
-    title: "Controlled",
+    title: "Risk-mitigated",
     meaning: "The service is governed, measurable and repeatable, not just technically runnable.",
     evidence: "SLA mapping, dashboard owner, change route, rollback evidence, runbook quality, RCA route and weekly service review.",
     example: "GitHub runner failures have alerting, owner, secret rotation path, rollback route and release evidence."
@@ -315,7 +315,7 @@ const maturityDefinitions = [
   {
     label: "M5",
     title: "Pandav ready",
-    meaning: "The pattern is safe enough for controlled automation or agent-assisted operations with human gates.",
+    meaning: "The pattern is safe enough for governed automation or agent-assisted operations with human gates.",
     evidence: "Approved action policy, audit trail, rollback, automation guardrails, outcome reporting and gate ownership.",
     example: "New Relic detects a known Kubernetes failure, drafts RCA and proposes approved remediation for human approval."
   }
@@ -345,7 +345,7 @@ const maturityInputDimensions: MaturityInputDimension[] = [
       "Critical assets, environments and service records are mapped for support.",
       "Inventory is maintained with owners, tiers and support routing.",
       "Inventory is linked to health, incidents, changes and dependency trends.",
-      "Inventory is graph-backed and usable by controlled automation."
+      "Inventory is graph-backed and usable by governed automation."
     ]
   },
   {
@@ -368,14 +368,14 @@ const maturityInputDimensions: MaturityInputDimension[] = [
     id: "access",
     label: "Access & permissions",
     abbr: "Access",
-    pillar: "Control",
+    pillar: "Governance",
     question: "Can support access the right systems safely when an incident happens?",
     start: 1,
     states: [
       "Access, break-glass or approval route is unknown or untested.",
       "Access requirement is listed, but not fully granted or rehearsed.",
       "Support access is tested for monitoring, triage and standard restore.",
-      "Privileged access, approval, audit and break-glass paths are controlled.",
+      "Privileged access, approval, audit and break-glass paths are governed.",
       "Access gaps are proactively detected and reviewed before support impact.",
       "Access checks are policy-driven with auditable automated guardrails."
     ]
@@ -462,16 +462,16 @@ const maturityInputDimensions: MaturityInputDimension[] = [
   },
   {
     id: "change",
-    label: "Change & release control",
+    label: "Change & release governance",
     abbr: "Change",
-    pillar: "Control",
+    pillar: "Governance",
     question: "Are deployment, approval and rollback paths understood?",
     start: 1,
     states: [
       "Change path, pipeline owner or rollback route is unknown.",
       "Pipeline exists, but approvals, evidence or fallback are unclear.",
       "Support knows release calendar, pipeline route and rollback escalation.",
-      "Change approvals, test evidence, rollback and release ownership are controlled.",
+      "Change approvals, test evidence, rollback and release ownership are governed.",
       "Failed-change trends feed release hardening and policy improvements.",
       "Policy-as-code and assisted change checks can be safely introduced."
     ]
@@ -480,14 +480,14 @@ const maturityInputDimensions: MaturityInputDimension[] = [
     id: "security",
     label: "Security & compliance",
     abbr: "Sec",
-    pillar: "Control",
+    pillar: "Governance",
     question: "Are secrets, certificates, data access and audit obligations known?",
     start: 1,
     states: [
       "Security ownership, secrets, certs, RBAC or audit route is not verified.",
-      "Security controls are identified with visible gaps.",
+      "Security safeguards are identified with visible gaps.",
       "Support can identify security-related failures and escalate safely.",
-      "Secrets, certs, RBAC, audit and policy controls are governed.",
+      "Secrets, certs, RBAC, audit and policy guardrails are governed.",
       "Expiry, drift, access and compliance risks are proactively surfaced.",
       "Security checks are policy-driven with auditable automation gates."
     ]
@@ -519,7 +519,7 @@ const maturityInputDimensions: MaturityInputDimension[] = [
       "Schema, lineage, data quality or API contract is unknown.",
       "Contracts are discovered but incomplete or not validated.",
       "Critical contracts and DQ checks are known for support triage.",
-      "Contract tests, lineage and DQ ownership are controlled.",
+      "Contract tests, lineage and DQ ownership are governed.",
       "Drift, freshness and contract trends feed prevention backlog.",
       "Contract impact analysis can support safe assisted change."
     ]
@@ -553,7 +553,7 @@ const maturityInputDimensions: MaturityInputDimension[] = [
       "Major incidents create RCA and known-error actions.",
       "Recurring incidents are governed through problem management.",
       "Trend mining feeds Improve & Evolve backlog and prevention actions.",
-      "RCA drafting and pattern detection can be assisted with controls."
+      "RCA drafting and pattern detection can be assisted with guardrails."
     ]
   },
   {
@@ -565,7 +565,7 @@ const maturityInputDimensions: MaturityInputDimension[] = [
     start: 0,
     states: [
       "No safe automation candidate; action path or rollback is unclear.",
-      "Candidate pattern is identified, but controls are missing.",
+      "Candidate pattern is identified, but safeguards are missing.",
       "Manual runbook exists and can be repeated safely by support.",
       "Automation candidate has owner, approval path, audit and rollback.",
       "Automation can be tested against SLOs, policy and incident outcomes.",
@@ -577,7 +577,7 @@ const maturityInputDimensions: MaturityInputDimension[] = [
 const maturityQualificationPresets = [
   { label: "M0 handover risk", level: null },
   { label: "M2 run-ready", level: 2 },
-  { label: "M3 controlled", level: 3 },
+  { label: "M3 risk-mitigated", level: 3 },
   { label: "M4 proactive", level: 4 },
   { label: "M5 candidate", level: 5 }
 ] as const;
@@ -646,7 +646,7 @@ function MaturityQualificationSimulator() {
         <div>
           <span>4</span>
           <strong>Transition decision</strong>
-          <small>transition now, control, hold or migrate</small>
+          <small>transition now, mitigate risk, hold or migrate</small>
         </div>
       </div>
 
@@ -775,7 +775,7 @@ const supportEvidenceFlow = [
   }
 ] as const;
 
-const maturityHorizons = [
+export const maturityHorizons = [
   { id: "now", label: "Now", title: "Baseline", detail: "current evidence baseline" },
   { id: "d60", label: "Day 60", title: "Run transition", detail: "support takeover gate" },
   { id: "d120", label: "Day 120", title: "Dev transition", detail: "fix route proven" },
@@ -783,7 +783,7 @@ const maturityHorizons = [
   { id: "m12", label: "12+ mo", title: "Pandav path", detail: "candidate patterns" }
 ] as const;
 
-const readinessDimensions = [
+export const readinessDimensions = [
   { id: "performance", label: "Performance", abbr: "Perf", short: "runtime health" },
   { id: "connectivity", label: "Connectivity", abbr: "Conn", short: "dependencies" },
   { id: "security", label: "Security", abbr: "Sec", short: "access + secrets" },
@@ -794,10 +794,10 @@ const readinessDimensions = [
   { id: "proactive", label: "Proactive triage", abbr: "Triage", short: "alerts + RCA" }
 ] as const;
 
-type ReadinessDimensionId = (typeof readinessDimensions)[number]["id"];
-type DimensionScores = Record<ReadinessDimensionId, number>;
+export type ReadinessDimensionId = (typeof readinessDimensions)[number]["id"];
+export type DimensionScores = Record<ReadinessDimensionId, number>;
 
-interface ServicePlatform {
+export interface ServicePlatform {
   id: string;
   domain: string;
   technology: string;
@@ -812,7 +812,7 @@ interface ServicePlatform {
   dimensions: DimensionScores;
 }
 
-const servicePlatforms: ServicePlatform[] = [
+export const servicePlatforms: ServicePlatform[] = [
   {
     id: "paks",
     domain: "DevOps / Cloud",
@@ -838,7 +838,7 @@ const servicePlatforms: ServicePlatform[] = [
     decisionTone: "now",
     liveWith: "Older modules can run if drift is visible and owner is known.",
     mustClose: "State ownership, drift alerts, module versioning and rollback evidence.",
-    pandav: "Policy-checked change drafts and controlled self-service recipes.",
+    pandav: "Policy-checked change drafts and governed self-service recipes.",
     dimensions: { performance: 2, connectivity: 3, security: 3, change: 3, observability: 2, reliability: 2, ownership: 3, proactive: 2 }
   },
   {
@@ -862,7 +862,7 @@ const servicePlatforms: ServicePlatform[] = [
     workloads: "CI/CD, deployment pipelines, policy gates, automated tests",
     Icon: Workflow,
     track: [2, 3, 4, 4, 5],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Runner dependency gaps if dry-run release and fallback runner are proven.",
     mustClose: "Secret rotation, runner baseline, failed-release alert and hotfix route.",
@@ -876,7 +876,7 @@ const servicePlatforms: ServicePlatform[] = [
     workloads: "Service catalog, scorecards, golden paths, self-service actions",
     Icon: ListChecks,
     track: [1, 2, 3, 4, 5],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Catalogue gaps if critical services have temporary owner records.",
     mustClose: "Scorecard definitions, ownership graph, golden-path runbooks.",
@@ -918,7 +918,7 @@ const servicePlatforms: ServicePlatform[] = [
     workloads: "Metrics, logs, traces, synthetics, SLO dashboards, business flows",
     Icon: Gauge,
     track: [2, 3, 4, 4, 5],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Dashboard gaps if P1/P2 alert route and service owner are known.",
     mustClose: "SLO burn alerts, alert rationale, dashboard owner and blind-spot backlog.",
@@ -932,7 +932,7 @@ const servicePlatforms: ServicePlatform[] = [
     workloads: "Jobs, notebooks, Delta pipelines, data products, workspace provisioning",
     Icon: Database,
     track: [1, 2, 3, 4, 5],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Non-critical lineage gaps if freshness and recovery are monitored.",
     mustClose: "Critical job owner, backfill runbook, freshness alert and DQ path.",
@@ -957,10 +957,10 @@ const servicePlatforms: ServicePlatform[] = [
     id: "catalog",
     domain: "Data Governance",
     technology: "Unity Catalog / OpenMetadata",
-    workloads: "Access control, lineage, metadata, stewardship, ownership",
+    workloads: "Access governance, lineage, metadata, stewardship, ownership",
     Icon: ListChecks,
     track: [1, 2, 3, 4, 5],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Metadata incompleteness if critical owners are named.",
     mustClose: "Missing owner alerts, lineage coverage and stewardship workflow.",
@@ -974,7 +974,7 @@ const servicePlatforms: ServicePlatform[] = [
     workloads: "Topics, schemas, connectors, producers, consumers, event streams",
     Icon: Network,
     track: [1, 2, 3, 4, 5],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Topic-owner gaps if lag, restart and escalation are active.",
     mustClose: "Replay rule, schema compatibility alert, consumer impact map.",
@@ -988,7 +988,7 @@ const servicePlatforms: ServicePlatform[] = [
     workloads: "API gateway, API catalogue, policies, developer portal",
     Icon: Network,
     track: [1, 2, 3, 4, 4],
-    decision: "Transition with controls",
+    decision: "Transition with Risk Mitigation",
     decisionTone: "control",
     liveWith: "Incomplete consumer map if gateway metrics and auth route are known.",
     mustClose: "API SLOs, contract versioning, auth failure visibility.",
@@ -1032,7 +1032,7 @@ const servicePlatforms: ServicePlatform[] = [
     track: [0, 1, 2, 2, 2],
     decision: "Retire / migrate",
     decisionTone: "migrate",
-    liveWith: "Controlled support only for known jobs and consumers.",
+    liveWith: "Governed support only for known jobs and consumers.",
     mustClose: "Validation rules, lineage, cost baseline and cutover evidence.",
     pandav: "Migration factory to Databricks/Delta; retire the legacy path.",
     dimensions: { performance: 1, connectivity: 1, security: 1, change: 1, observability: 1, reliability: 1, ownership: 1, proactive: 0 }
@@ -1047,8 +1047,8 @@ const servicePlatforms: ServicePlatform[] = [
     decision: "Hold / defer",
     decisionTone: "hold",
     liveWith: "Prepared infrastructure can exist without running agents in the estate.",
-    mustClose: "Policy, logging, cost controls, audit sink, rollback and gate ownership.",
-    pandav: "The controlled path for assisted and agentic operations after gates pass.",
+    mustClose: "Policy, logging, cost guardrails, audit sink, rollback and gate ownership.",
+    pandav: "The governed path for assisted and agentic operations after gates pass.",
     dimensions: { performance: 1, connectivity: 2, security: 2, change: 1, observability: 1, reliability: 1, ownership: 2, proactive: 1 }
   }
 ];
@@ -1099,19 +1099,19 @@ export function DayOneSection() {
   );
 }
 
-function maturityLabel(level: number) {
+export function maturityLabel(level: number) {
   return maturityLevels.find((item) => item.level === level)?.label ?? `M${level}`;
 }
 
-function scoreTone(score: number) {
+export function scoreTone(score: number) {
   if (score >= 4) return "good";
   if (score >= 2) return "partial";
   return "gap";
 }
 
-type PlatformDimensionMarks = Record<string, DimensionScores>;
+export type PlatformDimensionMarks = Record<string, DimensionScores>;
 
-function dimensionScoresFromHorizon(platform: ServicePlatform, horizonIndex: number) {
+export function dimensionScoresFromHorizon(platform: ServicePlatform, horizonIndex: number) {
   return Object.fromEntries(
     readinessDimensions.map((dimension) => {
       const baseline = platform.dimensions[dimension.id];
@@ -1123,7 +1123,7 @@ function dimensionScoresFromHorizon(platform: ServicePlatform, horizonIndex: num
   ) as DimensionScores;
 }
 
-function dimensionMarksFromHorizon(horizonIndex: number) {
+export function dimensionMarksFromHorizon(horizonIndex: number) {
   return Object.fromEntries(
     servicePlatforms.map((platform) => [platform.id, dimensionScoresFromHorizon(platform, horizonIndex)])
   ) as PlatformDimensionMarks;
@@ -1142,7 +1142,7 @@ function platformRadarValues(scores: DimensionScores) {
   return readinessDimensions.map((dimension) => scores[dimension.id]);
 }
 
-function platformMaturityFromScores(scores: DimensionScores) {
+export function platformMaturityFromScores(scores: DimensionScores) {
   const values = platformRadarValues(scores);
   const average = averageScore(values);
   const weakestScore = Math.min(...values);
@@ -1161,7 +1161,7 @@ function aggregateRadarValues(dimensionMarks: PlatformDimensionMarks) {
   });
 }
 
-function averageScore(values: number[]) {
+export function averageScore(values: number[]) {
   return values.reduce((sum, score) => sum + score, 0) / values.length;
 }
 
@@ -1415,7 +1415,7 @@ function dashboardSheetXml(dimensionMarks: PlatformDimensionMarks) {
   const summaryRows = [
     ["Average maturity score", Number(averageMaturity.toFixed(1)), `AVERAGE(B${dashboardDimensionStartRow}:B${radarEndRow})`],
     ["Run-ready coverage", `${platformSummaries.filter((summary) => summary.level >= 2).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=2")&"/${servicePlatforms.length}"`],
-    ["Controlled or better", `${platformSummaries.filter((summary) => summary.level >= 3).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=3")&"/${servicePlatforms.length}"`],
+    ["Risk-mitigated or better", `${platformSummaries.filter((summary) => summary.level >= 3).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=3")&"/${servicePlatforms.length}"`],
     ["Proactive coverage", `${platformSummaries.filter((summary) => summary.level >= 4).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=4")&"/${servicePlatforms.length}"`],
     ["Pandav candidates", `${platformSummaries.filter((summary) => summary.level >= 5).length}/${servicePlatforms.length}`, `COUNTIF(${calcRange},">=5")&"/${servicePlatforms.length}"`]
   ];
@@ -1953,7 +1953,7 @@ function RepresentativeMaturityRadar({
         <div className="radar-summary-card">
           <span>Average maturity</span>
           <strong>M{averageMaturity.toFixed(1)}</strong>
-          <small>{controlledCount} controlled or better</small>
+          <small>{controlledCount} risk-mitigated or better</small>
         </div>
         <div className="radar-summary-card">
           <span>Run-ready coverage</span>
@@ -1968,7 +1968,7 @@ function RepresentativeMaturityRadar({
         <div className="radar-summary-card">
           <span>Pandav candidates</span>
           <strong>{pandavReadyCount}</strong>
-          <small>calculated M5 patterns ready for controlled automation</small>
+          <small>calculated M5 patterns ready for governed automation</small>
         </div>
       </div>
 
@@ -2627,7 +2627,7 @@ export function TransitionCoverageSection() {
             <div className="coverage-control-box">
               <ShieldCheck size={18} aria-hidden="true" />
               <div>
-                <strong>Control before takeover</strong>
+                <strong>Risk mitigation before takeover</strong>
                 <p>{activeCase.control}</p>
               </div>
             </div>
@@ -2681,7 +2681,7 @@ export function GovernanceSection() {
   return (
     <Section id="governance" num="10" title="Governance: two layers, one principle">
       <p className="sec-sub">
-        Controls arrive before autonomy — always. Service governance runs from day one on the RFP's own cadence; agentic
+        Guardrails arrive before autonomy — always. Service governance runs from day one on the RFP's own cadence; agentic
         governance is prepared during Lane-1 quarters and switches on only when something agentic first touches the estate.
       </p>
       <div className="gov-planes">

@@ -78,7 +78,7 @@ export function ArchitecturePage() {
 
       <Section id="architecture-graph" num="A2" title="Access graph model">
         <p className="sec-sub">
-          The graph is the control model. It connects Pandora organisation structure, Entra identity, projects, systems,
+          The graph is the governance model. It connects Pandora organisation structure, Entra identity, projects, systems,
           resources, roles, approval policies, grants and ServiceNow evidence into one queryable access model.
         </p>
         <Reveal className="arch-diagram-panel">
@@ -101,7 +101,7 @@ export function ArchitecturePage() {
       <Section id="architecture-security" num="A3" title="Security model across the fabric">
         <p className="sec-sub">
           Security is not bolted onto individual agents. The same identity, graph policy, approval, secrets, tool execution
-          and audit controls apply across the Teams bot, SDLC framework, ops agents and Pandav core.
+          and audit guardrails apply across the Teams bot, SDLC framework, ops agents and Pandav core.
         </p>
         <div className="arch-split">
           <Reveal className="arch-diagram-panel">
@@ -307,7 +307,7 @@ function NetworkFootprintDiagram() {
       <rect x="706" y="70" width="156" height="360" rx="8" fill="#E9F3EC" stroke="#A9C9B5" />
       <text x="116" y="96" textAnchor="middle" className="svg-title">M365 tenant</text>
       <text x="346" y="96" textAnchor="middle" className="svg-title">Azure app zone</text>
-      <text x="576" y="96" textAnchor="middle" className="svg-title">Data/control</text>
+      <text x="576" y="96" textAnchor="middle" className="svg-title">Data/governance</text>
       <text x="784" y="96" textAnchor="middle" className="svg-title">Enterprise APIs</text>
       <FigureBox x={54} y={132} w={124} h={60} fill="#FFFFFF" stroke="#E4B9BD" title="Teams client" lines={["chat · cards"]} compact />
       <FigureBox x={54} y={236} w={124} h={60} fill="#FFFFFF" stroke="#E4B9BD" title="Admin portal" lines={["graph editor"]} compact />
@@ -341,7 +341,7 @@ function NetworkFootprintDiagram() {
 
 function SecurityArchitectureDiagram() {
   return (
-    <svg className="architecture-svg" viewBox="0 0 900 430" role="img" aria-label="Security control model across Pandav">
+    <svg className="architecture-svg" viewBox="0 0 900 430" role="img" aria-label="Security guardrail model across Pandav">
       <defs>
         <marker id="arch-arrow-security" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -349,7 +349,7 @@ function SecurityArchitectureDiagram() {
       </defs>
       <rect x="8" y="8" width="884" height="414" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
       <text x="28" y="36" className="svg-label">
-        SECURITY CONTROL STACK
+        SECURITY GUARDRAIL STACK
       </text>
       <FigureBox x={40} y={88} w={128} h={72} fill="#F7E9E9" stroke="#E4B9BD" title="Request" lines={["Teams · SDLC", "Ops signal"]} compact />
       <FigureBox x={200} y={88} w={128} h={72} fill="#F1EDF6" stroke="#C8B9DA" title="Identity" lines={["Entra ID", "Microsoft Graph"]} compact />
@@ -488,7 +488,7 @@ function OpsAgentDiagram() {
         OPS AGENTS
       </text>
       <FigureBox x={40} y={80} w={132} h={78} fill="#F8F1E6" stroke="#DDBB8C" title="Signal intake" lines={["New Relic", "SNOW · metadata"]} compact />
-      <FigureBox x={226} y={80} w={150} h={78} fill="#F8F1E6" stroke="#DDBB8C" title="Correlation agents" lines={["incidents · drift", "cost · controls"]} compact />
+      <FigureBox x={226} y={80} w={150} h={78} fill="#F8F1E6" stroke="#DDBB8C" title="Correlation agents" lines={["incidents · drift", "cost · guardrails"]} compact />
       <FigureBox x={430} y={80} w={132} h={78} fill="#EDF1F6" stroke="#B6C5D5" title="Graph + policy" lines={["owner · risk", "blast radius"]} compact />
       <FigureBox x={616} y={80} w={132} h={78} fill="#F7E9E9" stroke="#E4B9BD" title="Human gate" lines={["PagerDuty", "approver"]} compact />
       <FigureBox x={164} y={240} w={150} h={62} fill="#E9F3EC" stroke="#A9C9B5" title="Runbook execution" lines={["CI runner", "reversible action"]} compact />
@@ -501,7 +501,7 @@ function OpsAgentDiagram() {
       <line x1="496" y1="158" x2="462" y2="238" stroke="#2E7D4F" strokeWidth="1.5" markerEnd="url(#arch-arrow-ops)" />
       <line x1="682" y1="158" x2="682" y2="238" stroke="#684E86" strokeWidth="1.5" markerEnd="url(#arch-arrow-ops)" />
       <text x="410" y="334" textAnchor="middle" className="svg-small svg-bold" fill="#A3671F">
-        Agents reduce manual monitoring; production action remains policy-controlled
+        Agents reduce manual monitoring; production action remains policy-governed
       </text>
     </svg>
   );

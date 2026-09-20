@@ -29,7 +29,7 @@ export const architectureHero = {
   kicker: "Architecture appendix",
   headline: "Pandav architecture: governed work surfaces on a graph-backed core",
   lede:
-    "This page separates the architecture story from the maturity journey. It shows the overall component map, the infrastructure and network footprint, the internal design of each agentic capability, and the security controls that apply across them."
+    "This page separates the architecture story from the maturity journey. It shows the overall component map, the infrastructure and network footprint, the internal design of each agentic capability, and the security guardrails that apply across them."
 };
 
 export const referenceFacts = [
@@ -84,7 +84,7 @@ export const infrastructureZones = [
     controls: ["TLS ingress", "managed runtime", "stateless LLM calls"]
   },
   {
-    zone: "Data and control zone",
+    zone: "Data and governance zone",
     body: "Neo4j AuraDB, PostgreSQL, Key Vault and Service Bus hold graph state, transaction state, secrets and retry queues.",
     controls: ["least privilege", "Key Vault secrets", "insert-only audit"]
   },
@@ -144,7 +144,7 @@ export const pandavCoreModules = [
 export const pandavCoreSequence = [
   "Resolve identity with Microsoft Graph and bind the request to the canonical Entra user rather than self-reported identity.",
   "Traverse the Neo4j access graph before any action so ownership, policy and approver context are known.",
-  "Create the ServiceNow record before provisioning when the workflow is material, production or policy-controlled.",
+  "Create the ServiceNow record before provisioning when the workflow is material, production or policy-governed.",
   "Execute only typed idempotent tools, then write the AccessGrant node, ServiceNow edge and insert-only audit row."
 ] as const;
 
@@ -207,13 +207,13 @@ export const opsAgentRows = [
     body: "The core resolves service owner, blast radius, environment, risk tier and approval policy before runbook execution."
   },
   {
-    title: "Controlled runbook execution",
+    title: "Governed runbook execution",
     body: "Only approved reversible runbooks execute through existing automation or CI runners, with PagerDuty and human gates for high risk."
   }
 ] as const;
 
 export const opsFlow = [
-  "Telemetry produces an alert, incident, drift, cost or control signal that can be handled by a known operational pattern.",
+  "Telemetry produces an alert, incident, drift, cost or risk signal that can be handled by a known operational pattern.",
   "Ops agents enrich the signal with service metadata, ownership, historical incidents, runbooks and current platform context.",
   "Policy decides whether the agent may draft an RCA, ask a human for approval, trigger a runbook or block the request.",
   "Outcome evidence is written back to ServiceNow, audit state and governance scorecards so operations maturity is measurable."
@@ -248,7 +248,7 @@ export const securityControls = [
 
 export const securityByComponent = [
   ["Teams governance bot", "Validated Teams identity, Adaptive Card approvals, graph-validated approver rights and ServiceNow-first workflow evidence."],
-  ["Agentic SDLC framework", "Versioned skills, approved harnesses, human PR review, quality gates, model usage controls and delivery evidence in GitHub/Jira."],
+  ["Agentic SDLC framework", "Versioned skills, approved harnesses, human PR review, quality gates, model usage guardrails and delivery evidence in GitHub/Jira."],
   ["Ops agents", "Read-only signal connectors by default, graph policy before action, human gate for production risk and reversible runbook execution."],
   ["Pandav core", "Central policy engine, typed tool dispatcher, Key Vault secrets, idempotent tools, graph writes and insert-only audit state."]
 ] as const;

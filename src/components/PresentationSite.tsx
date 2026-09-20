@@ -21,6 +21,16 @@ import {
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { brand, horizons, navSections } from "../data/alternative";
 import { defaultCommercialControls, getCommercialSnapshot } from "./AltCommercials";
+import {
+  averageScore,
+  dimensionMarksFromHorizon,
+  maturityHorizons,
+  maturityLabel,
+  platformMaturityFromScores,
+  scoreTone,
+  servicePlatforms,
+  type ServicePlatform
+} from "./AltRun";
 
 const fabricArchitecture = new URL("../assets/presentation/agentic-fabric-architecture.webp", import.meta.url).href;
 const dialInActionImage = new URL("../assets/presentation/dial-in-action.webp", import.meta.url).href;
@@ -80,6 +90,7 @@ interface LightboxContent {
   body: string;
   images: LightboxImage[];
   video?: LightboxVideo;
+  view?: "transition-baseline";
 }
 
 type OpenLightbox = (content: LightboxContent) => void;
@@ -136,19 +147,39 @@ const postRfpLightbox: LightboxContent = {
 
 const gatedControlVideoLightbox: LightboxContent = {
   eyebrow: "P03 Transformation proof",
-  title: "Gate-controlled transformation in motion.",
+  title: "Gate-based transformation in motion.",
   body: "The video shows how an item moves only when the right gate is passed, keeping transformation sequenced, visible and reversible.",
   images: [],
   video: {
     src: "/video/gatedcontrol.mp4",
-    label: "Gated control walkthrough",
-    caption: "Transformation moves through controlled gates instead of jumping directly to the north star."
+    label: "Gated flow walkthrough",
+    caption: "Transformation moves through approved gates instead of jumping directly to the north star."
+  }
+};
+
+const transitionBaselineLightbox: LightboxContent = {
+  eyebrow: "P03 As-is transition",
+  title: "Transition baseline: assess while taking over.",
+  body: "The radar uses the same maturity tracker as the detailed site. The starting mark is deliberately evidence-led: as runtime proof improves, stabilisation moves each technology group up the scale.",
+  images: [],
+  view: "transition-baseline"
+};
+
+const agenticFabricVideoLightbox: LightboxContent = {
+  eyebrow: "P03 North star view",
+  title: "Agentic fabric north star.",
+  body: "This video shows the north star view of the agentic fabric, connected across front doors, governance, graph memory, evidence and platform execution.",
+  images: [],
+  video: {
+    src: "/video/agenticfabric.mp4",
+    label: "Agentic fabric walkthrough",
+    caption: "The fabric becomes active only after the transition gates prove that the service, guardrails and evidence are ready."
   }
 };
 
 const dialInActionLightbox: LightboxContent = {
   eyebrow: "P03 Transformation proof",
-  title: "Dial in action: human control shifts only when the level rises.",
+  title: "Dial in action: human approval shifts only when the level rises.",
   body: "This view shows how the same maturity dial applies to data-product workspace and infrastructure provisioning: Level 0 stays human-run, Level 1 is AI-assisted with approval, and Level 2 becomes agent-run with human outcome review.",
   images: [
     {
@@ -243,7 +274,7 @@ const presentationChapters: PresentationChapter[] = [
     title: "Maturity Matrix",
     headline: "Every platform item moves through evidence, not aspiration.",
     punch: "M0 to M5 is assessed across documentation, ownership, observability, security, runbooks, data quality, recovery and automation.",
-    talkTrack: ["M0 means unknown or unverified", "M2 means measured and repeatable", "M4 means automated with controls", "M5 means agent-assisted closed loop"],
+    talkTrack: ["M0 means unknown or unverified", "M2 means measured and repeatable", "M4 means automated with guardrails", "M5 means agent-assisted closed loop"],
     tone: "accent",
     visual: "maturity",
     detailIds: ["dial-explorer", "walkthroughs", "goals", "proof", "pandora", "start"]
@@ -277,9 +308,9 @@ const presentationChapters: PresentationChapter[] = [
     time: "3:00 - 4:00",
     agenda: "Operating model & commercials",
     title: "Operate + Price",
-    headline: "Team, talent and commercials are one controllable model.",
+    headline: "Team, talent and commercials are one transparent operating model.",
     punch: "Location mix, FTE counts, rate cards, discounts and customer-ask capacity can be changed live to show cost impact.",
-    talkTrack: ["Run Base staffing", "Improve and Evolve engineering", "Customer ask capacity", "One rate card source", "Pandora controls the levers"],
+    talkTrack: ["Run Base staffing", "Improve and Evolve engineering", "Customer ask capacity", "One rate card source", "Pandora owns the levers"],
     tone: "people",
     visual: "commercials",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "commercials"]
@@ -601,135 +632,6 @@ function RfsSummaryVisual() {
   );
 }
 
-function NexusCollapseVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
-  const phases = [
-    {
-      id: "discover",
-      title: "Discover",
-      replaces: "Groups A + B",
-      before: "16 activities",
-      now: "5 steps",
-      gate: "Schema + Architecture Approval",
-      bullets: ["Parse request", "Classify data", "Generate schema", "Create approval pack"]
-    },
-    {
-      id: "build",
-      title: "Build",
-      replaces: "Groups C + D + E",
-      before: "52 activities",
-      now: "8 steps",
-      gate: "Security Review if PII/SPD",
-      bullets: ["Provision access", "Generate facade", "Wire IaC and CI/CD", "Run tests"]
-    },
-    {
-      id: "deploy",
-      title: "Deploy",
-      replaces: "Group F",
-      before: "15 activities",
-      now: "4 steps per environment",
-      gate: "UAT + PROD approvals",
-      bullets: ["Validate readiness", "Request approval", "Deploy", "Run E2E validation"]
-    },
-    {
-      id: "operate",
-      title: "Operate",
-      replaces: "Groups G + H + I + J",
-      before: "Continuous activity set",
-      now: "Event-driven operations",
-      gate: "Incident escalation",
-      bullets: ["Monitor", "Triage", "Resolve or escalate", "Learn continuously"]
-    }
-  ];
-  const [active, setActive] = useState(0);
-  const activePhase = phases[active];
-  const activityMarkers = [
-    ["Auto", 81, "72%"],
-    ["Merged", 13, "11%"],
-    ["Removed", 8, "7%"],
-    ["Kept", 11, "10%"]
-  ];
-
-  return (
-    <div className="pres-nexus">
-      <div className="pres-nexus-topline">
-        <div>
-          <span>Original Nexus lifecycle</span>
-          <strong>113 activities</strong>
-          <small>10 groups | 9 phases | 11 gates</small>
-        </div>
-        <ArrowRight size={24} aria-hidden="true" />
-        <div>
-          <span>Agentic operating model</span>
-          <strong>4 phases</strong>
-          <small>~20 meaningful steps | 5 gates</small>
-        </div>
-      </div>
-      <div className="pres-marker-grid" aria-label="Activity marker breakdown">
-        {activityMarkers.map(([label, count, pct]) => (
-          <div key={label}>
-            <strong>{count}</strong>
-            <span>{label}</span>
-            <small>{pct}</small>
-          </div>
-        ))}
-      </div>
-      <div className="pres-phase-flow">
-        {phases.map((phase, index) => (
-          <button type="button" className={index === active ? "active" : ""} onClick={() => setActive(index)} key={phase.id}>
-            <span>{phase.title}</span>
-            <strong>{phase.now}</strong>
-          </button>
-        ))}
-      </div>
-      <div className="pres-phase-detail">
-        <div>
-          <span>{activePhase.replaces}</span>
-          <strong>{activePhase.before} becomes {activePhase.now}</strong>
-          <small>Gate retained: {activePhase.gate}</small>
-        </div>
-        <ul>
-          {activePhase.bullets.map((bullet) => (
-            <li key={bullet}>{bullet}</li>
-          ))}
-        </ul>
-      </div>
-      <button type="button" className="pres-visual-open" onClick={() => onOpenLightbox(nexusLifecycleLightbox)}>
-        <Maximize2 size={15} aria-hidden="true" />
-        Open lifecycle evidence
-      </button>
-    </div>
-  );
-}
-
-function FabricVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
-  const fabricLayers = [
-    ["Front doors", "Teams, ServiceNow, Port, GitHub, dashboards"],
-    ["Agent layer", "Enablement, SDLC and Ops agents"],
-    ["Core", "Graph, policy, approval, evidence ledger"],
-    ["Estate", "AKS, Databricks, Unity Catalog, Kafka, Kong"]
-  ];
-
-  return (
-    <div className="pres-fabric">
-      <button type="button" className="pres-fabric-image" onClick={() => onOpenLightbox(fabricLightbox)} aria-label="Open Agentic Fabric architecture image">
-        <img src={fabricArchitecture} alt="Agentic fabric architecture slide preview" />
-        <span>
-          <Maximize2 size={14} aria-hidden="true" />
-          Open fabric image
-        </span>
-      </button>
-      <div className="pres-fabric-layers">
-        {fabricLayers.map(([layer, detail]) => (
-          <div key={layer}>
-            <strong>{layer}</strong>
-            <span>{detail}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function TransitionVisual({
   enableTransformationVideo = false,
   onOpenLightbox
@@ -741,7 +643,7 @@ function TransitionVisual({
     ["As-is transition", "Run existing tooling, SLAs and processes without day-one change."],
     ["Stabilisation", "Use runtime evidence, shadowing and SMEs to close undocumented gaps."],
     ["Transformation", "Move selected items through maturity gates with rollback and ownership."],
-    ["North star", "Agentic fabric becomes active only where controls and evidence are proven."]
+    ["North star", "Agentic fabric becomes active only where guardrails and evidence are proven."]
   ];
   const cover = [
     ["Vendor docs missing", "Runtime discovery + reverse shadowing"],
@@ -754,22 +656,40 @@ function TransitionVisual({
     <div className="pres-transition">
       <div className="pres-transition-road">
         {journey.map(([step, detail], index) => {
+          const isAsIs = index === 0;
           const isTransformation = index === 2;
-          const isInteractive = enableTransformationVideo && isTransformation && onOpenLightbox;
+          const isNorthStar = index === 3;
+          const isInteractive = enableTransformationVideo && Boolean(onOpenLightbox) && (isAsIs || isTransformation || isNorthStar);
           const cardBody = (
             <>
               <span>{index + 1}</span>
               <strong>{step}</strong>
               <small>{detail}</small>
-              {isInteractive ? (
+              {isInteractive && isAsIs ? (
+                <div className="pres-transition-actions">
+                  <button type="button" onClick={() => onOpenLightbox?.(transitionBaselineLightbox)}>
+                    <Maximize2 size={13} aria-hidden="true" />
+                    View baseline
+                  </button>
+                </div>
+              ) : null}
+              {isInteractive && isTransformation ? (
                 <div className="pres-transition-actions">
                   <button type="button" onClick={() => onOpenLightbox?.(gatedControlVideoLightbox)}>
                     <Maximize2 size={13} aria-hidden="true" />
-                    Watch gate control
+                    Watch gated flow
                   </button>
                   <button type="button" onClick={() => onOpenLightbox?.(dialInActionLightbox)}>
                     <Maximize2 size={13} aria-hidden="true" />
                     See dial in action
+                  </button>
+                </div>
+              ) : null}
+              {isInteractive && isNorthStar ? (
+                <div className="pres-transition-actions">
+                  <button type="button" onClick={() => onOpenLightbox?.(agenticFabricVideoLightbox)}>
+                    <Maximize2 size={13} aria-hidden="true" />
+                    Watch north star
                   </button>
                 </div>
               ) : null}
@@ -906,7 +826,7 @@ function BoothVisual() {
 function CasesVisual() {
   const cases: Array<[string, string, PresentationIcon]> = [
     ["DevOps", "Platform transition, CI/CD, observability, DORA and operating-model proof.", GitBranch],
-    ["Data", "Databricks, Power BI, Unity Catalog, lineage, data quality and cost control proof.", Database],
+    ["Data", "Databricks, Power BI, Unity Catalog, lineage, data quality and cost governance proof.", Database],
     ["Integration", "Kafka, Kong, BizTalk, API governance, event quality and migration proof.", Network],
     ["Operations", "24x7 run, incident triage, L1/L2/L3 separation and automation backlog proof.", ClipboardCheck]
   ];
@@ -994,14 +914,213 @@ function FaqVisual() {
   );
 }
 
+function platformShortLabel(platform: ServicePlatform) {
+  const labels: Record<string, string> = {
+    paks: "PAKS",
+    iac: "IaC",
+    github: "GitHub",
+    runners: "Run",
+    portal: "Port",
+    itsm: "ITSM",
+    pagerduty: "PD",
+    newrelic: "NR",
+    databricks: "DBX",
+    storage: "Delta",
+    catalog: "UC",
+    kafka: "Kafka",
+    kong: "Kong",
+    powerbi: "PBI",
+    biztalk: "BizTalk",
+    synapse: "EDW",
+    "ai-ready": "AI"
+  };
+  return labels[platform.id] ?? platform.technology.slice(0, 8);
+}
+
+function presentationRadarPoint(index: number, total: number, value: number, outerRadius = 39) {
+  const angle = -Math.PI / 2 + (index / total) * Math.PI * 2;
+  const radius = (Math.max(0, Math.min(5, value)) / 5) * outerRadius;
+  return {
+    x: 50 + Math.cos(angle) * radius,
+    y: 50 + Math.sin(angle) * radius
+  };
+}
+
+function TransitionBaselineRadar({
+  summaries,
+  averageMaturity
+}: {
+  summaries: Array<{ platform: ServicePlatform; level: number }>;
+  averageMaturity: number;
+}) {
+  const total = summaries.length;
+  const points = summaries.map((summary, index) => presentationRadarPoint(index, total, summary.level));
+  const polygon = points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
+  const closingPoint = points[0] ? `${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}` : "";
+
+  return (
+    <svg className="pres-baseline-radar" viewBox="0 0 100 100" role="img" aria-label="Transition baseline radar across 17 scoped technology groups">
+      {[1, 2, 3, 4, 5].map((ring) => (
+        <circle className="pres-baseline-radar-ring" cx="50" cy="50" r={(ring / 5) * 39} key={ring} />
+      ))}
+      {summaries.map((summary, index) => {
+        const outer = presentationRadarPoint(index, total, 5);
+        const label = presentationRadarPoint(index, total, 5.72);
+        return (
+          <g key={summary.platform.id}>
+            <line className="pres-baseline-radar-axis" x1="50" y1="50" x2={outer.x} y2={outer.y} />
+            <text
+              className="pres-baseline-radar-label"
+              x={label.x}
+              y={label.y}
+              textAnchor={label.x < 42 ? "end" : label.x > 58 ? "start" : "middle"}
+              dominantBaseline={label.y < 44 ? "text-after-edge" : label.y > 56 ? "text-before-edge" : "middle"}
+            >
+              {platformShortLabel(summary.platform)}
+            </text>
+          </g>
+        );
+      })}
+      <polygon className="pres-baseline-radar-area" points={polygon} />
+      <polyline className="pres-baseline-radar-line" points={`${polygon} ${closingPoint}`} />
+      {points.map((point, index) => (
+        <circle className="pres-baseline-radar-dot" cx={point.x} cy={point.y} r="1.5" key={summaries[index].platform.id} />
+      ))}
+      <text className="pres-baseline-radar-core" x="50" y="48" textAnchor="middle">
+        M{averageMaturity.toFixed(1)}
+      </text>
+      <text className="pres-baseline-radar-sub" x="50" y="54" textAnchor="middle">
+        estate
+      </text>
+    </svg>
+  );
+}
+
+function TransitionBaselinePanel() {
+  const [activeHorizon, setActiveHorizon] = useState(0);
+  const dimensionMarks = dimensionMarksFromHorizon(activeHorizon);
+  const summaries = servicePlatforms.map((platform) => {
+    const scores = dimensionMarks[platform.id];
+    return { platform, scores, ...platformMaturityFromScores(scores) };
+  });
+  const levelValues = summaries.map((summary) => summary.level);
+  const averageMaturity = averageScore(levelValues);
+  const runReadyCount = summaries.filter((summary) => summary.level >= 2).length;
+  const controlledCount = summaries.filter((summary) => summary.level >= 3).length;
+  const proactiveCount = summaries.filter((summary) => summary.level >= 4).length;
+  const gapCount = summaries.filter((summary) => summary.level <= 1).length;
+  const horizon = maturityHorizons[activeHorizon] ?? maturityHorizons[0];
+
+  return (
+    <div className="pres-baseline-panel">
+      <div className="pres-baseline-toolbar">
+        <div>
+          <span>Evidence horizon</span>
+          <strong>{horizon.label} · {horizon.title}</strong>
+        </div>
+        <div className="pres-baseline-tabs" role="tablist" aria-label="Transition maturity horizon">
+          {maturityHorizons.map((item, index) => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={index === activeHorizon}
+              key={item.id}
+              onClick={() => setActiveHorizon(index)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="pres-baseline-body">
+        <section className="pres-baseline-radar-card" aria-label="Transition maturity spider chart">
+          <div className="pres-baseline-card-head">
+            <span>Spider graph</span>
+            <strong>{servicePlatforms.length} scoped technology groups</strong>
+          </div>
+          <TransitionBaselineRadar summaries={summaries} averageMaturity={averageMaturity} />
+        </section>
+
+        <section className="pres-baseline-summary" aria-label="Transition maturity summary">
+          <div className="pres-baseline-summary-copy">
+            <span>How to explain this</span>
+            <strong>As-is transition starts the measurement, not the transformation.</strong>
+            <p>
+              We take over the running service, mark each technology conservatively from runtime evidence, then use
+              stabilisation to raise weak dimensions: ownership, observability, recovery, runbooks, security and automation readiness.
+            </p>
+          </div>
+          <div className="pres-baseline-kpis">
+            <div>
+              <span>Average mark</span>
+              <strong>M{averageMaturity.toFixed(1)}</strong>
+            </div>
+            <div>
+              <span>Run-ready</span>
+              <strong>{runReadyCount}/{summaries.length}</strong>
+            </div>
+            <div>
+              <span>Risk-mitigated+</span>
+              <strong>{controlledCount}</strong>
+            </div>
+            <div>
+              <span>M0/M1 gaps</span>
+              <strong>{gapCount}</strong>
+            </div>
+            <div>
+              <span>Proactive+</span>
+              <strong>{proactiveCount}</strong>
+            </div>
+          </div>
+          <a className="pres-baseline-detail-link" href={detailHref("transition-coverage", "revised-approach-p03")}>
+            Open full maturity tracker
+            <ExternalLink size={14} aria-hidden="true" />
+          </a>
+        </section>
+      </div>
+
+      <div className="pres-baseline-table" role="table" aria-label="Seventeen technology maturity rows">
+        <div className="pres-baseline-table-head" role="row">
+          <span role="columnheader">Technology group</span>
+          <span role="columnheader">Maturity</span>
+          <span role="columnheader">Weakest evidence</span>
+          <span role="columnheader">Decision</span>
+        </div>
+        {summaries.map(({ platform, level, weakestDimension, weakestScore }) => {
+          const Icon = platform.Icon;
+          return (
+            <div className="pres-baseline-row" role="row" key={platform.id}>
+              <span className="pres-baseline-tech" role="cell">
+                <Icon size={15} aria-hidden="true" />
+                <span>
+                  <strong>{platform.technology}</strong>
+                  <small>{platform.domain}</small>
+                </span>
+              </span>
+              <span className={`pres-baseline-pill ${scoreTone(level)}`} role="cell">{maturityLabel(level)}</span>
+              <span className="pres-baseline-weakest" role="cell">
+                <strong>{weakestDimension.abbr} {maturityLabel(weakestScore)}</strong>
+                <small>{weakestDimension.short}</small>
+              </span>
+              <span className={`pres-baseline-decision tone-${platform.decisionTone}`} role="cell">{platform.decision}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function PresentationLightbox({ content, onClose }: { content: LightboxContent | null; onClose: () => void }) {
   if (!content) return null;
   const mediaCount = content.images.length + (content.video ? 1 : 0);
+  const viewClass = content.view ? `view-${content.view}` : "";
 
   return (
     <div className="pres-lightbox-backdrop" role="presentation" onClick={onClose}>
       <section
-        className={`pres-lightbox media-count-${mediaCount} image-count-${content.images.length} ${content.video ? "has-video" : ""}`}
+        className={`pres-lightbox media-count-${mediaCount} image-count-${content.images.length} ${content.video ? "has-video" : ""} ${viewClass}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="pres-lightbox-title"
@@ -1017,24 +1136,30 @@ function PresentationLightbox({ content, onClose }: { content: LightboxContent |
           <p>{content.body}</p>
         </div>
         <div className="pres-lightbox-grid">
-          {content.video ? (
-            <figure className="pres-lightbox-video-frame">
-              <video src={content.video.src} controls autoPlay muted loop playsInline />
-              <figcaption>
-                <strong>{content.video.label}</strong>
-                <span>{content.video.caption}</span>
-              </figcaption>
-            </figure>
-          ) : null}
-          {content.images.map((image) => (
-            <figure key={image.label}>
-              <img src={image.src} alt={image.alt} />
-              <figcaption>
-                <strong>{image.label}</strong>
-                <span>{image.caption}</span>
-              </figcaption>
-            </figure>
-          ))}
+          {content.view === "transition-baseline" ? (
+            <TransitionBaselinePanel />
+          ) : (
+            <>
+              {content.video ? (
+                <figure className="pres-lightbox-video-frame">
+                  <video src={content.video.src} controls autoPlay muted loop playsInline />
+                  <figcaption>
+                    <strong>{content.video.label}</strong>
+                    <span>{content.video.caption}</span>
+                  </figcaption>
+                </figure>
+              ) : null}
+              {content.images.map((image) => (
+                <figure key={image.label}>
+                  <img src={image.src} alt={image.alt} />
+                  <figcaption>
+                    <strong>{image.label}</strong>
+                    <span>{image.caption}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </>
+          )}
         </div>
       </section>
     </div>

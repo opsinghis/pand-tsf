@@ -38,7 +38,7 @@ export function AltHero() {
           <MobileFabricFlow />
           <p className="diagram-note">
             The agentic fabric you endorsed, shown here as the endpoint. Everything below is the on-ramp — how we reach it,
-            step by earned step, at your pace and behind gates you control.
+            step by earned step, at your pace and behind gates you approve.
           </p>
         </Reveal>
       </div>

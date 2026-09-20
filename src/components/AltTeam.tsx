@@ -373,13 +373,13 @@ export function TeamShapeSection() {
   );
 }
 
-// ── 12 · One leader, Pandora in control ──────────────────────────────────
+// ── 12 · One leader, Pandora owns decisions ───────────────────────────────
 export function TeamLeaderSection() {
   return (
     <Section id="team-leader" num="12" title="One leader across all tracks — and Pandora on the wheel">
       <p className="sec-sub wide">{teamLeaderNote}</p>
       <OrgDiagram />
-      <h3 className="section-inline-title">Who decides, who does — control by design</h3>
+      <h3 className="section-inline-title">Who decides, who does — decision rights by design</h3>
       <div className="control-strip">
         {controlBands.map((band) => (
           <div className={`control-seg ${band.owner}`} key={band.area}>

@@ -47,7 +47,7 @@ export const navChapters = [
   ]},
   { id: "team", label: "The Team", sections: [
     { id: "team-shape", label: "One team, three locations", num: "11" },
-    { id: "team-leader", label: "One leader · Pandora in control", num: "12" },
+    { id: "team-leader", label: "One leader · Pandora owns decisions", num: "12" },
     { id: "team-converge", label: "Why two teams? Dev & ops converge", num: "13" },
     { id: "team-skills", label: "Skills & knowledge transfer", num: "14" },
     { id: "team-capacity", label: "Capacity that compounds", num: "15" }
@@ -83,7 +83,7 @@ export const hero = {
   attribution: "Your message after the platform deep-dive",
   ownership: "Thank you — this is exactly the right challenge, and a welcome one. In the deep dive we showed you the destination but not the road to it, so it read as if we would do all of it from day one. We are grateful for the chance to show the opposite.",
   lede:
-    "Here is the road we did not show. We run your platforms as they run today — your tools, your processes, your SLAs, the RFP's own transition plan — from day one. The agentic fabric stays exactly where you liked it: the destination. Everything below is how we travel there, step by earned step, at your pace and only ever through gates you control.",
+    "Here is the road we did not show. We run your platforms as they run today — your tools, your processes, your SLAs, the RFP's own transition plan — from day one. The agentic fabric stays exactly where you liked it: the destination. Everything below is how we travel there, step by earned step, at your pace and only ever through gates you approve.",
   oneLiner: "The fabric is never a dependency — only a dividend."
 };
 
@@ -104,7 +104,7 @@ export const pillars = [
     tag: "Under both, from day one",
     title: "Governance",
     role: "base" as const,
-    body: "Service governance live from day one. Agentic governance pre-built but dormant until the first dial-up. Controls always arrive before autonomy."
+    body: "Service governance live from day one. Agentic governance pre-built but dormant until the first dial-up. Guardrails always arrive before autonomy."
   }
 ];
 
@@ -170,9 +170,9 @@ export const foundationPillars: FoundationPillar[] = [
     assess:
       "Joint security posture review in months 1–3: secrets and Key Vault hygiene, RBAC and network policy, environment isolation, audit-sink coverage, LLM gateway readiness.",
     build:
-      "Close the found gaps inside Lane 1; stand up the LLM gateway with policy, logging and cost controls. AI-ready is not AI-running — and AI-ready infrastructure is one of your own stated goals, so this is paid-for scope, not overhead.",
+      "Close the found gaps inside Lane 1; stand up the LLM gateway with policy, logging and cost guardrails. AI-ready is not AI-running — and AI-ready infrastructure is one of your own stated goals, so this is paid-for scope, not overhead.",
     evidence:
-      "Security sign-off · gateway live with policy, logging and cost controls · audit sink proven end to end."
+      "Security sign-off · gateway live with policy, logging and cost guardrails · audit sink proven end to end."
   },
   {
     id: "people",
@@ -363,7 +363,7 @@ export const transitionCoverageProofPoints = [
   {
     value: "0-60",
     label: "support takeover window",
-    detail: "L1/L2 moves only after access, on-call, P1/P2 routing and gap controls are proven."
+    detail: "L1/L2 moves only after access, on-call, P1/P2 routing and gap mitigations are proven."
   },
   {
     value: "60-120",
@@ -373,7 +373,7 @@ export const transitionCoverageProofPoints = [
   {
     value: "4 decisions",
     label: "per component",
-    detail: "Transition now, transition with controls, hold/defer, or retire/migrate."
+    detail: "Transition now, transition with risk mitigation, hold/defer, or retire/migrate."
   },
   {
     value: "50+",
@@ -389,9 +389,9 @@ export const transitionReadinessBuckets = [
     decision: "Move to autonomous support."
   },
   {
-    bucket: "Transition with controls",
+    bucket: "Transition with Risk Mitigation",
     meaning: "In scope but missing documentation, SME detail, observability, automation or dependency clarity.",
-    decision: "Take over with added monitoring, hypercare, named escalation and a dated gap plan."
+    decision: "Take over with added monitoring, hypercare, named escalation, risk owner and dated mitigation plan."
   },
   {
     bucket: "Hold / defer",
@@ -400,13 +400,13 @@ export const transitionReadinessBuckets = [
   },
   {
     bucket: "Retire / migrate",
-    meaning: "The better answer is not long-term takeover but controlled migration, replacement or decommission.",
+    meaning: "The better answer is not long-term takeover but governed migration, replacement or decommission.",
     decision: "Move into the relevant migration factory or improvement backlog."
   }
 ] as const;
 
 export const transitionCoverageClose =
-  "No undocumented critical component becomes fully transitioned because time has passed. It passes readiness, moves with named controls, is held behind governance, or becomes a migration/retirement path.";
+  "No undocumented critical component becomes fully transitioned because time has passed. It passes readiness, moves with named risk mitigations, is held behind governance, or becomes a migration/retirement path.";
 
 export const dayOneFacts = [
   { label: "Tooling", value: "Pandora's own table, unchanged: ServiceNow, New Relic, PagerDuty and GitHub (migrations in flight), Terraform, Jira/Confluence, Port.io." },
@@ -514,7 +514,7 @@ export const scopeDial: DialItem[] = [
     level0: "ITIL operations, ServiceNow, SLOs, human 24/7 on-call.",
     level1: "AI triage summaries and runbook suggestions to the on-call human.", level1H: "Apr 2027",
     level2: "Agentic ops executes approved reversible runbooks.", level2H: "Oct 2027+", targetNeedsLevel: 0 },
-  { id: "ado-github", platform: "devops", name: "ADO → GitHub foundation", sourceNo: 3, deliveredBy: "GitHub migration factory, repo/pipeline conversion skills", scopeDesc: "Migrate source control and pipelines from Azure DevOps to GitHub, the foundation for a modern AI-assisted development workflow.",
+  { id: "ado-github", platform: "devops", name: "ADO → GitHub foundation", sourceNo: 3, deliveredBy: "GitHub migration factory, repo/pipeline conversion skills", scopeDesc: "Migrate repositories and pipelines from Azure DevOps to GitHub, the foundation for a modern AI-assisted development workflow.",
     level0: "Conventional migration factory: repo and pipeline conversion playbooks, wave plan, cutover evidence.",
     level1: "Our team's AI-assisted pipeline conversion — internal to us, from day one.", level1H: "internal, day 1",
     level2: "n/a — one-time project.", targetNeedsLevel: 0, goals: ["DevOps 02", "Migrations in flight"] },
@@ -943,7 +943,7 @@ export const controlBands: ControlBand[] = [
 ];
 
 export const controlNote =
-  "Control is structural, not promised. Pandora retains Lead and Senior Engineers, architecture, standards and the roadmap; we run the day-to-day. Every gate and every dial-up needs a named Pandora owner's sign-off.";
+  "Decision rights are structural, not promised. Pandora retains Lead and Senior Engineers, architecture, standards and the roadmap; we run the day-to-day. Every gate and every dial-up needs a named Pandora owner's sign-off.";
 
 export interface SkillRow {
   skill: string;
@@ -1067,7 +1067,7 @@ export const teamAsks: string[] = [
 ];
 
 export const teamClose =
-  "One accountable leader, one team across three locations, Pandora in control at every gate, capacity compounding, and ownership transferring — the delivery engine that makes the gentle path credible.";
+  "One accountable leader, one team across three locations, Pandora decision rights at every gate, capacity compounding, and ownership transferring — the delivery engine that makes the gentle path credible.";
 
 // ── The Team · dev/ops convergence (answers "why two teams?") ─────────────
 export const convergeIntro =

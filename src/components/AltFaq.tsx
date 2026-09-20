@@ -42,7 +42,7 @@ const faqs: FaqItem[] = [
     question: "What if the outgoing vendor does not hand over everything or the transition turns hostile?",
     answer: [
       "We treat incomplete handover as an expected transition risk, not as an exception. Missing artefacts become named transition gaps with an owner, evidence required, decision route and date.",
-      "The permitted decisions are controlled: transition now with compensating controls, hold until evidence is complete, reverse-engineer through a governed backlog or burst pool, or mark for migration/retirement if the legacy path is not worth preserving.",
+      "The permitted decisions are explicit: transition now, transition with risk mitigation, hold until evidence is complete, reverse-engineer through a governed backlog or burst pool, or mark for migration/retirement if the legacy path is not worth preserving.",
       "Where the gap needs specialist depth, we bring in Sapient SMEs as needed to close the evidence gap: Kafka schema and connector SMEs, Databricks/Power BI SMEs, DevOps platform SMEs, BizTalk SMEs or security/network SMEs. That gives the transition team access to depth without permanently over-staffing the run service."
     ],
     links: [
@@ -157,7 +157,7 @@ const faqs: FaqItem[] = [
     question: "How do we differentiate the response beyond people and rates?",
     answer: [
       "The differentiation is three-part: transition from an imperfect current state, enough capability to protect the run service, and proof that we have done comparable takeover work before.",
-      "That means the response should lead with how we take control without perfect handover, how the team model avoids single-person dependency, and which cases prove transition, documentation, reverse shadow and stabilisation outcomes."
+      "That means the response should lead with how we take ownership without perfect handover, how the team model avoids single-person dependency, and which cases prove transition, documentation, reverse shadow and stabilisation outcomes."
     ],
     links: [
       { label: "Transition coverage", href: "#transition-coverage" },

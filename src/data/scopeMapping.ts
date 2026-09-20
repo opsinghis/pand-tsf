@@ -51,7 +51,7 @@ export const scopeHorizons: ScopeHorizon[] = [
   {
     when: "3 months",
     title: "Take over as-is and instrument",
-    body: "Stand up the graph-backed control model, take the named work into backlog, connect Teams intake, ServiceNow evidence and first PAKS/GitHub/Data governance recipes."
+    body: "Stand up the graph-backed governance model, take the named work into backlog, connect Teams intake, ServiceNow evidence and first PAKS/GitHub/Data governance recipes."
   },
   {
     when: "6 months",
@@ -179,7 +179,7 @@ export const scopeDomains: ScopeDomain[] = [
         caps: ["Team + Fabric", "SDLC skills", "Agentic Ops"],
         horizon: "6 months",
         solution: "PAKS, GitHub Actions, runners, secrets, certs, IaC recipes",
-        path: "Codify repeatable support requests before allowing approved recipes to execute through controlled tools."
+        path: "Codify repeatable support requests before allowing approved recipes to execute through governed tools."
       },
       {
         ask: "Cost transparency for DevOps estate",
@@ -212,7 +212,7 @@ export const scopeDomains: ScopeDomain[] = [
         caps: ["Team + Fabric", "SDLC skills"],
         horizon: "1 year",
         solution: "Teams agent, graph policy, ServiceNow, Databricks/Olympus recipes",
-        path: "Pilot controlled workspace requests, then prove the under-30-minute target at scale."
+        path: "Pilot governed workspace requests, then prove the under-30-minute target at scale."
       },
       {
         ask: "Nexus to Unity Catalog flow",
@@ -257,7 +257,7 @@ export const scopeDomains: ScopeDomain[] = [
         caps: ["Team + Fabric"],
         horizon: "3 months",
         solution: "Graph + Unity Catalog + OpenMetadata + ServiceNow evidence",
-        path: "Use the graph as the control spine while preserving specialist systems as sources of truth."
+        path: "Use the graph as the governance spine while preserving specialist systems as sources of truth."
       },
       {
         ask: "Open data format",

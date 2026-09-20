@@ -98,12 +98,12 @@ export function LaneSection({
 function GovernanceExtras() {
   return (
     <>
-      <h3 className="section-inline-title">The governance control plane — nine components, dated</h3>
+      <h3 className="section-inline-title">The governance guardrail plane — nine components, dated</h3>
       <DataTable
         headers={["Component", "Why it matters", "First credible version"]}
         rows={controlPlane.map((row) => row.map((value, index) => ({ value, key: `${row[0]}-${index}` })))}
       />
-      <h3 className="section-inline-title">Risk-tiered autonomy — as authority rises, controls tighten</h3>
+      <h3 className="section-inline-title">Risk-tiered autonomy — as authority rises, guardrails tighten</h3>
       <div className="tiers">
         {autonomyTiers.map(([tier, level, example, control]) => (
           <Reveal className="tier" key={tier}>

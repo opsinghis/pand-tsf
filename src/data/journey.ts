@@ -119,7 +119,7 @@ export const hero = {
     "We love the agentic fabric. Show us how you will lead us on this journey — technically, and in people, operations and governance — over 3 months, 6 months, a year, two years.",
   attribution: "The question we heard in the oral presentations",
   lede:
-    "Pandav starts with the work Pandora already does every day: Teams-based governance and access control, agentic SDLC support in Claude and Codex, and ops agents that reduce manual monitoring. The roadmap then matures those loops through evidence gates until Pandora owns the fabric."
+    "Pandav starts with the work Pandora already does every day: Teams-based governance and access governance, agentic SDLC support in Claude and Codex, and ops agents that reduce manual monitoring. The roadmap then matures those loops through evidence gates until Pandora owns the fabric."
 };
 
 export const pillars: Pillar[] = [
@@ -133,7 +133,7 @@ export const pillars: Pillar[] = [
   },
   {
     title: "Ops agents",
-    body: "Telemetry-led agents that correlate alerts, incidents, drift, cost and controls, then recommend or run approved reversible runbooks."
+    body: "Telemetry-led agents that correlate alerts, incidents, drift, cost and guardrails, then recommend or run approved reversible runbooks."
   }
 ];
 
@@ -165,7 +165,7 @@ export const coreBackendRows = [
   ],
   [
     "LLM interface",
-    "The core interprets natural-language requests, selects the right intent and maps it to a controlled graph query before action."
+    "The core interprets natural-language requests, selects the right intent and maps it to a governed graph query before action."
   ],
   [
     "Policy and audit",
@@ -215,10 +215,10 @@ export const architectureRows = [
 export const infrastructureRows = [
   ["M365 / Teams", "existing collaboration surface; Azure Bot Service registration and admin consent, not a new channel platform"],
   ["Azure runtime", "standard container or App Service for the Pandav API and bot backend, not a separate hosted agent platform"],
-  ["LLM gateway", "stateless model calls with policy, logging, data handling and token/cost controls"],
+  ["LLM gateway", "stateless model calls with policy, logging, data handling and token/cost guardrails"],
   ["Graph and records", "Neo4j AuraDB for live access graph, PostgreSQL for transactional state and audit, ServiceNow for ITSM truth"],
   ["Enterprise APIs", "GitHub, Jira, Confluence, Azure IAM, Databricks, Kubernetes, Salesforce, MuleSoft and runbooks through approved connectors"],
-  ["Operations signals", "New Relic, ServiceNow, Open Metadata, cost signals and CI/CD runners feed diagnostics and controlled runbook execution"]
+  ["Operations signals", "New Relic, ServiceNow, Open Metadata, cost signals and CI/CD runners feed diagnostics and governed runbook execution"]
 ] as const;
 
 export const solutionFlow = [
@@ -267,7 +267,7 @@ export const pandoraLandscapeRows = [
   ],
   [
     "ServiceNow ITSM",
-    "Control and audit",
+    "Governance and audit",
     "Every material workflow creates or updates the ServiceNow record before provisioning or operational execution completes."
   ],
   [
@@ -340,7 +340,7 @@ export const proofCards = [
   {
     chip: "Measured",
     stat: "$19,670",
-    body: "Indicative saving from one controlled Devin experiment: 28 story points in 6 days for 910 ACUs against standard developer effort."
+    body: "Indicative saving from one measured Devin experiment: 28 story points in 6 days for 910 ACUs against standard developer effort."
   },
   {
     chip: "In estate",
@@ -470,7 +470,7 @@ export const capabilityReadiness: CapabilityReadiness[] = [
   {
     id: "agentic-ops",
     loop: "Loop 3 · Agentic Ops",
-    title: "Agentic Ops — the signals and controls it needs are already in the estate",
+    title: "Agentic Ops — the signals and guardrails it needs are already in the estate",
     reframe:
       "An operations loop led by telemetry and grounded in runbooks, not an autonomous robot: existing signals feed the agents, a human gate takes over wherever risk appears, and execution is limited to approved, reversible runbooks.",
     proof: "Signals already emitted",
@@ -527,13 +527,13 @@ export const lanes: Lane[] = [
     horizons: {
       h3: {
         tag: "Foundation",
-        headline: "Foundation & first controlled domain",
+        headline: "Foundation & first governed domain",
         posture: "Assist · human-in-the-loop",
-        board: "Pandav live in one controlled domain; skills in Git; telemetry connected",
+        board: "Pandav live in one governed domain; skills in Git; telemetry connected",
         milestones: [
           "LLM gateway stood up as the shared foundation — one governed route to models for every capability",
           "Skills library versioned in Git alongside the codebase; IDE harnesses in daily use",
-          "**Pandav Teams front-door live in one controlled domain** — access provisioning, policy decision, approval and ServiceNow audit",
+          "**Pandav Teams front-door live in one governed domain** — access provisioning, policy decision, approval and ServiceNow audit",
           "Read-only telemetry connectors into New Relic and ServiceNow, consuming signals Pandora already emits",
           "Cost-per-task benchmarking running from day one",
           "Migration foundations begun: Azure DevOps to GitHub as the base for a modern development workflow"
@@ -671,7 +671,7 @@ export const lanes: Lane[] = [
           "**Human approval on every agent action** — no exceptions in the first horizon",
           "AgentOps runbooks and monitoring stood up; incident model for agent actions drafted",
           "24/7 support transition-in on P1 15-minute acknowledgement, 1.5h RTO and 99.99% mission-critical availability terms",
-          "Transition mechanics: plan and baseline, validate readiness, controlled execution, prove knowledge, 50+ parameter readiness cutover"
+          "Transition mechanics: plan and baseline, validate readiness, governed execution, prove knowledge, 50+ parameter readiness cutover"
         ],
         already:
           "**Comparable transition benchmark:** 100% readiness criteria met, 95%+ documentation/SOPs/runbooks generated and 97%+ SLA achievement during stabilization."
@@ -714,11 +714,11 @@ export const lanes: Lane[] = [
   {
     id: "governance",
     section: "07",
-    title: "Governance — the control plane",
+    title: "Governance — the guardrail plane",
     shortTitle: "Governance",
     colorVar: "--gov",
     intro:
-      "Governance is the thread, not a phase: every increase in autonomy is matched by an increase in control, backed by named components and dated first versions.",
+      "Governance is the thread, not a phase: every increase in autonomy is matched by stronger guardrails, backed by named components and dated first versions.",
     horizons: {
       h3: {
         tag: "Audit all",
@@ -726,7 +726,7 @@ export const lanes: Lane[] = [
         posture: "Inside Pandora's AI-governance guardrails",
         board: "Guardrail map; full audit logging; risk tiers defined",
         milestones: [
-          "Guardrail ownership map — who owns which control, agreed in writing",
+          "Guardrail ownership map — who owns which guardrail, agreed in writing",
           "**Full audit logging from day one**: every request, context package, approval, tool call and output traceable",
           "Risk-tiered approval model defined",
           "Operating inside Pandora's existing AI-governance and security guardrails"
@@ -735,17 +735,17 @@ export const lanes: Lane[] = [
       h6: {
         tag: "Charter",
         headline: "Pandora owns the gate charter",
-        posture: "Change control arrives",
-        board: "Gate charter owned by Pandora; model & prompt change control",
+        posture: "Change governance arrives",
+        board: "Gate charter owned by Pandora; model & prompt change governance",
         milestones: [
-          "Prompt and model change control — versioned, reviewed, reversible",
+          "Prompt and model change governance — versioned, reviewed, reversible",
           "**Phase 1 to 2 gate charter owned by Pandora** — criteria, owners and measures written by Pandora hands in workshop W2"
         ]
       },
       h12: {
         tag: "Encode",
         headline: "Policy becomes code",
-        posture: "Controls are executable",
+        posture: "Guardrails are executable",
         board: "Policy-as-code in the mesh; intent catalogue Pandora-owned",
         milestones: [
           "Policy-as-code in the mesh — approval rules and boundaries enforced at runtime",
@@ -792,7 +792,7 @@ export const operatingRoles = [
   ["Agent Product Owner", "Agent backlog, value case, adoption, prioritisation", "Named for pilot", "Owns Delegate backlog", "Owns portfolio roadmap", "Runs domain portfolio"],
   ["AgentOps Lead", "Monitoring, incident model, runbooks, operational readiness", "Drafts runbook model with PS", "Leads drills jointly", "Runs AgentOps dashboard", "Owns continuous improvement"],
   ["Platform Architect", "Reference architecture, connectors, patterns, technical guardrails", "Co-designs foundation", "Approves reusable patterns", "Governs registry / A2A", "Evolves fabric architecture"],
-  ["Security / Risk Owner", "Risk tiers, data boundaries, approvals, assurance", "Defines guardrails", "Owns model/prompt change control", "Reviews policy-as-code", "Chairs assurance gates"],
+  ["Security / Risk Owner", "Risk tiers, data boundaries, approvals, assurance", "Defines guardrails", "Owns model/prompt change governance", "Reviews policy-as-code", "Chairs assurance gates"],
   ["AI FinOps Owner", "Credits, tokens, model mix, cost per task, avoidable spend", "Baselines cost", "Defines budgets & alerts", "Optimises model routing", "Owns value/cost governance"],
   ["Domain Champions", "Adoption, local skill authoring, feedback loops", "Seeded in pilot teams", "Co-author skills", "Train teams", "Form federated community"],
   ["CoE Lead", "Standards, reuse, governance, maturity reviews", "Designate future owner", "Shapes CoE charter", "Runs CoE with PS coaching", "Pandora-owned CoE"]
@@ -843,7 +843,7 @@ export const gates = [
     label: "Gate 1",
     title: "3 → 6 months · Assist to first Delegate",
     owner: "Pandora Product / Platform, PS facilitates",
-    evidence: ["Pilot live in a controlled domain", "Audit trail complete end to end", "Risk tiers agreed and in use", "Enabled champions in place"],
+    evidence: ["Pilot live in a governed domain", "Audit trail complete end to end", "Risk tiers agreed and in use", "Enabled champions in place"],
     thresholds: ["2-3 live use cases", "100% of actions logged", "100% of material actions human-approved", "10-15 champions enabled", "First cost-per-task baseline published"]
   },
   {
@@ -882,7 +882,7 @@ export const rfpRows = [
 ] as const;
 
 export const risks = [
-  ["\"Autonomy will run ahead of control.\"", "It structurally cannot: gates precede autonomy, audit is on from day one, and execution is limited to approved, reversible runbooks. Tier-4 actions are never autonomous.", "Governance lane · every gate"],
+  ["\"Autonomy will run ahead of governance.\"", "It structurally cannot: gates precede autonomy, audit is on from day one, and execution is limited to approved, reversible runbooks. Tier-4 actions are never autonomous.", "Governance lane · every gate"],
   ["\"This creates vendor lock-in.\"", "Ownership transfer is in the plan, the metrics and the commercials. Skills are portable files in Git and the IP lands in Pandora repos.", "People lane · Gates 2-3"],
   ["\"What's the hosting and infrastructure burden?\"", "Nothing net-new: standard containers on Azure, read-only connectors into signals Pandora already emits. The harness never travels to Pandora.", "Technical lane · baseline"],
   ["\"Our teams have skills gaps.\"", "The RFP names Kubernetes, Kafka and DevOps practices. Enablement is a first-class workstream with weekly clinics, certifications and champions.", "People lane · all horizons"],

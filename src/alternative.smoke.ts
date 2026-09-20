@@ -11,6 +11,7 @@ import { resolve } from "node:path";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import App from "./App";
+import { maturityHorizons, servicePlatforms } from "./components/AltRun";
 import { PresentationSite } from "./components/PresentationSite";
 import * as alt from "./data/alternative";
 
@@ -100,8 +101,13 @@ const structural: Record<string, boolean> = {
     (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 1 &&
     (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 1 &&
     (presentationMarkup.match(/North star only after gates/g) || []).length >= 1 &&
-    presentationMarkup.includes("Watch gate control") &&
-    presentationMarkup.includes("See dial in action"),
+    presentationMarkup.includes("View baseline") &&
+    presentationMarkup.includes("Watch gated flow") &&
+    presentationMarkup.includes("See dial in action") &&
+    presentationMarkup.includes("Watch north star"),
+  "presentation maturity baseline source": servicePlatforms.length === 17 &&
+    maturityHorizons.some((horizon) => horizon.id === "now") &&
+    maturityHorizons.some((horizon) => horizon.id === "m6"),
   "presentation proof modals available": (presentationMarkup.match(/Open proof/g) || []).length >= 3,
   "deleted standalone pages absent": !presentationMarkup.includes('id="nexus-proof"') &&
     !presentationMarkup.includes('href="#nexus-proof"') &&
@@ -131,21 +137,27 @@ if (failed.length > 0) {
 // Dist checks
 const htmlPath = resolve(import.meta.dirname, "../dist/index.html");
 const videoPath = resolve(import.meta.dirname, "../dist/video/gatedcontrol.mp4");
+const agenticFabricVideoPath = resolve(import.meta.dirname, "../dist/video/agenticfabric.mp4");
 const pandoraModel1Path = resolve(import.meta.dirname, "../dist/pandora/model1.webp");
 const pandoraModel2Path = resolve(import.meta.dirname, "../dist/pandora/model2.webp");
 const html = readFileSync(htmlPath, "utf8");
 const size = statSync(htmlPath).size;
 const videoSize = statSync(videoPath).size;
+const agenticFabricVideoSize = statSync(agenticFabricVideoPath).size;
 const pandoraModel1Size = statSync(pandoraModel1Path).size;
 const pandoraModel2Size = statSync(pandoraModel2Path).size;
 if (/(?:src|href)="http|url\(http/i.test(html)) throw new Error("Build is not self-contained");
 if (/[\u00c2\u00c3]/.test(html)) throw new Error("Possible mojibake in built HTML");
 if (!/data:image\/(?:webp|jpeg|png)/.test(html)) throw new Error("Build has no inlined presentation images");
 if (!html.includes("/video/gatedcontrol.mp4")) throw new Error("Presentation video route missing from built HTML");
+if (!html.includes("/video/agenticfabric.mp4")) throw new Error("Agentic fabric video route missing from built HTML");
 if (!html.includes("/pandora/model1.webp") || !html.includes("/pandora/model2.webp")) {
   throw new Error("Pandora cover image routes missing from built HTML");
 }
 if (videoSize < 10_000) throw new Error(`Presentation video asset missing or too small: ${videoSize} bytes`);
+if (agenticFabricVideoSize < 10_000) {
+  throw new Error(`Agentic fabric video asset missing or too small: ${agenticFabricVideoSize} bytes`);
+}
 if (pandoraModel1Size < 5_000 || pandoraModel2Size < 5_000) {
   throw new Error(`Pandora cover assets missing or too small: ${pandoraModel1Size} / ${pandoraModel2Size} bytes`);
 }
