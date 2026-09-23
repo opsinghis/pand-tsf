@@ -9,11 +9,18 @@ import { AsIsLanesSection, DayOneSection, GovernanceSection, TransitionCoverageS
 import { ConvergenceSection, TeamCapacitySection, TeamLeaderSection, TeamShapeSection, TeamSkillsSection } from "./components/AltTeam";
 import { CommercialsSection } from "./components/AltCommercials";
 import { FaqSection } from "./components/AltFaq";
+import { BoothVisitSite } from "./components/BoothVisitSite";
+import { ProtectedCommercialsSection } from "./components/CommercialAccess";
 import { BackToPresentationLink, PresentationSite } from "./components/PresentationSite";
 
-function isPresentationRoute() {
-  if (typeof window === "undefined") return false;
-  return window.location.pathname.replace(/\/+$/, "") === "/presentation";
+type SpecialRoute = "presentation" | "booth" | "main";
+
+function getSpecialRoute(): SpecialRoute {
+  if (typeof window === "undefined") return "main";
+  const path = window.location.pathname.replace(/\/+$/, "");
+  if (path === "/presentation") return "presentation";
+  if (path === "/booth") return "booth";
+  return "main";
 }
 
 function scrollToHashAfterRender() {
@@ -25,11 +32,11 @@ function scrollToHashAfterRender() {
 }
 
 export default function App() {
-  const [presentationRoute, setPresentationRoute] = useState(isPresentationRoute);
+  const [specialRoute, setSpecialRoute] = useState(getSpecialRoute);
 
   useEffect(() => {
     const onPopState = () => {
-      setPresentationRoute(isPresentationRoute());
+      setSpecialRoute(getSpecialRoute());
       scrollToHashAfterRender();
     };
     const onHashChange = () => scrollToHashAfterRender();
@@ -43,12 +50,14 @@ export default function App() {
 
   useEffect(() => {
     scrollToHashAfterRender();
-  }, [presentationRoute]);
+  }, [specialRoute]);
 
   return (
     <MotionConfig reducedMotion="user" transition={{ duration: 0.28, ease: "easeOut" }}>
-      {presentationRoute ? (
+      {specialRoute === "presentation" ? (
         <PresentationSite />
+      ) : specialRoute === "booth" ? (
+        <BoothVisitSite />
       ) : (
         <>
           <AltNav />
@@ -69,7 +78,9 @@ export default function App() {
             <ConvergenceSection />
             <TeamSkillsSection />
             <TeamCapacitySection />
-            <CommercialsSection />
+            <ProtectedCommercialsSection>
+              <CommercialsSection />
+            </ProtectedCommercialsSection>
             <DialSection />
             <WalkthroughSection />
             <GoalsSection />

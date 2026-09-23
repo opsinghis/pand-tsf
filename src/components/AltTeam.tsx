@@ -1,5 +1,5 @@
-import { ArrowLeftRight, BadgeCheck, Check, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
-import { useState, type CSSProperties } from "react";
+import { ArrowLeftRight, BadgeCheck, CalendarDays, Check, ChevronLeft, ChevronRight, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { Fragment, useState, type CSSProperties } from "react";
 import {
   capacityDrivers,
   convergeClincher,
@@ -325,6 +325,578 @@ const opsCaseHandoffs = [
   { label: "Improve & Evolve → Development", detail: "Pandora prioritises it as planned build work, platform capability, migration asset or product change." }
 ];
 
+type TeamCapacityBucket = "run" | "evolve" | "burst";
+type RosterMode = "business" | "after" | "weekend";
+
+interface TeamCapacityRole {
+  id: string;
+  workstream: "Leadership" | "DevOps" | "Data" | "Integration" | "Legacy" | "Optional";
+  role: string;
+  defaultFte: number;
+  run: number;
+  evolve: number;
+  burst: number;
+  onCall: boolean;
+  note: string;
+}
+
+const teamBucketMeta: Array<{ id: TeamCapacityBucket; label: string; short: string; tone: string }> = [
+  { id: "run", label: "Base support + 24x7 on-call", short: "Run", tone: "tech" },
+  { id: "evolve", label: "Improve & Evolve", short: "Evolve", tone: "accent" },
+  { id: "burst", label: "On-demand / burst capacity", short: "Burst", tone: "proof" }
+];
+
+const rosterModes: Array<{ id: RosterMode; label: string; note: string }> = [
+  {
+    id: "business",
+    label: "Business hours",
+    note: "Run support, backlog delivery and improvement work are handled by the active domain pods."
+  },
+  {
+    id: "after",
+    label: "After hours",
+    note: "Primary and secondary on-call cover handle alerts; major incidents pull in the escalation layer."
+  },
+  {
+    id: "weekend",
+    label: "Weekend",
+    note: "The same rota carries longer coverage windows, so rota pressure becomes the visible constraint."
+  }
+];
+
+const rosterDomains = [
+  {
+    id: "devops",
+    label: "DevOps",
+    abbr: "DEV",
+    roleId: "devops-engineers",
+    scope: "GitHub, CI/CD, IaC, Kubernetes, platform connectivity and runner health."
+  },
+  {
+    id: "data",
+    label: "Data",
+    abbr: "DAT",
+    roleId: "data-engineers",
+    scope: "Databricks, Power BI, pipeline freshness, backfills, DQ and reporting reliability."
+  },
+  {
+    id: "integration",
+    label: "Integration",
+    abbr: "INT",
+    roleId: "integration-engineers",
+    scope: "Kafka, Kong, APIs, connectors, schemas, topics and consumer reliability."
+  }
+];
+
+const rotaDays = [
+  { week: "W1", day: "Mon", weekend: false },
+  { week: "W1", day: "Tue", weekend: false },
+  { week: "W1", day: "Wed", weekend: false },
+  { week: "W1", day: "Thu", weekend: false },
+  { week: "W1", day: "Fri", weekend: false },
+  { week: "W1", day: "Sat", weekend: true },
+  { week: "W1", day: "Sun", weekend: true },
+  { week: "W2", day: "Mon", weekend: false },
+  { week: "W2", day: "Tue", weekend: false },
+  { week: "W2", day: "Wed", weekend: false },
+  { week: "W2", day: "Thu", weekend: false },
+  { week: "W2", day: "Fri", weekend: false },
+  { week: "W2", day: "Sat", weekend: true },
+  { week: "W2", day: "Sun", weekend: true }
+];
+
+const defaultTeamCapacityRoles: TeamCapacityRole[] = [
+  {
+    id: "overall-lead",
+    workstream: "Leadership",
+    role: "Overall Engineering Lead",
+    defaultFte: 1,
+    run: 20,
+    evolve: 50,
+    burst: 30,
+    onCall: false,
+    note: "Technical coherence, cross-workstream arbitration and maturity uplift."
+  },
+  {
+    id: "devops-engineers",
+    workstream: "DevOps",
+    role: "DevOps engineers",
+    defaultFte: 8,
+    run: 45,
+    evolve: 30,
+    burst: 25,
+    onCall: true,
+    note: "GitHub, CI/CD, IaC, Kubernetes, runners and platform on-call."
+  },
+  {
+    id: "data-engineers",
+    workstream: "Data",
+    role: "Databricks / Power BI engineers",
+    defaultFte: 7,
+    run: 40,
+    evolve: 35,
+    burst: 25,
+    onCall: true,
+    note: "Jobs, pipelines, Power BI, DQ, lineage, backfill and data on-call."
+  },
+  {
+    id: "data-lead",
+    workstream: "Data",
+    role: "Data project / product / delivery lead",
+    defaultFte: 1,
+    run: 30,
+    evolve: 35,
+    burst: 35,
+    onCall: false,
+    note: "Plan, backlog, delivery governance and customer reporting."
+  },
+  {
+    id: "integration-engineers",
+    workstream: "Integration",
+    role: "Kafka / Kong engineers",
+    defaultFte: 10,
+    run: 40,
+    evolve: 30,
+    burst: 30,
+    onCall: true,
+    note: "Kafka, Kong, schemas, APIs, connectors and integration on-call."
+  },
+  {
+    id: "integration-qe",
+    workstream: "Integration",
+    role: "Integration QE",
+    defaultFte: 1,
+    run: 25,
+    evolve: 35,
+    burst: 40,
+    onCall: false,
+    note: "Release validation, regression evidence and automation quality."
+  },
+  {
+    id: "integration-leads",
+    workstream: "Integration",
+    role: "Project / product / delivery leads",
+    defaultFte: 2,
+    run: 30,
+    evolve: 30,
+    burst: 40,
+    onCall: false,
+    note: "Kafka/Kong delivery planning, dependencies, cutover governance and cadence."
+  },
+  {
+    id: "kafka-bas",
+    workstream: "Integration",
+    role: "Kafka technical business analysts",
+    defaultFte: 3,
+    run: 15,
+    evolve: 35,
+    burst: 50,
+    onCall: false,
+    note: "Translate business requirements into schemas, topics, APIs and stories."
+  },
+  {
+    id: "biztalk-pm",
+    workstream: "Legacy",
+    role: "Onsite BizTalk / legacy PM",
+    defaultFte: 1,
+    run: 25,
+    evolve: 25,
+    burst: 50,
+    onCall: false,
+    note: "Denmark vendor interface, dependency tracking and transition evidence."
+  },
+  {
+    id: "extra-run",
+    workstream: "Optional",
+    role: "Extra L1 / incident command reserve",
+    defaultFte: 0,
+    run: 80,
+    evolve: 10,
+    burst: 10,
+    onCall: false,
+    note: "Add if Pandora wants stronger 24x7 coordination beyond domain on-call."
+  },
+  {
+    id: "extra-evolve",
+    workstream: "Optional",
+    role: "Extra Improve & Evolve engineers",
+    defaultFte: 0,
+    run: 10,
+    evolve: 80,
+    burst: 10,
+    onCall: false,
+    note: "Add if maturity uplift must accelerate without eating run capacity."
+  },
+  {
+    id: "extra-burst",
+    workstream: "Optional",
+    role: "Extra quarterly burst reserve",
+    defaultFte: 0,
+    run: 0,
+    evolve: 10,
+    burst: 90,
+    onCall: false,
+    note: "Add for planned spikes, migrations, SMEs or abnormal demand."
+  }
+];
+
+function formatFte(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function formatApproxFte(value: number) {
+  return `~${Math.round(value)} FTE`;
+}
+
+function formatPercent(value: number, total: number) {
+  if (total <= 0) return "0%";
+  return `${Math.round((value / total) * 100)}%`;
+}
+
+function rosterHealth(pool: number, mode: RosterMode) {
+  const greenAt = mode === "weekend" ? 8 : mode === "after" ? 6 : 5;
+  const amberAt = mode === "weekend" ? 6 : mode === "after" ? 4 : 3;
+  const score = Math.min(100, Math.round((pool / greenAt) * 100));
+  if (pool >= greenAt) {
+    return { label: "Healthy", tone: "green", score, note: "rotation has enough depth for planned cover" };
+  }
+  if (pool >= amberAt) {
+    return { label: "Watch", tone: "amber", score, note: "covered, but sustained demand may reduce delivery capacity" };
+  }
+  return { label: "Add cover", tone: "red", score, note: "needs added domain capacity or SME reserve before committing higher SLAs" };
+}
+
+function rotaSlot(prefix: string, pool: number, dayIndex: number, offset = 0) {
+  if (pool < 1) return `${prefix}-SME`;
+  const size = Math.max(1, Math.round(pool));
+  return `${prefix}-${((dayIndex + offset) % size) + 1}`;
+}
+
+function TeamOperatingModel() {
+  const [fteByRole, setFteByRole] = useState(() =>
+    Object.fromEntries(defaultTeamCapacityRoles.map((role) => [role.id, role.defaultFte])) as Record<string, number>
+  );
+  const [showControls, setShowControls] = useState(false);
+  const [showRota, setShowRota] = useState(false);
+  const [rosterMode, setRosterMode] = useState<RosterMode>("after");
+  const totalFte = defaultTeamCapacityRoles.reduce((sum, role) => sum + (fteByRole[role.id] ?? 0), 0);
+  const steadyFte = defaultTeamCapacityRoles
+    .filter((role) => role.workstream !== "Optional")
+    .reduce((sum, role) => sum + (fteByRole[role.id] ?? 0), 0);
+  const addedFte = Math.max(0, totalFte - steadyFte);
+  const onCallFte = defaultTeamCapacityRoles
+    .filter((role) => role.onCall)
+    .reduce((sum, role) => sum + (fteByRole[role.id] ?? 0), 0);
+  const bucketTotals = Object.fromEntries(
+    teamBucketMeta.map((bucket) => [
+      bucket.id,
+      defaultTeamCapacityRoles.reduce((sum, role) => sum + ((fteByRole[role.id] ?? 0) * role[bucket.id]) / 100, 0)
+    ])
+  ) as Record<TeamCapacityBucket, number>;
+  const maxBucket = Math.max(...Object.values(bucketTotals), 1);
+  const workstreams = ["DevOps", "Data", "Integration", "Legacy"] as const;
+  const selectedRosterMode = rosterModes.find((mode) => mode.id === rosterMode) ?? rosterModes[1];
+  const commandFte =
+    (fteByRole["overall-lead"] ?? 0) +
+    (fteByRole["data-lead"] ?? 0) +
+    (fteByRole["integration-leads"] ?? 0) +
+    (fteByRole["biztalk-pm"] ?? 0) +
+    (fteByRole["extra-run"] ?? 0);
+
+  const updateRole = (id: string, value: number) => {
+    setFteByRole((current) => ({ ...current, [id]: Math.max(0, value) }));
+  };
+
+  const resetModel = () =>
+    setFteByRole(Object.fromEntries(defaultTeamCapacityRoles.map((role) => [role.id, role.defaultFte])) as Record<string, number>);
+
+  return (
+    <Reveal className="team-operating-model">
+      <div className="team-model-head">
+        <div>
+          <span className="team-model-kicker">Customer ask operating model</span>
+          <h3>{formatFte(steadyFte)} FTE steady team with 24x7 on-call, plus optional capacity adders</h3>
+          <p>
+            The same team runs, improves and supports the platforms. On-call is a rota, not shift staffing; when incidents rise,
+            planned delivery capacity is protected by explicit capacity choices.
+          </p>
+        </div>
+        <button
+          type="button"
+          className={`team-model-toggle ${showControls ? "active" : ""}`}
+          aria-expanded={showControls}
+          onClick={() => setShowControls((current) => !current)}
+        >
+          <SlidersHorizontal size={15} aria-hidden="true" />
+          Capacity assumptions
+        </button>
+      </div>
+
+      <div className="team-model-kpis" aria-label="Team model summary">
+        <div>
+          <span>Current total</span>
+          <strong>{formatFte(totalFte)} FTE</strong>
+          <small>{formatFte(steadyFte)} steady + {formatFte(addedFte)} optional</small>
+        </div>
+        <div>
+          <span>Primary on-call pool</span>
+          <strong>{formatFte(onCallFte)} FTE</strong>
+          <small>DevOps, Data and Integration engineers on rota</small>
+        </div>
+        <div>
+          <span>Leadership layer</span>
+          <strong>{formatFte(fteByRole["overall-lead"] ?? 0)} FTE</strong>
+          <small>overall engineering oversight</small>
+        </div>
+      </div>
+
+      <div className="team-model-layout">
+        <div className="team-org-board" aria-label="Workstream organization model">
+          <div className="team-org-lead">
+            <BadgeCheck size={18} aria-hidden="true" />
+            <div>
+              <span>Overall Engineering Lead</span>
+              <strong>{formatFte(fteByRole["overall-lead"] ?? 0)} FTE</strong>
+            </div>
+          </div>
+          <div className="team-workstream-grid">
+            {workstreams.map((workstream) => {
+              const rows = defaultTeamCapacityRoles.filter((role) => role.workstream === workstream && (fteByRole[role.id] ?? 0) > 0);
+              const streamFte = rows.reduce((sum, role) => sum + (fteByRole[role.id] ?? 0), 0);
+              const streamOnCall = rows.filter((role) => role.onCall).reduce((sum, role) => sum + (fteByRole[role.id] ?? 0), 0);
+              return (
+                <div className={`team-workstream ${workstream.toLowerCase()}`} key={workstream}>
+                  <span>{workstream}</span>
+                  <strong>{formatFte(streamFte)} FTE</strong>
+                  <small>{streamOnCall > 0 ? `${formatFte(streamOnCall)} FTE on-call rota` : "governance / coordination"}</small>
+                  <ul>
+                    {rows.map((role) => (
+                      <li key={role.id}>
+                        <b>{formatFte(fteByRole[role.id] ?? 0)}</b>
+                        {role.role}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="team-capacity-board" aria-label="Capacity split by bucket">
+          {teamBucketMeta.map((bucket) => (
+            <div className={`team-capacity-bucket ${bucket.tone}`} key={bucket.id}>
+              <div>
+                <span>{bucket.label}</span>
+                <strong>{formatApproxFte(bucketTotals[bucket.id])} / {formatPercent(bucketTotals[bucket.id], totalFte)}</strong>
+              </div>
+              <i><b style={{ width: `${Math.max(6, (bucketTotals[bucket.id] / maxBucket) * 100)}%` }} /></i>
+            </div>
+          ))}
+          <p>
+            Capacity is intentionally split: base support carries on-call and BAU, Improve & Evolve reduces recurring toil,
+            and burst capacity absorbs planned spikes without pretending the same hour can do everything.
+          </p>
+        </div>
+      </div>
+
+      <div className="team-roster-board" aria-label="24x7 roster model">
+        <div className="team-roster-head">
+          <div>
+            <span className="team-model-kicker">24x7 roster model</span>
+            <h4>Domain on-call rota over the business-hours team</h4>
+            <p>
+              This is not a permanent night-shift model. DevOps, Data and Integration each carry primary / secondary
+              on-call, with a named escalation layer for Sev1 / Sev2 and optional SMEs when the risk profile changes.
+            </p>
+          </div>
+          <div className="team-roster-actions">
+            <div className="team-roster-tabs" role="tablist" aria-label="Roster view">
+              {rosterModes.map((mode) => (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mode.id === rosterMode}
+                  className={mode.id === rosterMode ? "active" : ""}
+                  key={mode.id}
+                  onClick={() => setRosterMode(mode.id)}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              className={`team-rota-toggle ${showRota ? "active" : ""}`}
+              aria-expanded={showRota}
+              onClick={() => setShowRota((current) => !current)}
+            >
+              <CalendarDays size={14} aria-hidden="true" />
+              Two-week rota
+            </button>
+          </div>
+        </div>
+
+        <div className="team-roster-layers" aria-label="Roster layers">
+          <span><b>1</b> Business-hours pod</span>
+          <i />
+          <span><b>2</b> Domain primary</span>
+          <i />
+          <span><b>3</b> Secondary backup</span>
+          <i />
+          <span><b>4</b> Major incident lead</span>
+          <i />
+          <span><b>5</b> SME / burst pull-in</span>
+        </div>
+
+        <div className="team-roster-context">
+          <strong>{selectedRosterMode.label}</strong>
+          <span>{selectedRosterMode.note}</span>
+        </div>
+
+        <div className="team-roster-grid">
+          {rosterDomains.map((domain) => {
+            const pool = fteByRole[domain.roleId] ?? 0;
+            const health = rosterHealth(pool, rosterMode);
+            const poolDepth = Math.max(1, Math.round(pool));
+            return (
+              <div className={`team-roster-domain ${domain.id}`} key={domain.id}>
+                <div className="team-roster-domain-head">
+                  <span>{domain.label}</span>
+                  <strong>{formatFte(pool)} FTE</strong>
+                </div>
+                <div className={`team-roster-status ${health.tone}`}>
+                  <b>{health.label}</b>
+                  <i><em style={{ width: `${Math.max(8, health.score)}%` }} /></i>
+                </div>
+                <dl>
+                  <div>
+                    <dt>Primary</dt>
+                    <dd>{rosterMode === "business" ? "active domain pod" : `1 engineer; rota depth ${poolDepth}-person pool`}</dd>
+                  </div>
+                  <div>
+                    <dt>Secondary</dt>
+                    <dd>{rosterMode === "business" ? "lead / peer review" : "backup engineer from same domain"}</dd>
+                  </div>
+                  <div>
+                    <dt>Scope</dt>
+                    <dd>{domain.scope}</dd>
+                  </div>
+                </dl>
+                <p>{health.note}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="team-roster-escalation">
+          <div>
+            <span>Major incident layer</span>
+            <strong>{formatFte(commandFte)} FTE command / coordination pool</strong>
+          </div>
+          <p>
+            Overall Engineering Lead, workstream delivery leads, legacy PM and optional incident reserve coordinate
+            cross-domain events, customer communication, vendor dependency and recovery sequencing.
+          </p>
+        </div>
+
+        {showRota ? (
+          <div className="team-rota-detail">
+            <div className="team-rota-detail-head">
+              <div>
+                <span className="team-model-kicker">Detailed staffing pattern</span>
+                <h4>Representative two-week rota, including weekends</h4>
+                <p>
+                  This is the support model pattern, not a final named calendar. During mobilisation, slot labels are replaced
+                  with named people, leave rules and Pandora escalation contacts.
+                </p>
+              </div>
+              <div className="team-rota-key" aria-label="Rota key">
+                <span><b>P</b>Primary</span>
+                <span><b>S</b>Secondary</span>
+                <span><b>IC</b>Incident command</span>
+              </div>
+            </div>
+
+            <div className="team-rota-table-wrap">
+              <div className="team-rota-grid" role="table" aria-label="Two-week support rota">
+                <div className="team-rota-corner" role="columnheader">Layer</div>
+                {rotaDays.map((day, dayIndex) => (
+                  <div className={`team-rota-day ${day.weekend ? "weekend" : ""}`} role="columnheader" key={`${day.week}-${day.day}-${dayIndex}`}>
+                    <strong>{day.week}</strong>
+                    <span>{day.day}</span>
+                  </div>
+                ))}
+
+                <div className="team-rota-row-head command" role="rowheader">
+                  <strong>Incident command</strong>
+                  <small>Sev1 / Sev2 coordination</small>
+                </div>
+                {rotaDays.map((day, dayIndex) => (
+                  <div className={`team-rota-cell command ${day.weekend ? "weekend" : ""}`} role="cell" key={`cmd-${dayIndex}`}>
+                    <span><b>IC</b>{rotaSlot("CMD", commandFte, dayIndex)}</span>
+                    <span><b>B</b>{rotaSlot("CMD", commandFte, dayIndex, 1)}</span>
+                  </div>
+                ))}
+
+                {rosterDomains.map((domain) => {
+                  const pool = fteByRole[domain.roleId] ?? 0;
+                  return (
+                    <Fragment key={domain.id}>
+                      <div className={`team-rota-row-head ${domain.id}`} role="rowheader" key={`${domain.id}-head`}>
+                        <strong>{domain.label}</strong>
+                        <small>{formatFte(pool)} FTE domain pool</small>
+                      </div>
+                      {rotaDays.map((day, dayIndex) => (
+                        <div className={`team-rota-cell ${domain.id} ${day.weekend ? "weekend" : ""}`} role="cell" key={`${domain.id}-${dayIndex}`}>
+                          <span><b>P</b>{rotaSlot(domain.abbr, pool, dayIndex)}</span>
+                          <span><b>S</b>{rotaSlot(domain.abbr, pool, dayIndex, 1)}</span>
+                        </div>
+                      ))}
+                    </Fragment>
+                  );
+                })}
+              </div>
+            </div>
+
+            <p className="team-rota-foot">
+              Weekend cover uses the same primary / secondary model, but with longer contact windows. If incident volume
+              proves high, the capacity assumptions panel can add domain engineers, incident command reserve or burst SMEs.
+            </p>
+          </div>
+        ) : null}
+      </div>
+
+      {showControls ? (
+        <div className="team-model-controls">
+          <div className="team-model-controls-head">
+            <strong>Hidden capacity update screen</strong>
+            <button type="button" onClick={resetModel}>Reset to 34 FTE</button>
+          </div>
+          <div className="team-model-control-grid">
+            {defaultTeamCapacityRoles.map((role) => (
+              <label className={role.workstream === "Optional" ? "optional" : ""} key={role.id}>
+                <span>
+                  <strong>{role.role}</strong>
+                  <small>{role.workstream} · {role.note}</small>
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  value={fteByRole[role.id] ?? 0}
+                  onChange={(event) => updateRole(role.id, Number(event.currentTarget.value))}
+                  aria-label={`${role.role} FTE`}
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </Reveal>
+  );
+}
+
 // ── 11 · One team, three locations ───────────────────────────────────────
 export function TeamShapeSection() {
   return (
@@ -369,6 +941,7 @@ export function TeamShapeSection() {
         The coral <strong>Lane 2</strong> slice is not a second team — it is the same people doing enablement, and it grows
         only as you turn dials.
       </p>
+      <TeamOperatingModel />
     </Section>
   );
 }

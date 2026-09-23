@@ -7,6 +7,14 @@
     {
       "source": "/presentation/:path*",
       "destination": "/index.html"
+    },
+    {
+      "source": "/booth",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/booth/:path*",
+      "destination": "/index.html"
     }
   ]
 }

@@ -38,6 +38,7 @@ export function AltNav() {
         <span className="brand">{brand}</span>
         <span className="page-switch" aria-label="View mode">
           <a href="/presentation#overview">Presentation</a>
+          <a href="/booth#booth-overview">Booth</a>
         </span>
         <span className="now-indicator" aria-live="polite">
           <em>{activeSection.num}</em> {activeSection.label}

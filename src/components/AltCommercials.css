@@ -1,11 +1,163 @@
 /* Commercials section - interactive cost model and value-back view */
 
+.commercial-lock-panel {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) minmax(260px, 0.72fr);
+  gap: 16px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--proof) 32%, var(--line));
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--proof-dim) 66%, #fff), #fff 74%),
+    var(--card);
+  box-shadow: 0 16px 40px rgb(22 24 29 / 7%);
+  padding: 18px;
+}
+
+.commercial-lock-panel.presentation {
+  min-height: 330px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-content: center;
+}
+
+.commercial-lock-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--proof-dim);
+  color: var(--proof);
+}
+
+.commercial-lock-copy span,
+.commercial-lock-copy strong,
+.commercial-lock-copy p {
+  display: block;
+}
+
+.commercial-lock-copy span {
+  color: var(--proof);
+  font-size: 11px;
+  font-weight: 860;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.commercial-lock-copy strong {
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 880;
+  line-height: 1.14;
+}
+
+.commercial-lock-copy p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.commercial-lock-form {
+  display: grid;
+  gap: 9px;
+}
+
+.commercial-lock-panel.presentation .commercial-lock-form {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: end;
+}
+
+.commercial-lock-form label,
+.commercial-lock-form label span {
+  display: grid;
+  gap: 5px;
+}
+
+.commercial-lock-form label span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 820;
+}
+
+.commercial-lock-form input {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 760;
+  padding: 8px 10px;
+}
+
+.commercial-lock-form input[aria-invalid="true"] {
+  border-color: var(--accent);
+}
+
+.commercial-lock-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  border: 1px solid color-mix(in srgb, var(--proof) 42%, var(--line));
+  border-radius: 7px;
+  background: var(--proof-dim);
+  color: var(--proof);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  padding: 8px 12px;
+}
+
+.commercial-lock-form button:hover,
+.commercial-lock-form button:focus-visible {
+  border-color: var(--proof);
+  outline: none;
+}
+
+.commercial-lock-form em {
+  color: var(--accent);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 820;
+}
+
 .commercial-console {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--card);
   box-shadow: 0 16px 40px rgb(22 24 29 / 7%);
   overflow: hidden;
+}
+
+.commercial-rate-disclaimer {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  margin-bottom: 14px;
+  border: 1px solid color-mix(in srgb, var(--proof) 32%, var(--line));
+  border-left: 4px solid var(--proof);
+  border-radius: 8px;
+  background: var(--proof-dim);
+  color: #4b3a12;
+  padding: 11px 13px;
+  font-family: var(--sans);
+  font-size: 12.8px;
+  font-weight: 780;
+  line-height: 1.45;
+}
+
+.commercial-rate-disclaimer svg {
+  color: var(--proof);
+  margin-top: 1px;
 }
 
 .commercial-console-head {
@@ -1762,6 +1914,15 @@
 }
 
 @media (max-width: 1120px) {
+  .commercial-lock-panel,
+  .commercial-lock-panel.presentation {
+    grid-template-columns: 54px minmax(0, 1fr);
+  }
+
+  .commercial-lock-form {
+    grid-column: 1 / -1;
+  }
+
   .commercial-grid,
   .commercial-workbench,
   .commercial-staffing-grid,
@@ -1777,6 +1938,20 @@
 }
 
 @media (max-width: 760px) {
+  .commercial-lock-panel,
+  .commercial-lock-panel.presentation {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-lock-panel.presentation .commercial-lock-form {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-lock-icon {
+    width: 42px;
+    height: 42px;
+  }
+
   .commercial-console-head,
   .commercial-diagram-head,
   .commercial-panel-head {

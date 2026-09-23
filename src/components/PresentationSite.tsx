@@ -18,9 +18,10 @@ import {
   X,
   Zap
 } from "lucide-react";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { brand, horizons, navSections } from "../data/alternative";
 import { defaultCommercialControls, getCommercialSnapshot } from "./AltCommercials";
+import { CommercialAccessPanel, useCommercialAccess } from "./CommercialAccess";
 import {
   averageScore,
   dimensionMarksFromHorizon,
@@ -37,7 +38,7 @@ const dialInActionImage = new URL("../assets/presentation/dial-in-action.webp", 
 const nexusCurrentImage = new URL("../assets/presentation/nexus/nexus-current.webp", import.meta.url).href;
 const nexusProposedImage = new URL("../assets/presentation/nexus/nexus-proposed.webp", import.meta.url).href;
 const sanjayPortrait = new URL("../assets/presentation/exec/sanjay.webp", import.meta.url).href;
-const shubhraPortrait = new URL("../assets/presentation/exec/shubhra.webp", import.meta.url).href;
+const tilakPortrait = new URL("../assets/presentation/exec/tilak.jpg", import.meta.url).href;
 const twoLanesApproachImage = new URL("../assets/presentation/twolanes-approach.webp", import.meta.url).href;
 const rfsCover = new URL("../assets/presentation/rfs/rfs-cover.jpg", import.meta.url).href;
 const rfsPandoraStrip = new URL("../assets/presentation/rfs/rfs-pandora-strip.jpg", import.meta.url).href;
@@ -52,8 +53,10 @@ type PresentationVisual =
   | "rfs"
   | "transition"
   | "maturity"
-  | "booth"
+  | "lane2"
   | "cases"
+  | "team"
+  | "engineering"
   | "commercials"
   | "faq";
 type PresentationIcon = typeof HelpCircle;
@@ -196,7 +199,7 @@ const originalAgenda = [
     time: "9:45 - 11:00",
     label: "Exec introduction + India presence",
     owner: "PS leadership slides",
-    points: ["PS specifics", "People + Product Strategy", "Organization Transformation", "People Transformation"]
+    points: ["Opening executive context", "India presence", "PS specifics"]
   },
   {
     time: "10:45 - 12:15",
@@ -213,8 +216,8 @@ const originalAgenda = [
   {
     time: "1:00 - 2:30",
     label: "Deep dive with case studies",
-    owner: "Portal + booths",
-    points: ["DevOps, Data, Integration proof", "Booth walkthrough", "Real operations flow"]
+    owner: "Portal + proof walkthrough",
+    points: ["DevOps, Data, Integration proof", "Lane 2 movement", "Real operations flow"]
   },
   {
     time: "2:30 - 2:45",
@@ -226,7 +229,7 @@ const originalAgenda = [
     time: "3:00 - 4:00",
     label: "Operating model & commercials",
     owner: "Portal-led",
-    points: ["Team and locations", "Talent and onboarding", "Pandora role", "Commercial levers"]
+    points: ["Team and locations", "Talent and onboarding", "Tilak engineering leadership", "Commercial levers"]
   }
 ];
 
@@ -236,9 +239,9 @@ const presentationChapters: PresentationChapter[] = [
     time: "9:45 - 11:00",
     agenda: "Exec introduction + India presence",
     title: "Exec + India",
-    headline: "Leadership content stays as placeholder slides.",
-    punch: "This chapter gives the room a polished holding structure while PS leadership brings the final executive and India presence material.",
-    talkTrack: ["Placeholder portrait slots", "PS specifics stay customer-ready", "No duplication of leadership deck"],
+    headline: "Opening leadership anchors India presence.",
+    punch: "Page 01 now keeps the opening executive context focused on Sanjay and the India presence. The engineering leadership discussion moves to the end of the day with Tilak.",
+    talkTrack: ["Sanjay opening placeholder", "India presence", "PS specifics", "Engineering leadership later"],
     tone: "people",
     visual: "exec",
     detailIds: ["team-shape", "team-leader", "team-capacity"]
@@ -272,24 +275,24 @@ const presentationChapters: PresentationChapter[] = [
     time: "10:45 - 12:15",
     agenda: "Revised proposal, open Q&A",
     title: "Maturity Matrix",
-    headline: "Every platform item moves through evidence, not aspiration.",
-    punch: "M0 to M5 is assessed across documentation, ownership, observability, security, runbooks, data quality, recovery and automation.",
-    talkTrack: ["M0 means unknown or unverified", "M2 means measured and repeatable", "M4 means automated with guardrails", "M5 means agent-assisted closed loop"],
+    headline: "Handover continues while maturity becomes transparent.",
+    punch: "We do not wait for perfect handover. During transition, every scoped item gets an evidence-based M0-M5 baseline so gaps are visible, priorities are clear, and improvement work moves the estate to a better state over time.",
+    talkTrack: ["Transition keeps moving", "Evidence baseline by item", "Prioritise gaps transparently", "Improve maturity over time"],
     tone: "accent",
     visual: "maturity",
     detailIds: ["dial-explorer", "walkthroughs", "goals", "proof", "pandora", "start"]
   },
   {
-    id: "showcase-booths",
+    id: "lane2-movement",
     time: "1:00 - 2:30",
     agenda: "Deep dive augmented with client case studies",
-    title: "Booth Walkthrough",
-    headline: "Show the work moving through operations lanes.",
-    punch: "Use Kafka, Databricks and Kong examples to show when L1, L2, L3 and Development each take the case.",
-    talkTrack: ["Alert arrives with service context", "L1 confirms impact", "L2 restores service", "L3 removes recurrence", "Development changes product code when needed"],
+    title: "Lane 2 Movement",
+    headline: "Lane 2 moves one item at a time through evidence gates.",
+    punch: "The maturity matrix creates candidates, not a forced transformation wave. Each item enters Lane 2 with a Pandora owner, evidence, rollback, stakeholder sign-off and a clear reason to move from run-as-is to assisted, then to a higher maturity pattern only when Gate 2 passes.",
+    talkTrack: ["Candidate from maturity baseline", "Gate 1 unlocks assist", "Evidence period proves stability", "Gate 2 unlocks higher maturity", "Pandora approves every move"],
     tone: "tech",
-    visual: "booth",
-    detailIds: ["team-skills", "team-converge", "dial-explorer", "walkthroughs", "transition-coverage"]
+    visual: "lane2",
+    detailIds: ["twolane", "foundations", "dial-explorer", "walkthroughs", "horizons"]
   },
   {
     id: "case-studies",
@@ -304,16 +307,28 @@ const presentationChapters: PresentationChapter[] = [
     detailIds: ["proof", "faq", "goals", "team-capacity"]
   },
   {
-    id: "operating-commercials",
+    id: "team-overview",
     time: "3:00 - 4:00",
     agenda: "Operating model & commercials",
-    title: "Operate + Price",
-    headline: "Team, talent and commercials are one transparent operating model.",
-    punch: "Location mix, FTE counts, rate cards, discounts and customer-ask capacity can be changed live to show cost impact.",
-    talkTrack: ["Run Base staffing", "Improve and Evolve engineering", "Customer ask capacity", "One rate card source", "Pandora owns the levers"],
+    title: "Team Overview",
+    headline: "One engineering team runs, improves and flexes on demand.",
+    punch: "We position a 34 FTE steady team across DevOps, Data and Integration, backed by domain on-call, one engineering lead, delivery governance and optional burst capacity when Pandora wants to dial up demand.",
+    talkTrack: ["34 FTE steady team", "24x7 domain on-call rota", "One engineering lead", "Run + Improve + Burst capacity", "Pandora owns gates and priorities"],
     tone: "people",
-    visual: "commercials",
+    visual: "team",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "commercials"]
+  },
+  {
+    id: "engineering-leadership",
+    time: "End of day",
+    agenda: "Engineering leadership session",
+    title: "Engineering Leadership",
+    headline: "Engineering leadership closes the operating model story.",
+    punch: "Tilak, Executive Vice President and Global Head of Engineering at Publicis Sapient, connects the proposed model to engineering quality, capability depth, transformation safety and the route from run to evolve.",
+    talkTrack: ["Engineering bar", "Scaled delivery quality", "Capability depth", "Run-to-evolve path", "Leadership Q&A"],
+    tone: "people",
+    visual: "engineering",
+    detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "faq"]
   },
   {
     id: "faq-close",
@@ -417,6 +432,51 @@ function SlideShell({
   );
 }
 
+function CommercialPresentationSlide({
+  chapter,
+  index,
+  onOpenLightbox
+}: {
+  chapter: PresentationChapter;
+  index: number;
+  onOpenLightbox: OpenLightbox;
+}) {
+  const { unlocked } = useCommercialAccess();
+  if (unlocked) {
+    return (
+      <SlideShell chapter={chapter} index={index}>
+        <VisualFor kind={chapter.visual} chapterId={chapter.id} onOpenLightbox={onOpenLightbox} />
+      </SlideShell>
+    );
+  }
+
+  const page = pageLabel(index);
+  return (
+    <section className={`pres-slide tone-${chapter.tone}`} id={chapter.id} aria-label={`${page} ${chapter.title}`}>
+      <div className="pres-slide-inner">
+        <span className="pres-page-flag">{page}</span>
+        <div className="pres-slide-copy">
+          <span className="pres-kicker">{page} | {chapter.time} | {String(index + 1).padStart(2, "0")} / {presentationChapters.length}</span>
+          <small className="pres-agenda-label">{chapter.agenda}</small>
+          <h2>Commercials are available on request.</h2>
+          <p>
+            This section contains rate cards, cost levers, discounts and customer ask capacity. Unlock it only when the
+            commercial discussion is ready.
+          </p>
+          <div className="pres-talk-track" aria-label={`${chapter.title} locked talk track`}>
+            <span>Restricted content</span>
+            <span>Password required</span>
+            <span>Presenter controlled</span>
+          </div>
+        </div>
+        <div className="pres-visual">
+          <CommercialAccessPanel mode="presentation" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AgendaVisual() {
   return (
     <div className="pres-agenda-board">
@@ -440,33 +500,22 @@ function AgendaVisual() {
 }
 
 function ExecutivePlaceholderVisual() {
-  const cards = [
-    {
-      subject: "Exec introduction + India presence",
-      name: "Sanjay",
-      title: "Managing Director, Publicis Sapient India",
-      image: sanjayPortrait
-    },
-    {
-      name: "Shubhra",
-      title: "Global Chief Delivery Officer, Publicis Sapient",
-      subject: "People + Product Strategy, Organization Transformation, People Transformation",
-      image: shubhraPortrait
-    }
-  ];
-
   return (
-    <div className="pres-exec-board">
-      {cards.map((card, index) => (
-        <div className="pres-exec-card" key={`${card.name}-${index}`}>
-          <div className="pres-portrait" style={{ "--portrait": index } as CSSProperties & Record<"--portrait", number>}>
-            <img src={card.image} alt={`${card.name} portrait`} />
-          </div>
-          <strong>{card.name}</strong>
-          <span>{card.title}</span>
-          <small>Subject: {card.subject}</small>
+    <div className="pres-exec-board opening">
+      <div className="pres-exec-card">
+        <div className="pres-portrait" style={{ "--portrait": 0 } as CSSProperties & Record<"--portrait", number>}>
+          <img src={sanjayPortrait} alt="Sanjay portrait" />
         </div>
-      ))}
+        <strong>Sanjay</strong>
+        <span>Managing Director, Publicis Sapient India</span>
+        <small>Subject: Exec introduction + India presence</small>
+      </div>
+      <a className="pres-exec-later" href="#engineering-leadership">
+        <CalendarDays size={22} aria-hidden="true" />
+        <span>Later in the day</span>
+        <strong>Engineering leadership session moves to Tilak.</strong>
+        <small>End-of-day discussion after the operating model overview.</small>
+      </a>
     </div>
   );
 }
@@ -509,7 +558,7 @@ function RecapVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
       label: "Site Visit",
       title: "Revised path lands here",
       body: "The site visit anchors the revised proposal: run as-is first, stabilise, mature through gates, and activate agentic capability only where evidence exists.",
-      proof: "Today: transition, maturity, booths, commercials"
+      proof: "Today: transition, maturity, Lane 2, commercials"
     }
   ];
 
@@ -651,28 +700,20 @@ function TransitionVisual({
     ["Runbook weak", "Incident evidence converted into owned runbooks"],
     ["Ownership unclear", "Governance gate blocks full transition"]
   ];
+  const showBaselineBridge = enableTransformationVideo && Boolean(onOpenLightbox);
 
   return (
     <div className="pres-transition">
-      <div className="pres-transition-road">
+      <div className={`pres-transition-road${showBaselineBridge ? " has-baseline-bridge" : ""}`}>
         {journey.map(([step, detail], index) => {
-          const isAsIs = index === 0;
           const isTransformation = index === 2;
           const isNorthStar = index === 3;
-          const isInteractive = enableTransformationVideo && Boolean(onOpenLightbox) && (isAsIs || isTransformation || isNorthStar);
+          const isInteractive = enableTransformationVideo && Boolean(onOpenLightbox) && (isTransformation || isNorthStar);
           const cardBody = (
             <>
               <span>{index + 1}</span>
               <strong>{step}</strong>
               <small>{detail}</small>
-              {isInteractive && isAsIs ? (
-                <div className="pres-transition-actions">
-                  <button type="button" onClick={() => onOpenLightbox?.(transitionBaselineLightbox)}>
-                    <Maximize2 size={13} aria-hidden="true" />
-                    View baseline
-                  </button>
-                </div>
-              ) : null}
               {isInteractive && isTransformation ? (
                 <div className="pres-transition-actions">
                   <button type="button" onClick={() => onOpenLightbox?.(gatedControlVideoLightbox)}>
@@ -695,12 +736,25 @@ function TransitionVisual({
               ) : null}
             </>
           );
-          return isInteractive ? (
-            <div className="interactive" key={step}>
+          const card = (
+            <div className={`pres-transition-card${isInteractive ? " interactive" : ""}`}>
               {cardBody}
             </div>
-          ) : (
-            <div key={step}>{cardBody}</div>
+          );
+          return (
+            <Fragment key={step}>
+              {card}
+              {showBaselineBridge && index === 1 ? (
+                <button
+                  type="button"
+                  className="pres-transition-baseline-bridge"
+                  onClick={() => onOpenLightbox?.(transitionBaselineLightbox)}
+                >
+                  <Maximize2 size={15} aria-hidden="true" />
+                  <span>View baseline</span>
+                </button>
+              ) : null}
+            </Fragment>
           );
         })}
       </div>
@@ -719,12 +773,12 @@ function TransitionVisual({
 
 function MaturityVisual() {
   const levels = [
-    ["M0", "Unknown", "Not documented, not observable, ownership or runtime behavior unverified."],
-    ["M1", "Known", "Inventory exists, but operation is manual and evidence is incomplete."],
-    ["M2", "Repeatable", "Measured process, known runbook, manual execution still acceptable."],
-    ["M3", "Monitored", "Owned dashboards, alerts and runbooks support reliable triage."],
-    ["M4", "Automated", "Standard actions automated with approval, audit and rollback."],
-    ["M5", "Agent-assisted", "Closed-loop assist with policy, evidence and human gates."]
+    ["M0", "Unknown", "Evidence is missing or unverified. The item stays visible in transition instead of being accepted blindly."],
+    ["M1", "Discovered", "Inventory and gaps are known. Owners, dependencies and evidence still need to be proven."],
+    ["M2", "Run-ready", "Support can monitor, triage and run known actions while remaining gaps stay visible."],
+    ["M3", "Risk-mitigated", "Ownership, alerts, runbooks, escalation and recovery evidence are reliable enough for governed operation."],
+    ["M4", "Proactive", "Trends, SLOs and problem patterns help prevent repeat issues and guide improvement work."],
+    ["M5", "Pandav-ready", "The pattern is structured enough for assisted operations with policy, evidence and human gates."]
   ];
   const dimensions = [
     "Documentation",
@@ -748,6 +802,13 @@ function MaturityVisual() {
 
   return (
     <div className="pres-maturity">
+      <div className="pres-maturity-purpose">
+        <strong>Used during transition, not after transition.</strong>
+        <p>
+          The matrix lets us keep handover moving while collecting transparent evidence on where each platform item sits
+          today. That baseline becomes the backlog: stabilise the weak points first, then lift maturity over time.
+        </p>
+      </div>
       <div className="pres-maturity-scale">
         {levels.map(([level, name], index) => (
           <button type="button" className={index === activeLevel ? "active" : ""} onClick={() => setActiveLevel(index)} key={level}>
@@ -786,38 +847,191 @@ function MaturityVisual() {
   );
 }
 
-function BoothVisual() {
-  const lanes = [
-    ["Signal", "Kafka lag / Databricks failure / Kong 5xx"],
-    ["L1", "Confirm alert quality, business impact and known route"],
-    ["L2", "Restore service: replay, rerun, scale, route or restart"],
-    ["L3", "Remove recurrence: platform pattern, automation, SLO fix"],
-    ["Dev", "Change code only when defect, schema or product logic requires it"]
-  ];
-  const examples = [
-    ["Kafka lag", "L2 clears consumer issue; L3 tunes lag thresholds and replay; Dev changes consumer code only if defect exists."],
-    ["Databricks job failure", "L2 reruns and restores; L3 hardens dependency checks; Dev fixes bad transform logic."],
-    ["Kong 5xx spike", "L1 validates impact; L2 restores route; L3 strengthens gateway policy; Dev fixes API code if needed."]
-  ];
+interface LaneTwoItem {
+  id: string;
+  label: string;
+  area: string;
+  baseline: string;
+  assist: string;
+  higher: string;
+  evidence: string[];
+  stakeholders: string[];
+}
+
+const laneTwoItems: LaneTwoItem[] = [
+  {
+    id: "kafka",
+    label: "Kafka connector",
+    area: "Integration",
+    baseline: "Support lag, restart and replay conventionally while owner and schema gaps are visible.",
+    assist: "Pandav drafts schema-drift diagnosis, replay recommendation and connector recovery evidence.",
+    higher: "Approved bounded replay or connector recovery pattern with audit, rollback and outcome review.",
+    evidence: ["topic owner", "lag alert quality", "schema contract", "replay drill", "rollback route"],
+    stakeholders: ["Pandora Integration Owner", "Ops L2/L3", "Security / Risk", "Sapient Kafka SME"]
+  },
+  {
+    id: "databricks",
+    label: "Databricks pipeline",
+    area: "Data",
+    baseline: "Operate rerun and backfill manually while lineage, freshness and ownership are made transparent.",
+    assist: "Assistant prepares failed-run summary, lineage impact, backfill checklist and DQ evidence pack.",
+    higher: "Approved rerun or freshness-triage pattern runs with guardrails and human outcome review.",
+    evidence: ["job owner", "lineage", "freshness alert", "backfill rehearsal", "DQ threshold"],
+    stakeholders: ["Pandora Data Owner", "Ops L2 Data", "Data L3 SME", "Business Report Owner"]
+  },
+  {
+    id: "github",
+    label: "GitHub runner",
+    area: "DevOps",
+    baseline: "Run release support through known routes while runner, secret and rollback gaps are closed.",
+    assist: "Assistant drafts failed-build triage, flaky-test pattern and policy-gate repair recommendation.",
+    higher: "Approved pipeline repair or recovery recipe executes only inside release guardrails.",
+    evidence: ["repo owner", "runner baseline", "secret path", "rollback drill", "release evidence"],
+    stakeholders: ["Pandora Platform Lead", "Ops L2 DevOps", "Ops L3 DevOps", "Release Owner"]
+  },
+  {
+    id: "kong",
+    label: "Kong API",
+    area: "API Platform",
+    baseline: "Support route, policy and consumer-impact issues while catalogue and SLO gaps are visible.",
+    assist: "Assistant correlates gateway metrics, contract drift, failed auth and consumer impact.",
+    higher: "Approved contract-health or policy-drift pattern recommends action with owner approval.",
+    evidence: ["API owner", "consumer map", "SLO signal", "policy evidence", "rollback route"],
+    stakeholders: ["Pandora API Owner", "Ops L2 Integration", "Architecture", "Sapient API SME"]
+  }
+];
+
+const laneTwoSteps: Array<{
+  id: string;
+  label: string;
+  title: string;
+  kind: "level" | "gate" | "evidence";
+  owner: string;
+  detail: (item: LaneTwoItem) => string;
+}> = [
+  {
+    id: "baseline",
+    label: "Level 1",
+    title: "Run baseline",
+    kind: "level",
+    owner: "Ops + service owner",
+    detail: (item) => item.baseline
+  },
+  {
+    id: "gate1",
+    label: "Gate 1",
+    title: "Assist gate",
+    kind: "gate",
+    owner: "Pandora owner + risk",
+    detail: () => "Owner, audit, human approval and rollback are proven before the item moves into assisted improvement."
+  },
+  {
+    id: "assist",
+    label: "Level 2",
+    title: "Assisted improvement",
+    kind: "level",
+    owner: "Improve & Evolve engineer",
+    detail: (item) => item.assist
+  },
+  {
+    id: "measure",
+    label: "Prove",
+    title: "Evidence period",
+    kind: "evidence",
+    owner: "Ops L2/L3 + governance",
+    detail: () => "Incidents, SLOs, rollback success, usage and stakeholder confidence are measured before the next dial-up."
+  },
+  {
+    id: "gate2",
+    label: "Gate 2",
+    title: "Higher-maturity gate",
+    kind: "gate",
+    owner: "Pandora governance",
+    detail: () => "The item must show a stable assisted track record, passed incident drill, SLO adherence and evaluation evidence."
+  },
+  {
+    id: "higher",
+    label: "Level 3",
+    title: "Higher maturity pattern",
+    kind: "level",
+    owner: "Pandora approves",
+    detail: (item) => item.higher
+  }
+];
+
+function LaneTwoVisual() {
+  const [activeItemId, setActiveItemId] = useState(laneTwoItems[0].id);
+  const [activeStep, setActiveStep] = useState(0);
+  const activeItem = laneTwoItems.find((item) => item.id === activeItemId) ?? laneTwoItems[0];
+  const currentStep = laneTwoSteps[activeStep] ?? laneTwoSteps[0];
+  const progress = `${(activeStep / (laneTwoSteps.length - 1)) * 100}%`;
 
   return (
-    <div className="pres-booth">
-      <div className="pres-booth-lanes">
-        {lanes.map(([lane, action], index) => (
-          <div key={lane}>
-            <span>{index + 1}</span>
-            <strong>{lane}</strong>
-            <small>{action}</small>
-          </div>
+    <div className="pres-lane2">
+      <div className="pres-lane2-picker" aria-label="Choose item moving through Lane 2">
+        {laneTwoItems.map((item) => (
+          <button
+            type="button"
+            className={item.id === activeItem.id ? "active" : ""}
+            aria-pressed={item.id === activeItem.id}
+            key={item.id}
+            onClick={() => {
+              setActiveItemId(item.id);
+              setActiveStep(0);
+            }}
+          >
+            <strong>{item.label}</strong>
+            <span>{item.area}</span>
+          </button>
         ))}
       </div>
-      <div className="pres-example-stack">
-        {examples.map(([title, detail]) => (
-          <div key={title}>
-            <strong>{title}</strong>
-            <span>{detail}</span>
-          </div>
+
+      <div className="pres-lane2-rail" style={{ "--progress": progress } as CSSProperties}>
+        <i aria-hidden="true" />
+        {laneTwoSteps.map((step, index) => (
+          <button
+            type="button"
+            className={`${step.kind} ${index === activeStep ? "active" : ""} ${index < activeStep ? "passed" : ""}`}
+            aria-current={index === activeStep}
+            key={step.id}
+            onClick={() => setActiveStep(index)}
+          >
+            <span>{step.label}</span>
+            <strong>{step.title}</strong>
+          </button>
         ))}
+      </div>
+
+      <div className="pres-lane2-body">
+        <section className="pres-lane2-current">
+          <span>{activeItem.label} · {currentStep.label}</span>
+          <strong>{currentStep.title}</strong>
+          <p>{currentStep.detail(activeItem)}</p>
+          <small>{currentStep.owner}</small>
+        </section>
+
+        <section className="pres-lane2-evidence">
+          <span>Evidence collected before movement</span>
+          <div>
+            {activeItem.evidence.map((evidence) => (
+              <strong key={evidence}>{evidence}</strong>
+            ))}
+          </div>
+        </section>
+
+        <section className="pres-lane2-stakeholders">
+          <span>Stakeholders involved</span>
+          <div>
+            {activeItem.stakeholders.map((stakeholder) => (
+              <strong key={stakeholder}>{stakeholder}</strong>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="pres-lane2-note">
+        <ShieldCheck size={17} aria-hidden="true" />
+        <span>Lane 2 is selective: the baseline nominates candidates, gates protect movement, and Pandora approves every dial-up.</span>
       </div>
     </div>
   );
@@ -845,6 +1059,121 @@ function CasesVisual() {
   );
 }
 
+function TeamOverviewVisual() {
+  const streams: Array<[string, string, string, PresentationIcon]> = [
+    ["DevOps", "8 FTE", "CI/CD, PAKS, IaC, GitHub, observability and platform on-call.", GitBranch],
+    ["Data", "8 FTE", "7 Databricks / Power BI engineers plus delivery governance.", Database],
+    ["Integration", "16 FTE", "Kafka/Kong engineers, QE, delivery leads and Kafka technical BAs.", Network],
+    ["Legacy", "1 FTE", "Onsite BizTalk / legacy PM for vendor dependency and transition evidence.", ClipboardCheck]
+  ];
+  const buckets = [
+    ["Base support", "Run service, incident flow, L1/L2/L3 routing and 24x7 on-call rota."],
+    ["Improve & Evolve", "Engineering-minded capacity converts recurring toil into automation and better maturity."],
+    ["Burst / SME", "Quarterly dial-up for migrations, specialist gaps, abnormal demand or Sapient SME pull-in."]
+  ];
+
+  return (
+    <div className="pres-team-overview">
+      <div className="pres-team-lead-card">
+        <Users size={24} aria-hidden="true" />
+        <div>
+          <span>Placement logic</span>
+          <strong>34 FTE steady team, one engineering lead</strong>
+          <p>Not three disconnected squads: one backlog, one governance rhythm, domain depth where the platforms need it.</p>
+        </div>
+      </div>
+
+      <div className="pres-team-streams">
+        {streams.map(([label, fte, detail, Icon]) => (
+          <div key={label}>
+            <Icon size={20} aria-hidden="true" />
+            <span>{label}</span>
+            <strong>{fte}</strong>
+            <p>{detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="pres-team-ops">
+        <section>
+          <span>24x7 support model</span>
+          <strong>Domain on-call, not night-shift staffing</strong>
+          <p>DevOps, Data and Integration each carry primary / secondary cover. Major incidents pull the engineering lead and delivery leads into command.</p>
+          <div>
+            <small>DevOps P/S</small>
+            <small>Data P/S</small>
+            <small>Integration P/S</small>
+            <small>Incident command</small>
+          </div>
+        </section>
+        <section>
+          <span>Capacity model</span>
+          <strong>Run, improve and flex through explicit choices</strong>
+          <ul>
+            {buckets.map(([label, detail]) => (
+              <li key={label}>
+                <b>{label}</b>
+                <em>{detail}</em>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <div className="pres-team-footer">
+        <ShieldCheck size={17} aria-hidden="true" />
+        <span>Commercial levers remain protected in the detail site; this slide explains the operating shape before price.</span>
+        <a href={detailHref("commercials", "team-overview")}>
+          Commercial levers
+          <ExternalLink size={13} aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function EngineeringLeadershipVisual() {
+  const themes = [
+    ["Quality bar", "Engineering standards, review discipline and release confidence."],
+    ["Capability depth", "How we staff senior engineering depth across DevOps, Data and Integration."],
+    ["Transformation safety", "Why maturity gates protect the customer while the model evolves."],
+    ["Talent system", "How onboarding, backups, retention and knowledge transfer keep continuity."]
+  ];
+
+  return (
+    <div className="pres-engineering-leadership">
+      <div className="pres-engineering-profile">
+        <figure className="pres-engineering-photo">
+          <img src={tilakPortrait} alt="Tilak portrait" />
+        </figure>
+        <span>End-of-day executive session</span>
+        <strong>Tilak</strong>
+        <p>Executive Vice President and Global Head of Engineering at Publicis Sapient</p>
+      </div>
+      <div className="pres-engineering-story">
+        <span>What this session should land</span>
+        <strong>From proposed team shape to engineering confidence.</strong>
+        <p>
+          This is the senior engineering perspective on why the operating model can work: depth in the right domains,
+          visible gates, quality discipline and a practical route from support stability to platform improvement.
+        </p>
+        <div>
+          {themes.map(([label, detail]) => (
+            <section key={label}>
+              <b>{label}</b>
+              <small>{detail}</small>
+            </section>
+          ))}
+        </div>
+      </div>
+      <div className="pres-engineering-close">
+        <ShieldCheck size={17} aria-hidden="true" />
+        <span>Placed after the Team Overview so Tilak can respond to the proposed support model, engineering setup and maturity path.</span>
+      </div>
+    </div>
+  );
+}
+
 function CommercialVisual() {
   const snapshot = getCommercialSnapshot(defaultCommercialControls);
   const bars = [
@@ -862,6 +1191,10 @@ function CommercialVisual() {
 
   return (
     <div className="pres-commercial">
+      <div className="pres-commercial-disclaimer">
+        <ShieldCheck size={16} aria-hidden="true" />
+        <span>Dummy model: values are driven by the rate card, FTE, billable days and discounts. Replace with real inputs for actual cost.</span>
+      </div>
       <div className="pres-operating-stack">
         {operating.map(([label, detail]) => (
           <div key={label}>
@@ -1188,8 +1521,10 @@ function VisualFor({
     );
   }
   if (kind === "maturity") return <MaturityVisual />;
-  if (kind === "booth") return <BoothVisual />;
+  if (kind === "lane2") return <LaneTwoVisual />;
   if (kind === "cases") return <CasesVisual />;
+  if (kind === "team") return <TeamOverviewVisual />;
+  if (kind === "engineering") return <EngineeringLeadershipVisual />;
   if (kind === "commercials") return <CommercialVisual />;
   return <FaqVisual />;
 }
@@ -1239,7 +1574,7 @@ export function PresentationSite() {
           <span className="pres-page-flag pres-page-flag-cover">{coverPageLabel}</span>
           <span className="pres-kicker">{coverPageLabel} | Presentation mode</span>
           <h1>Pandora TS&F customer workshop</h1>
-          <p>Agenda-led story with executive placeholders, Nexus proof, revised proposal, maturity gates, booth flow, operating model and commercials.</p>
+          <p>Agenda-led story with executive placeholders, Nexus proof, revised proposal, maturity gates, Lane 2 movement, operating model and commercials.</p>
           <div className="pres-hero-actions">
             <a href="#exec-presence">
               Start walkthrough
@@ -1269,11 +1604,15 @@ export function PresentationSite() {
         </div>
       </header>
 
-      {presentationChapters.map((chapter, index) => (
-        <SlideShell chapter={chapter} index={index} key={chapter.id}>
-          <VisualFor kind={chapter.visual} chapterId={chapter.id} onOpenLightbox={setLightbox} />
-        </SlideShell>
-      ))}
+      {presentationChapters.map((chapter, index) =>
+        chapter.visual === "commercials" ? (
+          <CommercialPresentationSlide chapter={chapter} index={index} onOpenLightbox={setLightbox} key={chapter.id} />
+        ) : (
+          <SlideShell chapter={chapter} index={index} key={chapter.id}>
+            <VisualFor kind={chapter.visual} chapterId={chapter.id} onOpenLightbox={setLightbox} />
+          </SlideShell>
+        )
+      )}
 
       {unlinkedSections.length > 0 ? (
         <section className="pres-link-audit" aria-label="All remaining detailed links">

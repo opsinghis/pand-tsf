@@ -52,9 +52,6 @@ export const navChapters = [
     { id: "team-skills", label: "Skills & knowledge transfer", num: "14" },
     { id: "team-capacity", label: "Capacity that compounds", num: "15" }
   ]},
-  { id: "commercialsC", label: "Commercials", sections: [
-    { id: "commercials", label: "Commercial model", num: "16" }
-  ]},
   { id: "dial", label: "The Dial", sections: [
     { id: "dial-explorer", label: "The 30-item dial", num: "17" },
     { id: "walkthroughs", label: "The dial in action", num: "18" },

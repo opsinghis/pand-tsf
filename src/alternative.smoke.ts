@@ -12,6 +12,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import App from "./App";
 import { maturityHorizons, servicePlatforms } from "./components/AltRun";
+import { BoothVisitSite } from "./components/BoothVisitSite";
 import { PresentationSite } from "./components/PresentationSite";
 import * as alt from "./data/alternative";
 
@@ -38,6 +39,7 @@ function collectStrings(value: unknown, out: string[]): void {
 const markup = renderToStaticMarkup(createElement(App));
 const renderedText = normalize(toText(markup));
 const presentationMarkup = renderToStaticMarkup(createElement(PresentationSite));
+const boothMarkup = renderToStaticMarkup(createElement(BoothVisitSite));
 const vercelConfig = JSON.parse(readFileSync(resolve(import.meta.dirname, "../vercel.json"), "utf8")) as {
   rewrites?: Array<{ source: string; destination: string }>;
 };
@@ -73,18 +75,46 @@ const structural: Record<string, boolean> = {
   "Lane 2 empty at 3 months": count(/hlane2 empty/g) === 1,
   "fabric never dropped": markup.includes("agentic fabric") && markup.includes("Gate 0"),
   "landscape map present": count(/ls-item owner-/g) === 11,
-  "commercial model present": markup.includes('id="commercials"') && markup.includes("Download Excel"),
+  "commercial section protected": markup.includes('id="commercials"') &&
+    markup.includes("Commercials - restricted access") &&
+    markup.includes("Restricted commercial content") &&
+    !markup.includes("Commercial cockpit"),
+  "customer ask team model present": markup.includes("Customer ask operating model") &&
+    markup.includes("34 FTE steady team with 24x7 on-call") &&
+    markup.includes("Overall Engineering Lead") &&
+    markup.includes("Kafka / Kong engineers") &&
+    markup.includes("Base support + 24x7 on-call"),
+  "team roster model present": markup.includes("24x7 roster model") &&
+    markup.includes("Domain on-call rota over the business-hours team") &&
+    markup.includes("This is not a permanent night-shift model") &&
+    markup.includes("Major incident layer") &&
+    markup.includes("SME / burst pull-in") &&
+    markup.includes("Two-week rota"),
+  "team two-week rota defined": readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
+    .includes("Representative two-week rota, including weekends") &&
+    readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
+      .includes("slot labels are replaced") &&
+    readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
+      .includes("Weekend cover uses the same primary / secondary model"),
+  "team capacity controls defined": readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
+    .includes("Hidden capacity update screen") &&
+    readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
+      .includes("Extra Improve & Evolve engineers") &&
+    readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
+      .includes("Extra quarterly burst reserve"),
   "FAQ present": markup.includes('id="faq"') && renderedText.includes("Customer Q&A map"),
   "presentation route covers menu": presentationMarkup.includes("Presentation mode") && missingPresentationLinks.length === 0,
   "presentation follows customer agenda": presentationMarkup.includes("Exec introduction + India presence") &&
     presentationMarkup.includes("Revised proposal, open Q&amp;A") &&
     presentationMarkup.includes("Operating model &amp; commercials"),
-  "presentation includes leadership portraits": presentationMarkup.includes("Sanjay") &&
+  "presentation includes leadership sessions": presentationMarkup.includes("Sanjay") &&
     presentationMarkup.includes("Managing Director, Publicis Sapient India") &&
     presentationMarkup.includes("Subject: Exec introduction + India presence") &&
-    presentationMarkup.includes("Shubhra") &&
-    presentationMarkup.includes("Global Chief Delivery Officer, Publicis Sapient") &&
-    presentationMarkup.includes("Subject: People + Product Strategy, Organization Transformation, People Transformation"),
+    presentationMarkup.includes("Tilak") &&
+    presentationMarkup.includes("Executive Vice President and Global Head of Engineering at Publicis Sapient") &&
+    presentationMarkup.includes("End-of-day executive session") &&
+    presentationMarkup.includes("Tilak portrait") &&
+    !presentationMarkup.includes("Shubhra"),
   "presentation cover includes Pandora brand imagery": presentationMarkup.includes("/pandora/model1.webp") &&
     presentationMarkup.includes("/pandora/model2.webp") &&
     presentationMarkup.includes("Transition with the brand in the room."),
@@ -108,6 +138,24 @@ const structural: Record<string, boolean> = {
   "presentation maturity baseline source": servicePlatforms.length === 17 &&
     maturityHorizons.some((horizon) => horizon.id === "now") &&
     maturityHorizons.some((horizon) => horizon.id === "m6"),
+  "presentation P05 explains Lane 2 movement": presentationMarkup.includes("Lane 2 moves one item at a time through evidence gates.") &&
+    presentationMarkup.includes("Gate 1 unlocks assist") &&
+    presentationMarkup.includes("Pandora approves every move") &&
+    presentationMarkup.includes("Kafka connector"),
+  "presentation P07 team overview": presentationMarkup.includes("P07 | 3:00 - 4:00") &&
+    presentationMarkup.includes("One engineering team runs, improves and flexes on demand.") &&
+    presentationMarkup.includes("34 FTE steady team, one engineering lead") &&
+    presentationMarkup.includes("Domain on-call, not night-shift staffing") &&
+    presentationMarkup.includes("Commercial levers") &&
+    !presentationMarkup.includes("Net monthly model"),
+  "presentation P08 engineering leadership": presentationMarkup.includes("P08 | End of day") &&
+    presentationMarkup.includes("Engineering leadership closes the operating model story.") &&
+    presentationMarkup.includes("Placed after the Team Overview") &&
+    presentationMarkup.includes("Capability depth"),
+  "commercial disclaimer present in source": readFileSync(resolve(import.meta.dirname, "components/AltCommercials.tsx"), "utf8")
+    .includes("All commercial values shown here are dummy placeholders") &&
+    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.tsx"), "utf8")
+      .includes("Replace with real inputs for actual cost"),
   "presentation proof modals available": (presentationMarkup.match(/Open proof/g) || []).length >= 3,
   "deleted standalone pages absent": !presentationMarkup.includes('id="nexus-proof"') &&
     !presentationMarkup.includes('href="#nexus-proof"') &&
@@ -127,6 +175,21 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("return="),
   "vercel presentation rewrite": vercelRewrites.some((rewrite) => rewrite.source === "/presentation" && rewrite.destination === "/index.html") &&
     vercelRewrites.some((rewrite) => rewrite.source === "/presentation/:path*" && rewrite.destination === "/index.html"),
+  "booth walkthrough route": boothMarkup.includes("Booth walkthrough") &&
+    boothMarkup.includes("01") &&
+    boothMarkup.includes("12") &&
+    boothMarkup.includes("Data Operating Model") &&
+    boothMarkup.includes("Integration Operating Model") &&
+    boothMarkup.includes("PAKS Operations") &&
+    boothMarkup.includes("Developer Portal + Tooling") &&
+    !boothMarkup.includes("B00"),
+  "booth scope coverage": boothMarkup.includes("B.3.1") &&
+    boothMarkup.includes("B.3.7") &&
+    boothMarkup.includes("C.3.1") &&
+    boothMarkup.includes("C.3.4") &&
+    boothMarkup.includes("Generic page numbering"),
+  "vercel booth rewrite": vercelRewrites.some((rewrite) => rewrite.source === "/booth" && rewrite.destination === "/index.html") &&
+    vercelRewrites.some((rewrite) => rewrite.source === "/booth/:path*" && rewrite.destination === "/index.html"),
   "no raw emphasis markers": !renderedText.includes("**")
 };
 const failed = Object.entries(structural).filter(([, ok]) => !ok);
@@ -161,7 +224,7 @@ if (agenticFabricVideoSize < 10_000) {
 if (pandoraModel1Size < 5_000 || pandoraModel2Size < 5_000) {
   throw new Error(`Pandora cover assets missing or too small: ${pandoraModel1Size} / ${pandoraModel2Size} bytes`);
 }
-const budget = 1_200_000;
+const budget = 1_290_000;
 if (size > budget) throw new Error(`Build is ${size} bytes, over budget`);
 
 console.log(

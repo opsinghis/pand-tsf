@@ -1403,6 +1403,14 @@ export function CommercialsSection() {
         reduces toil and agentifies safe patterns, and customer ask capacity for specialist engineering demand. The levers below
         show how the price changes as coverage, term, automation ambition and the customer ask matrix change.
       </p>
+      <Reveal className="commercial-rate-disclaimer">
+        <ShieldCheck size={17} aria-hidden="true" />
+        <span>
+          All commercial values shown here are dummy placeholders. The cost is calculated directly from the editable day
+          rate card, staffed FTE, billable days and discount assumptions; replace those with approved real rates and counts
+          to get the actual commercial value.
+        </span>
+      </Reveal>
 
       <Reveal className="commercial-console">
         <div className="commercial-console-head">

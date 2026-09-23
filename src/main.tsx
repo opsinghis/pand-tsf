@@ -17,6 +17,7 @@ import "./components/AltTeam.css";
 import "./components/AltCommercials.css";
 import "./components/AltFaq.css";
 import "./components/PresentationSite.css";
+import "./components/BoothVisitSite.css";
 import "./styles/responsive.css";
 import App from "./App";
 
