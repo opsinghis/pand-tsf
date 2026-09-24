@@ -5,7 +5,7 @@
     var(--paper);
   color: var(--ink);
   font-family: var(--sans);
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
 }
 
 .pres-nav {
@@ -114,6 +114,7 @@
 .pres-slide {
   min-height: 100vh;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .pres-hero {
@@ -400,6 +401,38 @@
   left: 0;
 }
 
+.pres-slide-agenda-link {
+  position: absolute;
+  top: 0;
+  right: 70px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 38px;
+  border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 28%, var(--line));
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1;
+  padding: 0 10px;
+  box-shadow: 0 12px 28px rgba(18, 18, 18, 0.06);
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.pres-slide-agenda-link:hover,
+.pres-slide-agenda-link:focus-visible {
+  border-color: color-mix(in srgb, var(--tone, var(--accent)) 46%, var(--line));
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.pres-slide-agenda-link svg {
+  color: var(--tone, var(--accent));
+}
+
 .pres-slide-copy h2 {
   max-width: 11.5ch;
 }
@@ -510,7 +543,22 @@
   border-left: 4px solid var(--tone, var(--accent));
   border-radius: 8px;
   background: var(--card);
+  color: inherit;
   padding: 12px;
+  text-decoration: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.pres-agenda-row:hover,
+.pres-agenda-row:focus-visible {
+  border-color: color-mix(in srgb, var(--tone, var(--accent)) 42%, var(--line));
+  box-shadow: 0 12px 30px rgba(18, 18, 18, 0.11);
+  transform: translateY(-1px);
+}
+
+.pres-agenda-row:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tone, var(--accent)) 54%, transparent);
+  outline-offset: 2px;
 }
 
 .pres-agenda-row.break {

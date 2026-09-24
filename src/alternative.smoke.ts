@@ -116,6 +116,14 @@ const structural: Record<string, boolean> = {
     (presentationMarkup.match(/Tea \/ Coffee Break/g) || []).length >= 2 &&
     presentationMarkup.includes("Lunch") &&
     readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("A4 landscape"),
+  "presentation cover agenda links": (presentationMarkup.match(/<a class="pres-agenda-row/g) || []).length >= 9 &&
+    presentationMarkup.includes('href="#site-walkthrough"') &&
+    presentationMarkup.includes('href="#booth-walkthrough"') &&
+    presentationMarkup.includes('href="#team-overview"') &&
+    presentationMarkup.includes('href="#faq-close"'),
+  "presentation slides return to agenda": (presentationMarkup.match(/class="pres-slide-agenda-link"/g) || []).length >= 12 &&
+    presentationMarkup.includes('href="#presentation-start"') &&
+    presentationMarkup.includes(">Agenda</a>"),
   "presentation includes leadership sessions": presentationMarkup.includes("Sanjay") &&
     presentationMarkup.includes("Managing Director, Publicis Sapient India") &&
     presentationMarkup.includes("Subject: Exec intros - PS in India") &&
@@ -168,6 +176,15 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("Adoption + shift-left") &&
     presentationMarkup.includes("/booth#booth-overview") &&
     presentationMarkup.includes("Meet The Team"),
+  "presentation deep links curated for P01 and P02": presentationMarkup.includes("Scope: DevOps, Data, Integration") &&
+    presentationMarkup.includes("Skills and knowledge transfer") &&
+    presentationMarkup.includes("Proof and customer cases") &&
+    presentationMarkup.includes("/booth#data-operating-model") &&
+    presentationMarkup.includes("/booth#integration-operating-model") &&
+    presentationMarkup.includes("/booth#paks-operations") &&
+    presentationMarkup.includes("/booth#incident-reliability") &&
+    !presentationMarkup.includes("McDonalds: DevOps operations") &&
+    !presentationMarkup.includes("Loreal: Data platform management"),
   "presentation revised approach preserved": presentationMarkup.includes("P06 | 2:00 - 3:00") &&
     (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 1 &&
     (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 1 &&

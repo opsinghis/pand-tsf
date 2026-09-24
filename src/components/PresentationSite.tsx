@@ -18,7 +18,7 @@ import {
   X,
   Zap
 } from "lucide-react";
-import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { brand, horizons, navSections } from "../data/alternative";
 import { defaultCommercialControls, getCommercialSnapshot } from "./AltCommercials";
 import { CommercialAccessPanel, useCommercialAccess } from "./CommercialAccess";
@@ -83,6 +83,13 @@ interface PresentationChapter {
   tone: PresentationTone;
   visual: PresentationVisual;
   detailIds: string[];
+  detailLinks?: PresentationDetailLink[];
+}
+
+interface PresentationDetailLink {
+  href: string;
+  label: string;
+  num: string;
 }
 
 interface LightboxImage {
@@ -210,73 +217,85 @@ const originalAgenda = [
     time: "9:30 - 9:45",
     label: "Meet & Greet",
     owner: "Om Singh",
-    points: ["Agenda walkthrough", "Introductions", "Coffee"]
+    points: ["Agenda walkthrough", "Introductions", "Coffee"],
+    targetId: "presentation-start"
   },
   {
     time: "9:45 - 10:45",
     label: "PS site walkthrough - team areas visit",
     owner: "Ravi Shankar",
-    points: ["Real development & operations", "DevOps + Integration", "ASO", "Nissan"]
+    points: ["Real development & operations", "DevOps + Integration", "ASO", "Nissan"],
+    targetId: "site-walkthrough"
   },
   {
     time: "10:45 - 11:00",
     label: "Tea / Coffee Break",
     owner: "Break",
-    points: ["Refresh", "Move to booth area"]
+    points: ["Refresh", "Move to booth area"],
+    targetId: "booth-walkthrough"
   },
   {
     time: "11:00 - 11:45",
     label: "Client examples - booth walkthrough",
     owner: "Kalpesh",
-    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal"]
+    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal"],
+    targetId: "booth-walkthrough"
   },
   {
     time: "12:00 - 12:30",
     label: "Lunch",
     owner: "Break",
-    points: ["Pause"]
+    points: ["Pause"],
+    targetId: "meet-your-team"
   },
   {
     time: "12:30 - 1:00",
     label: "Meet your team",
     owner: "Om Singh",
-    points: ["Team identified for T&SF", "Roles", "Locations", "Support model"]
+    points: ["Team identified for T&SF", "Roles", "Locations", "Support model"],
+    targetId: "meet-your-team"
   },
   {
     time: "1:00 - 2:00",
     label: "Exec intros - PS in India",
     owner: "Sanjay Menon",
-    points: ["India presence", "People + Product Strategy", "Organization Transformation", "Talent management"]
+    points: ["India presence", "People + Product Strategy", "Organization Transformation", "Talent management"],
+    targetId: "exec-presence"
   },
   {
     time: "2:00 - 3:00",
     label: "Revised proposal - deep dive",
     owner: "Om Singh",
-    points: ["Open Q&A", "Operating model", "Transition", "Case Study - 5"]
+    points: ["Open Q&A", "Operating model", "Transition", "Case Study - 5"],
+    targetId: "journey-until-now"
   },
   {
     time: "3:00 - 3:30",
     label: "Commercials & team model",
     owner: "Sebastian Jandrey",
-    points: ["Location / team model", "Commercial model"]
+    points: ["Location / team model", "Commercial model"],
+    targetId: "team-overview"
   },
   {
     time: "3:30 - 3:45",
     label: "Tea / Coffee Break",
     owner: "Break",
-    points: ["Refresh", "Prepare for online closure"]
+    points: ["Refresh", "Prepare for online closure"],
+    targetId: "engineering-leadership"
   },
   {
     time: "3:45 - 4:15",
     label: "Exec closure - online meet",
     owner: "Tilak Doddapaneni",
-    points: ["Reassurance on AI", "Innovation", "Engineering confidence"]
+    points: ["Reassurance on AI", "Innovation", "Engineering confidence"],
+    targetId: "engineering-leadership"
   },
   {
     time: "4:15 - 4:30",
     label: "Debrief",
     owner: "Group",
-    points: ["Actions", "Open points", "Next steps"]
+    points: ["Actions", "Open points", "Next steps"],
+    targetId: "faq-close"
   }
 ];
 
@@ -291,7 +310,12 @@ const presentationChapters: PresentationChapter[] = [
     talkTrack: [],
     tone: "proof",
     visual: "sitevisit",
-    detailIds: ["proof", "team-skills", "transition-coverage"]
+    detailIds: ["scope", "team-skills", "proof"],
+    detailLinks: [
+      { num: "03", label: "Scope: DevOps, Data, Integration", href: detailHref("scope", "site-walkthrough") },
+      { num: "14", label: "Skills and knowledge transfer", href: detailHref("team-skills", "site-walkthrough") },
+      { num: "22", label: "Proof and customer cases", href: detailHref("proof", "site-walkthrough") }
+    ]
   },
   {
     id: "booth-walkthrough",
@@ -300,10 +324,16 @@ const presentationChapters: PresentationChapter[] = [
     title: "Booth Walkthrough",
     headline: "Two booths. One operating model.",
     punch: "Kalpesh uses McDonalds and Loreal to show how great operations work across DevOps, Data and Integration: service ownership, platform reliability, 24x7 support, incident flow, AI load reduction, adoption and shift-left.",
-    talkTrack: ["McDonalds: DevOps operations", "Loreal: Data platform management", "Integration + reliability", "Open booth route"],
+    talkTrack: [],
     tone: "tech",
     visual: "boothvisit",
-    detailIds: ["proof", "scope", "team-capacity"]
+    detailIds: ["scope", "dayone", "governance"],
+    detailLinks: [
+      { num: "01", label: "Data operating model", href: "/booth#data-operating-model" },
+      { num: "02", label: "Integration operating model", href: "/booth#integration-operating-model" },
+      { num: "03", label: "PAKS / DevOps operations", href: "/booth#paks-operations" },
+      { num: "04", label: "Incident and reliability model", href: "/booth#incident-reliability" }
+    ]
   },
   {
     id: "meet-your-team",
@@ -431,6 +461,24 @@ function detailHref(sectionId: string, returnId: string) {
   return `/?from=presentation&return=${encodeURIComponent(returnId)}#${sectionId}`;
 }
 
+function jumpToPresentationTarget(event: MouseEvent<HTMLAnchorElement>, targetId: string) {
+  if (typeof window === "undefined") return;
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  event.preventDefault();
+  const top = target.getBoundingClientRect().top + window.scrollY;
+  const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+
+  window.history.pushState(null, "", `#${targetId}`);
+  document.documentElement.style.scrollBehavior = "auto";
+  window.scrollTo({ top, left: 0, behavior: "auto" });
+  window.requestAnimationFrame(() => {
+    window.scrollTo({ top, left: 0, behavior: "auto" });
+    document.documentElement.style.scrollBehavior = previousScrollBehavior;
+  });
+}
+
 function pageLabel(index: number) {
   return `P${String(index + 1).padStart(2, "0")}`;
 }
@@ -442,16 +490,21 @@ function getSections(ids: string[]) {
   return ids.map((id) => sectionById.get(id)).filter((section): section is NonNullable<typeof section> => Boolean(section));
 }
 
-function DetailLinks({ chapterId, detailIds }: { chapterId: string; detailIds: string[] }) {
-  const sections = getSections(detailIds);
+function DetailLinks({ chapter }: { chapter: PresentationChapter }) {
+  const sections = getSections(chapter.detailIds);
+  const links: PresentationDetailLink[] = chapter.detailLinks ?? sections.map((section) => ({
+    href: detailHref(section.id, chapter.id),
+    label: section.label,
+    num: section.num
+  }));
   return (
     <div className="pres-detail-links" aria-label="Detailed section links">
       <span>Deep dive</span>
       <div>
-        {sections.map((section) => (
-          <a href={detailHref(section.id, chapterId)} key={section.id}>
-            <em>{section.num}</em>
-            <strong>{section.label}</strong>
+        {links.map((link) => (
+          <a href={link.href} key={`${link.num}-${link.label}`}>
+            <em>{link.num}</em>
+            <strong>{link.label}</strong>
             <ExternalLink size={12} aria-hidden="true" />
           </a>
         ))}
@@ -483,6 +536,19 @@ function PresentationNav() {
   );
 }
 
+function AgendaBackLink() {
+  return (
+    <a
+      className="pres-slide-agenda-link"
+      href="#presentation-start"
+      onClick={(event) => jumpToPresentationTarget(event, "presentation-start")}
+    >
+      <ArrowLeft size={12} aria-hidden="true" />
+      Agenda
+    </a>
+  );
+}
+
 function SlideShell({
   chapter,
   index,
@@ -497,6 +563,7 @@ function SlideShell({
     <section className={`pres-slide tone-${chapter.tone} slide-${chapter.id}`} id={chapter.id} aria-label={`${page} ${chapter.title}`}>
       <div className="pres-slide-inner">
         <span className="pres-page-flag">{page}</span>
+        <AgendaBackLink />
         <div className="pres-slide-copy">
           <span className="pres-kicker">{page} | {chapter.time} | {String(index + 1).padStart(2, "0")} / {presentationChapters.length}</span>
           <small className="pres-agenda-label">{chapter.agenda}</small>
@@ -509,7 +576,7 @@ function SlideShell({
               ))}
             </div>
           ) : null}
-          <DetailLinks chapterId={chapter.id} detailIds={chapter.detailIds} />
+          <DetailLinks chapter={chapter} />
         </div>
         <div className="pres-visual">{children}</div>
       </div>
@@ -540,6 +607,7 @@ function CommercialPresentationSlide({
     <section className={`pres-slide tone-${chapter.tone}`} id={chapter.id} aria-label={`${page} ${chapter.title}`}>
       <div className="pres-slide-inner">
         <span className="pres-page-flag">{page}</span>
+        <AgendaBackLink />
         <div className="pres-slide-copy">
           <span className="pres-kicker">{page} | {chapter.time} | {String(index + 1).padStart(2, "0")} / {presentationChapters.length}</span>
           <small className="pres-agenda-label">{chapter.agenda}</small>
@@ -565,8 +633,14 @@ function CommercialPresentationSlide({
 function AgendaVisual() {
   return (
     <div className="pres-agenda-board">
-      {originalAgenda.map((item, index) => (
-        <div className={`pres-agenda-row ${item.owner === "Break" ? "break" : ""}`} key={`${item.time}-${item.label}`}>
+      {originalAgenda.map((item) => (
+        <a
+          className={`pres-agenda-row ${item.owner === "Break" ? "break" : ""}`}
+          href={`#${item.targetId}`}
+          key={`${item.time}-${item.label}`}
+          aria-label={`Open ${item.label}`}
+          onClick={(event) => jumpToPresentationTarget(event, item.targetId)}
+        >
           <div>
             <span>{item.time}</span>
             <strong>{item.label}</strong>
@@ -577,8 +651,8 @@ function AgendaVisual() {
               <li key={point}>{point}</li>
             ))}
           </ul>
-          {index < originalAgenda.length - 1 ? <ChevronRight size={18} aria-hidden="true" /> : null}
-        </div>
+          <ChevronRight size={18} aria-hidden="true" />
+        </a>
       ))}
     </div>
   );
@@ -1854,6 +1928,7 @@ export function PresentationSite() {
       <section className="pres-slide pres-close" id="presentation-close">
         <div className="pres-close-inner">
           <span className="pres-page-flag pres-page-flag-close">{closePageLabel}</span>
+          <AgendaBackLink />
           <Zap size={26} aria-hidden="true" />
           <h2>Run as-is. Prove maturity. Earn the fabric.</h2>
           <div className="pres-close-grid">
