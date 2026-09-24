@@ -44,6 +44,14 @@ const rfsCover = new URL("../assets/presentation/rfs/rfs-cover.jpg", import.meta
 const rfsPandoraStrip = new URL("../assets/presentation/rfs/rfs-pandora-strip.jpg", import.meta.url).href;
 const rfsPortrait = new URL("../assets/presentation/rfs/rfs-portrait.jpg", import.meta.url).href;
 const rfsRoute = new URL("../assets/presentation/rfs/rfs-route.jpg", import.meta.url).href;
+const asoCaseImage = "/cases/aso.jpg";
+const nissanCaseImage = "/cases/nissan.jpg";
+const optumCaseImage = "/cases/optum.jpg";
+const pandoraCaseImage = "/cases/pandora.jpg";
+const kingfisherCaseImage = "/cases/kingfisher.jpg";
+const boCaseImage = "/cases/bo.jpg";
+const mcdonaldsCaseImage = "/cases/mcdonalds.jpg";
+const lorealCaseImage = "/cases/loreal.jpg";
 
 type PresentationTone = "accent" | "tech" | "people" | "ops" | "gov" | "proof";
 type PresentationVisual =
@@ -51,6 +59,9 @@ type PresentationVisual =
   | "exec"
   | "recap"
   | "rfs"
+  | "sitevisit"
+  | "boothvisit"
+  | "meetteam"
   | "transition"
   | "maturity"
   | "lane2"
@@ -196,60 +207,132 @@ const dialInActionLightbox: LightboxContent = {
 
 const originalAgenda = [
   {
-    time: "9:45 - 11:00",
-    label: "Exec introduction + India presence",
-    owner: "PS leadership slides",
-    points: ["Opening executive context", "India presence", "PS specifics"]
+    time: "9:30 - 9:45",
+    label: "Meet & Greet",
+    owner: "Om Singh",
+    points: ["Agenda walkthrough", "Introductions", "Coffee"]
   },
   {
-    time: "10:45 - 12:15",
-    label: "Revised proposal, open Q&A",
-    owner: "Portal-led",
-    points: ["What we covered", "Alignment to alternative ask", "Transition, stabilisation, transformation, north star"]
+    time: "9:45 - 10:45",
+    label: "PS site walkthrough - team areas visit",
+    owner: "Ravi Shankar",
+    points: ["Real development & operations", "DevOps + Integration", "ASO", "Nissan"]
   },
   {
-    time: "12:15 - 1:00",
+    time: "10:45 - 11:00",
+    label: "Tea / Coffee Break",
+    owner: "Break",
+    points: ["Refresh", "Move to booth area"]
+  },
+  {
+    time: "11:00 - 11:45",
+    label: "Client examples - booth walkthrough",
+    owner: "Kalpesh",
+    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal"]
+  },
+  {
+    time: "12:00 - 12:30",
     label: "Lunch",
     owner: "Break",
     points: ["Pause"]
   },
   {
-    time: "1:00 - 2:30",
-    label: "Deep dive with case studies",
-    owner: "Portal + proof walkthrough",
-    points: ["DevOps, Data, Integration proof", "Lane 2 movement", "Real operations flow"]
+    time: "12:30 - 1:00",
+    label: "Meet your team",
+    owner: "Om Singh",
+    points: ["Team identified for T&SF", "Roles", "Locations", "Support model"]
   },
   {
-    time: "2:30 - 2:45",
-    label: "Coffee Break",
+    time: "1:00 - 2:00",
+    label: "Exec intros - PS in India",
+    owner: "Sanjay Menon",
+    points: ["India presence", "People + Product Strategy", "Organization Transformation", "Talent management"]
+  },
+  {
+    time: "2:00 - 3:00",
+    label: "Revised proposal - deep dive",
+    owner: "Om Singh",
+    points: ["Open Q&A", "Operating model", "Transition", "Case Study - 5"]
+  },
+  {
+    time: "3:00 - 3:30",
+    label: "Commercials & team model",
+    owner: "Sebastian Jandrey",
+    points: ["Location / team model", "Commercial model"]
+  },
+  {
+    time: "3:30 - 3:45",
+    label: "Tea / Coffee Break",
     owner: "Break",
-    points: ["Pause"]
+    points: ["Refresh", "Prepare for online closure"]
   },
   {
-    time: "3:00 - 4:00",
-    label: "Operating model & commercials",
-    owner: "Portal-led",
-    points: ["Team and locations", "Talent and onboarding", "Tilak engineering leadership", "Commercial levers"]
+    time: "3:45 - 4:15",
+    label: "Exec closure - online meet",
+    owner: "Tilak Doddapaneni",
+    points: ["Reassurance on AI", "Innovation", "Engineering confidence"]
+  },
+  {
+    time: "4:15 - 4:30",
+    label: "Debrief",
+    owner: "Group",
+    points: ["Actions", "Open points", "Next steps"]
   }
 ];
 
 const presentationChapters: PresentationChapter[] = [
   {
+    id: "site-walkthrough",
+    time: "9:45 - 10:45",
+    agenda: "PS site walkthrough - team areas visit",
+    title: "Site Walkthrough",
+    headline: "Walk the retail floor, then unpack the cases.",
+    punch: "Ravi Shankar, India Retail CTO, takes the group through one of the retail delivery floors. We see teams in action across Pandora, ASO, Optum, Kingfisher and B&O, then sit down for ASO, Nissan and Optum case walkthroughs focused on Integration, Data and DevOps.",
+    talkTrack: [],
+    tone: "proof",
+    visual: "sitevisit",
+    detailIds: ["proof", "team-skills", "transition-coverage"]
+  },
+  {
+    id: "booth-walkthrough",
+    time: "11:00 - 11:45",
+    agenda: "Client examples - booth walkthrough",
+    title: "Booth Walkthrough",
+    headline: "Two booths. One operating model.",
+    punch: "Kalpesh uses McDonalds and Loreal to show how great operations work across DevOps, Data and Integration: service ownership, platform reliability, 24x7 support, incident flow, AI load reduction, adoption and shift-left.",
+    talkTrack: ["McDonalds: DevOps operations", "Loreal: Data platform management", "Integration + reliability", "Open booth route"],
+    tone: "tech",
+    visual: "boothvisit",
+    detailIds: ["proof", "scope", "team-capacity"]
+  },
+  {
+    id: "meet-your-team",
+    time: "12:30 - 1:00",
+    agenda: "Meet your team",
+    title: "Meet The Team",
+    headline: "The identified team is part of the confidence story.",
+    punch: "Before the afternoon proposal discussion, we introduce the T&SF team shape: who covers DevOps, Data, Integration, delivery leadership, 24x7 on-call and improvement capacity.",
+    talkTrack: ["Om Singh", "Named team shape", "DevOps / Data / Integration", "24x7 on-call", "Improve & Evolve"],
+    tone: "people",
+    visual: "meetteam",
+    detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity"]
+  },
+  {
     id: "exec-presence",
-    time: "9:45 - 11:00",
-    agenda: "Exec introduction + India presence",
-    title: "Exec + India",
-    headline: "Opening leadership anchors India presence.",
-    punch: "Page 01 now keeps the opening executive context focused on Sanjay and the India presence. The engineering leadership discussion moves to the end of the day with Tilak.",
-    talkTrack: ["Sanjay opening placeholder", "India presence", "PS specifics", "Engineering leadership later"],
+    time: "1:00 - 2:00",
+    agenda: "Exec intros - PS in India",
+    title: "PS In India",
+    headline: "Sanjay anchors PS in India and transformation capability.",
+    punch: "This is the leadership session for India presence, PS specifics, People + Product Strategy, Organization Transformation and People Transformation including talent management.",
+    talkTrack: ["Sanjay Menon", "India presence", "People + Product Strategy", "Organization Transformation", "Talent management"],
     tone: "people",
     visual: "exec",
     detailIds: ["team-shape", "team-leader", "team-capacity"]
   },
   {
     id: "journey-until-now",
-    time: "10:45 - 12:15",
-    agenda: "Revised proposal, open Q&A",
+    time: "2:00 - 3:00",
+    agenda: "Revised proposal - deep dive",
     title: "Journey Until Now",
     headline: "The site visit is the fourth step in the same journey.",
     punch: "May proved the Nexus idea, August scaled it into the RFP response, September sharpened the concern, and 1 October is where we land the revised path.",
@@ -260,8 +343,8 @@ const presentationChapters: PresentationChapter[] = [
   },
   {
     id: "revised-approach-p03",
-    time: "10:45 - 12:15",
-    agenda: "Revised proposal, open Q&A",
+    time: "2:00 - 3:00",
+    agenda: "Revised proposal - deep dive",
     title: "Revised Approach",
     headline: "Same north star. Safer adoption path.",
     punch: "We run as-is first, stabilise, transform through maturity gates, then evolve only the items that have earned the move.",
@@ -272,8 +355,8 @@ const presentationChapters: PresentationChapter[] = [
   },
   {
     id: "maturity-gates",
-    time: "10:45 - 12:15",
-    agenda: "Revised proposal, open Q&A",
+    time: "2:00 - 3:00",
+    agenda: "Revised proposal - deep dive",
     title: "Maturity Matrix",
     headline: "Handover continues while maturity becomes transparent.",
     punch: "We do not wait for perfect handover. During transition, every scoped item gets an evidence-based M0-M5 baseline so gaps are visible, priorities are clear, and improvement work moves the estate to a better state over time.",
@@ -284,8 +367,8 @@ const presentationChapters: PresentationChapter[] = [
   },
   {
     id: "lane2-movement",
-    time: "1:00 - 2:30",
-    agenda: "Deep dive augmented with client case studies",
+    time: "2:00 - 3:00",
+    agenda: "Revised proposal - deep dive",
     title: "Lane 2 Movement",
     headline: "Lane 2 moves one item at a time through evidence gates.",
     punch: "The maturity matrix creates candidates, not a forced transformation wave. Each item enters Lane 2 with a Pandora owner, evidence, rollback, stakeholder sign-off and a clear reason to move from run-as-is to assisted, then to a higher maturity pattern only when Gate 2 passes.",
@@ -296,48 +379,48 @@ const presentationChapters: PresentationChapter[] = [
   },
   {
     id: "case-studies",
-    time: "1:00 - 2:30",
-    agenda: "Deep dive augmented with client case studies",
+    time: "2:00 - 3:00",
+    agenda: "Revised proposal - deep dive",
     title: "Client Cases",
-    headline: "Proof slots are ready for the real customer stories.",
-    punch: "The portal frames what each case must prove: transition under uncertainty, platform operations, data reliability and integration modernization.",
-    talkTrack: ["DevOps proof", "Data proof", "Integration proof", "Operations proof", "Named cases inserted during presentation"],
+    headline: "Case Study 5 connects proof back to the revised proposal.",
+    punch: "The morning cases prove capability; this afternoon case anchors transition, operating model and the path from run to evolve.",
+    talkTrack: ["Case Study - 5", "Transition proof", "Operating model proof", "DevOps / Data / Integration"],
     tone: "proof",
     visual: "cases",
     detailIds: ["proof", "faq", "goals", "team-capacity"]
   },
   {
     id: "team-overview",
-    time: "3:00 - 4:00",
-    agenda: "Operating model & commercials",
-    title: "Team Overview",
-    headline: "One engineering team runs, improves and flexes on demand.",
-    punch: "We position a 34 FTE steady team across DevOps, Data and Integration, backed by domain on-call, one engineering lead, delivery governance and optional burst capacity when Pandora wants to dial up demand.",
-    talkTrack: ["34 FTE steady team", "24x7 domain on-call rota", "One engineering lead", "Run + Improve + Burst capacity", "Pandora owns gates and priorities"],
+    time: "3:00 - 3:30",
+    agenda: "Commercials & Team Model",
+    title: "Team + Commercials",
+    headline: "Team model and commercial model stay connected.",
+    punch: "Sebastian anchors how location mix, team model, rate cards and commercial levers connect to the same delivery model: run base, improve and evolve, and controlled burst capacity.",
+    talkTrack: ["Sebastian Jandrey", "Location / team model", "Commercial model", "Run + Improve + Burst", "Protected commercial levers"],
     tone: "people",
     visual: "team",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "commercials"]
   },
   {
     id: "engineering-leadership",
-    time: "End of day",
-    agenda: "Engineering leadership session",
-    title: "Engineering Leadership",
-    headline: "Engineering leadership closes the operating model story.",
-    punch: "Tilak, Executive Vice President and Global Head of Engineering at Publicis Sapient, connects the proposed model to engineering quality, capability depth, transformation safety and the route from run to evolve.",
-    talkTrack: ["Engineering bar", "Scaled delivery quality", "Capability depth", "Run-to-evolve path", "Leadership Q&A"],
+    time: "3:45 - 4:15",
+    agenda: "Exec closure - online meet",
+    title: "Exec Closure",
+    headline: "Tilak closes with AI and innovation reassurance.",
+    punch: "Tilak Doddapaneni, Executive Vice President and Global Head of Engineering at Publicis Sapient, reassures the room on AI, innovation, engineering quality and why the model is safe to evolve.",
+    talkTrack: ["Tilak Doddapaneni", "AI reassurance", "Innovation", "Engineering quality", "Leadership Q&A"],
     tone: "people",
     visual: "engineering",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "faq"]
   },
   {
     id: "faq-close",
-    time: "4:00",
-    agenda: "Open Q&A close",
-    title: "FAQ Close",
-    headline: "Hard questions are mapped to evidence.",
-    punch: "Hostile transition, incomplete handover, onboarding, retention, speed to staff, locations and TCS/Infosys comparisons all have clear answers.",
-    talkTrack: ["Transition risk", "Talent continuity", "Commercial competitiveness", "Proof cases", "Pandora role"],
+    time: "4:15 - 4:30",
+    agenda: "Debrief",
+    title: "Debrief",
+    headline: "Close with actions, evidence and open questions.",
+    punch: "The debrief turns the day into next steps: what was proven in the walkthrough, what needs follow-up, which commercial/team assumptions remain open, and where Pandora wants more evidence.",
+    talkTrack: ["Actions", "Open questions", "Follow-ups", "Decision asks", "FAQ evidence"],
     tone: "gov",
     visual: "faq",
     detailIds: ["faq", "commercials", "transition-coverage", "team-skills", "proof"]
@@ -411,7 +494,7 @@ function SlideShell({
 }) {
   const page = pageLabel(index);
   return (
-    <section className={`pres-slide tone-${chapter.tone}`} id={chapter.id} aria-label={`${page} ${chapter.title}`}>
+    <section className={`pres-slide tone-${chapter.tone} slide-${chapter.id}`} id={chapter.id} aria-label={`${page} ${chapter.title}`}>
       <div className="pres-slide-inner">
         <span className="pres-page-flag">{page}</span>
         <div className="pres-slide-copy">
@@ -419,11 +502,13 @@ function SlideShell({
           <small className="pres-agenda-label">{chapter.agenda}</small>
           <h2>{chapter.headline}</h2>
           <p>{chapter.punch}</p>
-          <div className="pres-talk-track" aria-label={`${chapter.title} talk track`}>
-            {chapter.talkTrack.map((point) => (
-              <span key={point}>{point}</span>
-            ))}
-          </div>
+          {chapter.talkTrack.length > 0 ? (
+            <div className="pres-talk-track" aria-label={`${chapter.title} talk track`}>
+              {chapter.talkTrack.map((point) => (
+                <span key={point}>{point}</span>
+              ))}
+            </div>
+          ) : null}
           <DetailLinks chapterId={chapter.id} detailIds={chapter.detailIds} />
         </div>
         <div className="pres-visual">{children}</div>
@@ -508,14 +593,155 @@ function ExecutivePlaceholderVisual() {
         </div>
         <strong>Sanjay</strong>
         <span>Managing Director, Publicis Sapient India</span>
-        <small>Subject: Exec introduction + India presence</small>
+        <small>Subject: Exec intros - PS in India</small>
       </div>
-      <a className="pres-exec-later" href="#engineering-leadership">
-        <CalendarDays size={22} aria-hidden="true" />
-        <span>Later in the day</span>
-        <strong>Engineering leadership session moves to Tilak.</strong>
-        <small>End-of-day discussion after the operating model overview.</small>
+      <div className="pres-exec-later">
+        <Users size={22} aria-hidden="true" />
+        <span>1:00 - 2:00 PM session</span>
+        <strong>India presence and transformation capability.</strong>
+        <small>People + Product Strategy, Organization Transformation and People Transformation including talent management.</small>
+      </div>
+    </div>
+  );
+}
+
+function SiteWalkthroughVisual() {
+  const squads: Array<[string, string, string]> = [
+    ["Pandora", "Retail platform context", pandoraCaseImage],
+    ["ASO", "Development capability", asoCaseImage],
+    ["Optum", "Scaled team operations", optumCaseImage],
+    ["Kingfisher", "Multi-brand retail platform", kingfisherCaseImage],
+    ["B&O", "Premium retail experience", boCaseImage]
+  ];
+  const cases: Array<[string, string, string]> = [
+    ["ASO", "Development + platform + operations", asoCaseImage],
+    ["Nissan", "Platform capabilities + operations", nissanCaseImage],
+    ["Optum", "Data platform + operations", optumCaseImage]
+  ];
+  const focusAreas: Array<[string, string, PresentationIcon]> = [
+    ["Integration", "Kafka, Kong, APIs and event operations.", Network],
+    ["Data", "Databricks, medallion architecture, Unity Catalog and data reliability.", Database],
+    ["DevOps", "AKS cluster operations, pipelines, platform engineering and run discipline.", GitBranch]
+  ];
+  return (
+    <div className="pres-site-story">
+      <div className="pres-site-picture" aria-label="Retail floor walkthrough illustration">
+        <div className="pres-floor-lead">
+          <MapPinned size={18} aria-hidden="true" />
+          <span>Led by Ravi Shankar</span>
+          <strong>India Retail CTO</strong>
+        </div>
+        <div className="pres-floor-path" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </div>
+        {squads.map(([name, detail, image], index) => (
+          <div className={`pres-floor-squad squad-${index + 1}`} key={name}>
+            <img src={image} alt={`${name} brand marker`} />
+            <strong>{name}</strong>
+            <span>{detail}</span>
+          </div>
+        ))}
+        <div className="pres-floor-engage">
+          <Zap size={16} aria-hidden="true" />
+          <span>Engage with team members during the walkthrough.</span>
+        </div>
+      </div>
+      <section className="pres-case-walkthrough">
+        <span>After the team-area walkthrough</span>
+        <strong>Customer case walkthrough: ASO + Nissan + Optum</strong>
+        <p>Selected to show development and platform capabilities in a practical customer setting.</p>
+        <div className="pres-case-brand-grid">
+          {cases.map(([name, detail, image]) => (
+            <article className={`case-${name.toLowerCase()}`} key={name}>
+              <img src={image} alt={`${name} case study brand visual`} />
+              <small>{name}</small>
+              <span>{detail}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+      <div className="pres-site-focus">
+        {focusAreas.map(([title, detail, Icon]) => (
+          <div key={title}>
+            <Icon size={19} aria-hidden="true" />
+            <strong>{title}</strong>
+            <span>{detail}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BoothWalkthroughVisual() {
+  const booths: Array<[string, string, string, string, string]> = [
+    ["Booth 1", "McDonalds", "DevOps operations", "PAKS, portal/tooling, platform reliability and shift-left.", mcdonaldsCaseImage],
+    ["Booth 2", "Loreal", "Data platform management", "Databricks, Power BI, governance, freshness and data reliability.", lorealCaseImage]
+  ];
+  const coverage: Array<[string, string, PresentationIcon]> = [
+    ["Data service model", "Databricks, Power BI, Unity Catalog, DQ and reliability.", Database],
+    ["Integration service model", "Kafka, Kong, APIs, schema quality and replay controls.", Network],
+    ["DevOps platform ops", "AKS/PAKS, portal, golden paths, GitHub and tooling.", GitBranch],
+    ["24x7 + incident", "On-call, incident command, MTTD, MTTA, MTTR and 99.99%.", ShieldCheck],
+    ["AI load reduction", "Alert summary, triage assist, runbook recommendation and automation backlog.", Bot],
+    ["Adoption + shift-left", "Direct team engagement, self-service, evidence and golden paths.", Users]
+  ];
+  return (
+    <div className="pres-booth-visit">
+      <div className="pres-booth-stage">
+        {booths.map(([tag, name, role, detail, image]) => (
+          <article key={name} className="pres-booth-card">
+            <img src={image} alt={`${name} booth brand visual`} />
+            <span>{tag}</span>
+            <strong>{name}</strong>
+            <small>{role}</small>
+            <p>{detail}</p>
+          </article>
+        ))}
+      </div>
+      <div className="pres-booth-coverage" aria-label="Booth coverage summary">
+        {coverage.map(([title, detail, Icon]) => (
+          <div key={title}>
+            <Icon size={17} aria-hidden="true" />
+            <strong>{title}</strong>
+            <span>{detail}</span>
+          </div>
+        ))}
+      </div>
+      <a className="pres-booth-route" href="/booth#booth-overview">
+        <span>
+          <strong>Open detailed booth route</strong>
+          <small>All booth pages stay available for the deeper walkthrough.</small>
+        </span>
+        <ExternalLink size={15} aria-hidden="true" />
       </a>
+    </div>
+  );
+}
+
+function MeetTeamVisual() {
+  const groups = [
+    ["DevOps", "8 engineers", "PAKS, GitHub, CI/CD, IaC, tooling and on-call."],
+    ["Data", "7 engineers + lead", "Databricks, Power BI, pipeline support and reporting governance."],
+    ["Integration", "10 engineers + QE + leads + BAs", "Kafka, Kong, schemas, APIs, cutover and translation."],
+    ["Leadership", "Overall engineering lead", "Cross-workstream decisions, maturity path and escalation."]
+  ];
+  return (
+    <div className="pres-meet-team">
+      {groups.map(([title, count, detail]) => (
+        <section key={title}>
+          <span>{title}</span>
+          <strong>{count}</strong>
+          <p>{detail}</p>
+        </section>
+      ))}
+      <div>
+        <ShieldCheck size={18} aria-hidden="true" />
+        <strong>Support model</strong>
+        <span>Domain on-call rota, incident command, Improve & Evolve capacity and planned burst/SME pull-in.</span>
+      </div>
     </div>
   );
 }
@@ -1039,10 +1265,11 @@ function LaneTwoVisual() {
 
 function CasesVisual() {
   const cases: Array<[string, string, PresentationIcon]> = [
-    ["DevOps", "Platform transition, CI/CD, observability, DORA and operating-model proof.", GitBranch],
-    ["Data", "Databricks, Power BI, Unity Catalog, lineage, data quality and cost governance proof.", Database],
-    ["Integration", "Kafka, Kong, BizTalk, API governance, event quality and migration proof.", Network],
-    ["Operations", "24x7 run, incident triage, L1/L2/L3 separation and automation backlog proof.", ClipboardCheck]
+    ["ASO", "Development and operations proof from the team-area walkthrough.", Users],
+    ["Nissan", "DevOps / Integration operating example from the morning visit.", Network],
+    ["McDonalds", "DevOps showcase proof for the booth walkthrough.", GitBranch],
+    ["Loreal", "Data Platform Management proof for the booth walkthrough.", Database],
+    ["Case Study 5", "Transition and operating-model evidence tied to the revised proposal.", ClipboardCheck]
   ];
 
   return (
@@ -1052,7 +1279,7 @@ function CasesVisual() {
           <Icon size={24} aria-hidden="true" />
           <strong>{title}</strong>
           <p>{detail}</p>
-          <small>Insert named client case and metric during presentation</small>
+          <small>Insert specific metric, visual or proof artifact during presentation</small>
         </div>
       ))}
     </div>
@@ -1134,10 +1361,10 @@ function TeamOverviewVisual() {
 
 function EngineeringLeadershipVisual() {
   const themes = [
-    ["Quality bar", "Engineering standards, review discipline and release confidence."],
-    ["Capability depth", "How we staff senior engineering depth across DevOps, Data and Integration."],
-    ["Transformation safety", "Why maturity gates protect the customer while the model evolves."],
-    ["Talent system", "How onboarding, backups, retention and knowledge transfer keep continuity."]
+    ["AI reassurance", "Where AI helps, where it stays gated, and how engineering accountability remains human-owned."],
+    ["Innovation path", "How agentic capability is earned through maturity, evidence and adoption rather than forced day one."],
+    ["Engineering quality", "Standards, review discipline, platform reliability and release confidence."],
+    ["Capability depth", "Senior engineering depth across DevOps, Data and Integration."]
   ];
 
   return (
@@ -1147,15 +1374,15 @@ function EngineeringLeadershipVisual() {
           <img src={tilakPortrait} alt="Tilak portrait" />
         </figure>
         <span>End-of-day executive session</span>
-        <strong>Tilak</strong>
+        <strong>Tilak Doddapaneni</strong>
         <p>Executive Vice President and Global Head of Engineering at Publicis Sapient</p>
       </div>
       <div className="pres-engineering-story">
         <span>What this session should land</span>
-        <strong>From proposed team shape to engineering confidence.</strong>
+        <strong>AI, innovation and engineering confidence.</strong>
         <p>
-          This is the senior engineering perspective on why the operating model can work: depth in the right domains,
-          visible gates, quality discipline and a practical route from support stability to platform improvement.
+          This is the senior engineering perspective on why the model can safely evolve: AI remains governed,
+          innovation is evidence-led, and the engineering bar stays visible as support shifts into improvement.
         </p>
         <div>
           {themes.map(([label, detail]) => (
@@ -1168,7 +1395,7 @@ function EngineeringLeadershipVisual() {
       </div>
       <div className="pres-engineering-close">
         <ShieldCheck size={17} aria-hidden="true" />
-        <span>Placed after the Team Overview so Tilak can respond to the proposed support model, engineering setup and maturity path.</span>
+        <span>Placed after the commercial and team discussion so Tilak can close on innovation confidence, AI guardrails and engineering depth.</span>
       </div>
     </div>
   );
@@ -1512,6 +1739,9 @@ function VisualFor({
   if (kind === "exec") return <ExecutivePlaceholderVisual />;
   if (kind === "recap") return <RecapVisual onOpenLightbox={onOpenLightbox} />;
   if (kind === "rfs") return <RfsSummaryVisual />;
+  if (kind === "sitevisit") return <SiteWalkthroughVisual />;
+  if (kind === "boothvisit") return <BoothWalkthroughVisual />;
+  if (kind === "meetteam") return <MeetTeamVisual />;
   if (kind === "transition") {
     return (
       <TransitionVisual
@@ -1571,12 +1801,11 @@ export function PresentationSite() {
 
       <header className="pres-hero" id="presentation-start">
         <div className="pres-hero-copy">
-          <span className="pres-page-flag pres-page-flag-cover">{coverPageLabel}</span>
-          <span className="pres-kicker">{coverPageLabel} | Presentation mode</span>
-          <h1>Pandora TS&F customer workshop</h1>
-          <p>Agenda-led story with executive placeholders, Nexus proof, revised proposal, maturity gates, Lane 2 movement, operating model and commercials.</p>
+          <span className="pres-kicker">Site visit agenda</span>
+          <h1>Pandora T&amp;SF - Site Visit</h1>
+          <p>Part of the ongoing RFP process to choose the right platform partner: see real operations, meet the proposed team, review the revised approach, and close the commercial, AI and innovation questions.</p>
           <div className="pres-hero-actions">
-            <a href="#exec-presence">
+            <a href="#site-walkthrough">
               Start walkthrough
               <ArrowRight size={15} aria-hidden="true" />
             </a>
@@ -1596,8 +1825,8 @@ export function PresentationSite() {
             </figure>
             <div>
               <span>Pandora TS&F</span>
-              <strong>Transition with the brand in the room.</strong>
-              <small>DevOps · Data · Integration</small>
+              <strong>Site visit agenda</strong>
+              <small>Ongoing RFP process - Platform partner selection</small>
             </div>
           </div>
           <AgendaVisual />

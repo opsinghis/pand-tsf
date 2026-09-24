@@ -103,21 +103,31 @@ const structural: Record<string, boolean> = {
     readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
       .includes("Extra quarterly burst reserve"),
   "FAQ present": markup.includes('id="faq"') && renderedText.includes("Customer Q&A map"),
-  "presentation route covers menu": presentationMarkup.includes("Presentation mode") && missingPresentationLinks.length === 0,
-  "presentation follows customer agenda": presentationMarkup.includes("Exec introduction + India presence") &&
-    presentationMarkup.includes("Revised proposal, open Q&amp;A") &&
-    presentationMarkup.includes("Operating model &amp; commercials"),
+  "presentation route covers menu": presentationMarkup.includes("Pandora T&amp;SF - Site Visit") &&
+    missingPresentationLinks.length === 0,
+  "presentation follows customer agenda": presentationMarkup.includes("Meet &amp; Greet") &&
+    presentationMarkup.includes("PS site walkthrough - team areas visit") &&
+    presentationMarkup.includes("Client examples - booth walkthrough") &&
+    presentationMarkup.includes("Exec intros - PS in India") &&
+    presentationMarkup.includes("Commercials &amp; Team Model") &&
+    presentationMarkup.includes("Exec closure - online meet"),
+  "presentation agenda handout complete": presentationMarkup.includes("Pandora T&amp;SF - Site Visit") &&
+    presentationMarkup.includes("ongoing RFP process to choose the right platform partner") &&
+    (presentationMarkup.match(/Tea \/ Coffee Break/g) || []).length >= 2 &&
+    presentationMarkup.includes("Lunch") &&
+    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("A4 landscape"),
   "presentation includes leadership sessions": presentationMarkup.includes("Sanjay") &&
     presentationMarkup.includes("Managing Director, Publicis Sapient India") &&
-    presentationMarkup.includes("Subject: Exec introduction + India presence") &&
-    presentationMarkup.includes("Tilak") &&
+    presentationMarkup.includes("Subject: Exec intros - PS in India") &&
+    presentationMarkup.includes("Tilak Doddapaneni") &&
     presentationMarkup.includes("Executive Vice President and Global Head of Engineering at Publicis Sapient") &&
     presentationMarkup.includes("End-of-day executive session") &&
     presentationMarkup.includes("Tilak portrait") &&
     !presentationMarkup.includes("Shubhra"),
   "presentation cover includes Pandora brand imagery": presentationMarkup.includes("/pandora/model1.webp") &&
     presentationMarkup.includes("/pandora/model2.webp") &&
-    presentationMarkup.includes("Transition with the brand in the room."),
+    presentationMarkup.includes("Site visit agenda") &&
+    presentationMarkup.includes("Platform partner selection"),
   "presentation keeps Nexus and Fabric proof in journey": presentationMarkup.includes("113 activities") &&
     presentationMarkup.includes("4-phase model") &&
     presentationMarkup.includes("Agentic fabric at scale") &&
@@ -127,7 +137,38 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("September 2026") &&
     presentationMarkup.includes("1 October 2026") &&
     presentationMarkup.includes("Site Visit"),
-  "presentation P03 mirrors revised approach": presentationMarkup.includes("P03 | 10:45 - 12:15") &&
+  "presentation keeps agenda conductor pages": presentationMarkup.includes("P01 | 9:45 - 10:45") &&
+    presentationMarkup.includes("Ravi Shankar") &&
+    presentationMarkup.includes("India Retail CTO") &&
+    presentationMarkup.includes("Pandora") &&
+    presentationMarkup.includes("Optum") &&
+    presentationMarkup.includes("Kingfisher") &&
+    presentationMarkup.includes("B&amp;O") &&
+    presentationMarkup.includes("Engage with team members") &&
+    presentationMarkup.includes("Databricks") &&
+    presentationMarkup.includes("medallion architecture") &&
+    presentationMarkup.includes("Unity Catalog") &&
+    presentationMarkup.includes("AKS cluster operations") &&
+    presentationMarkup.includes("/cases/aso.jpg") &&
+    presentationMarkup.includes("/cases/nissan.jpg") &&
+    presentationMarkup.includes("/cases/optum.jpg") &&
+    presentationMarkup.includes("/cases/pandora.jpg") &&
+    presentationMarkup.includes("/cases/kingfisher.jpg") &&
+    presentationMarkup.includes("/cases/bo.jpg") &&
+    presentationMarkup.includes("Development + platform + operations") &&
+    presentationMarkup.includes("Platform capabilities + operations") &&
+    presentationMarkup.includes("Data platform + operations") &&
+    presentationMarkup.includes("Kalpesh") &&
+    presentationMarkup.includes("McDonalds") &&
+    presentationMarkup.includes("Loreal") &&
+    presentationMarkup.includes("Two booths. One operating model.") &&
+    presentationMarkup.includes("/cases/mcdonalds.jpg") &&
+    presentationMarkup.includes("/cases/loreal.jpg") &&
+    presentationMarkup.includes("AI load reduction") &&
+    presentationMarkup.includes("Adoption + shift-left") &&
+    presentationMarkup.includes("/booth#booth-overview") &&
+    presentationMarkup.includes("Meet The Team"),
+  "presentation revised approach preserved": presentationMarkup.includes("P06 | 2:00 - 3:00") &&
     (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 1 &&
     (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 1 &&
     (presentationMarkup.match(/North star only after gates/g) || []).length >= 1 &&
@@ -138,19 +179,20 @@ const structural: Record<string, boolean> = {
   "presentation maturity baseline source": servicePlatforms.length === 17 &&
     maturityHorizons.some((horizon) => horizon.id === "now") &&
     maturityHorizons.some((horizon) => horizon.id === "m6"),
-  "presentation P05 explains Lane 2 movement": presentationMarkup.includes("Lane 2 moves one item at a time through evidence gates.") &&
+  "presentation P08 explains Lane 2 movement": presentationMarkup.includes("P08 | 2:00 - 3:00") &&
+    presentationMarkup.includes("Lane 2 moves one item at a time through evidence gates.") &&
     presentationMarkup.includes("Gate 1 unlocks assist") &&
     presentationMarkup.includes("Pandora approves every move") &&
     presentationMarkup.includes("Kafka connector"),
-  "presentation P07 team overview": presentationMarkup.includes("P07 | 3:00 - 4:00") &&
-    presentationMarkup.includes("One engineering team runs, improves and flexes on demand.") &&
+  "presentation P10 team commercials": presentationMarkup.includes("P10 | 3:00 - 3:30") &&
+    presentationMarkup.includes("Team model and commercial model stay connected.") &&
     presentationMarkup.includes("34 FTE steady team, one engineering lead") &&
     presentationMarkup.includes("Domain on-call, not night-shift staffing") &&
     presentationMarkup.includes("Commercial levers") &&
     !presentationMarkup.includes("Net monthly model"),
-  "presentation P08 engineering leadership": presentationMarkup.includes("P08 | End of day") &&
-    presentationMarkup.includes("Engineering leadership closes the operating model story.") &&
-    presentationMarkup.includes("Placed after the Team Overview") &&
+  "presentation P11 engineering leadership": presentationMarkup.includes("P11 | 3:45 - 4:15") &&
+    presentationMarkup.includes("Tilak closes with AI and innovation reassurance.") &&
+    presentationMarkup.includes("AI, innovation and engineering confidence.") &&
     presentationMarkup.includes("Capability depth"),
   "commercial disclaimer present in source": readFileSync(resolve(import.meta.dirname, "components/AltCommercials.tsx"), "utf8")
     .includes("All commercial values shown here are dummy placeholders") &&
@@ -163,11 +205,12 @@ const structural: Record<string, boolean> = {
     !presentationMarkup.includes('href="#fabric-architecture"') &&
     !presentationMarkup.includes('id="revised-approach"') &&
     !presentationMarkup.includes('href="#revised-approach"'),
-  "presentation page references available": presentationMarkup.includes("P00 | Presentation mode") &&
-    presentationMarkup.includes("P01 | 9:45 - 11:00") &&
-    presentationMarkup.includes("P02 | 10:45 - 12:15") &&
-    presentationMarkup.includes("P03 | 10:45 - 12:15"),
-  "presentation P02 includes post-RFP proof button": presentationMarkup.includes("Post-RFP discussion") &&
+  "presentation page references available": presentationMarkup.includes("<em>P00</em>") &&
+    presentationMarkup.includes("P01 | 9:45 - 10:45") &&
+    presentationMarkup.includes("P02 | 11:00 - 11:45") &&
+    presentationMarkup.includes("P03 | 12:30 - 1:00") &&
+    presentationMarkup.includes("P12 | 4:15 - 4:30"),
+  "presentation journey includes post-RFP proof button": presentationMarkup.includes("Post-RFP discussion") &&
     presentationMarkup.includes("Ambition recalibrated") &&
     presentationMarkup.includes("Customer ask: alternative approach") &&
     (presentationMarkup.match(/Open proof/g) || []).length >= 3,
@@ -203,12 +246,23 @@ const videoPath = resolve(import.meta.dirname, "../dist/video/gatedcontrol.mp4")
 const agenticFabricVideoPath = resolve(import.meta.dirname, "../dist/video/agenticfabric.mp4");
 const pandoraModel1Path = resolve(import.meta.dirname, "../dist/pandora/model1.webp");
 const pandoraModel2Path = resolve(import.meta.dirname, "../dist/pandora/model2.webp");
+const caseImagePaths = [
+  "aso.jpg",
+  "nissan.jpg",
+  "optum.jpg",
+  "pandora.jpg",
+  "kingfisher.jpg",
+  "bo.jpg",
+  "mcdonalds.jpg",
+  "loreal.jpg"
+].map((file) => resolve(import.meta.dirname, "../dist/cases", file));
 const html = readFileSync(htmlPath, "utf8");
 const size = statSync(htmlPath).size;
 const videoSize = statSync(videoPath).size;
 const agenticFabricVideoSize = statSync(agenticFabricVideoPath).size;
 const pandoraModel1Size = statSync(pandoraModel1Path).size;
 const pandoraModel2Size = statSync(pandoraModel2Path).size;
+const caseImageSizes = caseImagePaths.map((path) => statSync(path).size);
 if (/(?:src|href)="http|url\(http/i.test(html)) throw new Error("Build is not self-contained");
 if (/[\u00c2\u00c3]/.test(html)) throw new Error("Possible mojibake in built HTML");
 if (!/data:image\/(?:webp|jpeg|png)/.test(html)) throw new Error("Build has no inlined presentation images");
@@ -217,6 +271,17 @@ if (!html.includes("/video/agenticfabric.mp4")) throw new Error("Agentic fabric 
 if (!html.includes("/pandora/model1.webp") || !html.includes("/pandora/model2.webp")) {
   throw new Error("Pandora cover image routes missing from built HTML");
 }
+if (
+  !html.includes("/cases/aso.jpg") ||
+  !html.includes("/cases/nissan.jpg") ||
+  !html.includes("/cases/optum.jpg") ||
+  !html.includes("/cases/kingfisher.jpg") ||
+  !html.includes("/cases/bo.jpg") ||
+  !html.includes("/cases/mcdonalds.jpg") ||
+  !html.includes("/cases/loreal.jpg")
+) {
+  throw new Error("Case study brand image routes missing from built HTML");
+}
 if (videoSize < 10_000) throw new Error(`Presentation video asset missing or too small: ${videoSize} bytes`);
 if (agenticFabricVideoSize < 10_000) {
   throw new Error(`Agentic fabric video asset missing or too small: ${agenticFabricVideoSize} bytes`);
@@ -224,7 +289,10 @@ if (agenticFabricVideoSize < 10_000) {
 if (pandoraModel1Size < 5_000 || pandoraModel2Size < 5_000) {
   throw new Error(`Pandora cover assets missing or too small: ${pandoraModel1Size} / ${pandoraModel2Size} bytes`);
 }
-const budget = 1_290_000;
+if (caseImageSizes.some((caseImageSize) => caseImageSize < 4_000)) {
+  throw new Error(`Case study brand assets missing or too small: ${caseImageSizes.join(" / ")} bytes`);
+}
+const budget = 1_305_000;
 if (size > budget) throw new Error(`Build is ${size} bytes, over budget`);
 
 console.log(
