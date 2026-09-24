@@ -1275,10 +1275,10 @@
   display: grid;
   grid-template-columns: minmax(290px, 0.82fr) minmax(430px, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 6px;
-  height: min(575px, calc(100vh - 132px));
+  gap: 8px;
+  height: min(660px, calc(100vh - 84px));
   min-height: 0;
-  padding: 7px;
+  padding: 9px;
 }
 
 .pres-team-roster,
@@ -1293,10 +1293,10 @@
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
   grid-row: span 2;
-  gap: 5px;
+  gap: 7px;
   align-content: stretch;
   min-height: 0;
-  padding: 7px;
+  padding: 9px;
 }
 
 .pres-team-roster-head > span,
@@ -1315,22 +1315,22 @@
 
 .pres-team-roster-head > strong {
   color: var(--ink);
-  font-size: 13.8px;
+  font-size: 16px;
   font-weight: 880;
   line-height: 1.08;
 }
 
 .pres-team-roster-head p {
   color: var(--muted);
-  font-size: 9.2px;
+  font-size: 10.7px;
   font-weight: 680;
-  line-height: 1.16;
+  line-height: 1.2;
 }
 
 .pres-meet-lead-card {
   display: grid;
-  grid-template-columns: 50px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 9px;
   align-items: center;
   width: 100%;
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 24%, var(--line));
@@ -1339,7 +1339,7 @@
   color: inherit;
   font: inherit;
   text-align: left;
-  padding: 6px;
+  padding: 8px;
   cursor: pointer;
 }
 
@@ -1351,8 +1351,8 @@
 
 .pres-meet-lead-card i {
   display: grid;
-  width: 50px;
-  height: 50px;
+  width: 62px;
+  height: 62px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 32%, var(--line));
   border-radius: 999px;
@@ -1379,20 +1379,20 @@
 
 .pres-meet-lead-card small {
   color: var(--tone, var(--accent));
-  font-size: 8.8px;
+  font-size: 10px;
   font-weight: 860;
 }
 
 .pres-meet-lead-card strong {
   color: var(--ink);
-  font-size: 14.8px;
+  font-size: 17.2px;
   font-weight: 870;
   line-height: 1.1;
 }
 
 .pres-meet-lead-card em {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10.5px;
   font-style: normal;
   font-weight: 700;
   line-height: 1.2;
@@ -1401,7 +1401,7 @@
 .pres-team-summary-tiles {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
+  gap: 6px;
 }
 
 .pres-team-summary-tiles div {
@@ -1410,13 +1410,13 @@
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 18%, var(--line));
   border-radius: 8px;
   background: #fff;
-  padding: 5px 4px;
+  padding: 7px 5px;
 }
 
 .pres-team-summary-tiles span,
 .pres-team-summary-tiles small {
   color: var(--muted);
-  font-size: 8px;
+  font-size: 9.2px;
   font-weight: 760;
   line-height: 1.1;
   text-transform: uppercase;
@@ -1425,7 +1425,7 @@
 .pres-team-summary-tiles strong {
   margin-top: 1px;
   color: var(--ink);
-  font-size: 19px;
+  font-size: 23px;
   font-weight: 900;
   line-height: 0.96;
 }
@@ -1438,27 +1438,27 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 4px;
+  gap: 6px;
   min-height: 0;
   border-top: 1px solid var(--line);
-  padding-top: 5px;
+  padding-top: 7px;
 }
 
 .pres-team-groups section {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 3px;
+  gap: 5px;
   align-items: start;
   min-height: 0;
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 14%, var(--line));
   border-radius: 8px;
   background: color-mix(in srgb, var(--tone-dim, var(--accent-dim)) 18%, #fff);
-  padding: 4px;
+  padding: 6px;
 }
 
 .pres-team-groups section > span {
   color: var(--tone, var(--accent));
-  font-size: 8.2px;
+  font-size: 9.4px;
   font-weight: 870;
   line-height: 1.1;
   padding: 0;
@@ -1469,16 +1469,16 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: start;
-  gap: 3px;
+  gap: 5px;
   min-height: 0;
 }
 
 .pres-team-groups button {
   display: grid;
-  grid-template-columns: 23px minmax(0, 1fr);
-  gap: 4px;
+  grid-template-columns: 29px minmax(0, 1fr);
+  gap: 5px;
   align-items: center;
-  min-height: 26px;
+  min-height: 34px;
   width: 100%;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 30%, var(--line));
@@ -1506,15 +1506,15 @@
 .pres-team-person-avatar {
   display: grid;
   place-items: center;
-  width: 23px;
-  height: 23px;
+  width: 29px;
+  height: 29px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 26%, var(--line));
   border-radius: 999px;
   background: color-mix(in srgb, var(--tone-dim, var(--accent-dim)) 58%, #fff);
   color: var(--tone, var(--accent));
   font-style: normal;
-  font-size: 7px;
+  font-size: 8.4px;
   font-weight: 900;
 }
 
@@ -1537,7 +1537,7 @@
 .pres-team-person-copy strong {
   overflow: hidden;
   color: var(--ink);
-  font-size: 8.1px;
+  font-size: 9.5px;
   font-weight: 860;
   line-height: 1.08;
   text-overflow: ellipsis;
@@ -1547,7 +1547,7 @@
 .pres-team-person-copy small {
   overflow: hidden;
   color: var(--muted);
-  font-size: 6.8px;
+  font-size: 8px;
   font-weight: 700;
   line-height: 1.08;
   text-overflow: ellipsis;
@@ -1557,8 +1557,8 @@
 .pres-team-wheel {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  padding: 7px;
+  gap: 8px;
+  padding: 9px;
 }
 
 .pres-team-wheel section {
@@ -1566,9 +1566,9 @@
   grid-template-columns: 23px minmax(0, 1fr);
   gap: 4px 6px;
   align-content: center;
-  min-height: 60px;
+  min-height: 76px;
   border-radius: 8px;
-  padding: 7px;
+  padding: 9px;
 }
 
 .pres-team-wheel section.pandora {
@@ -1587,7 +1587,7 @@
 .pres-team-wheel section strong {
   grid-column: 2;
   color: var(--ink);
-  font-size: 9.8px;
+  font-size: 11.4px;
   font-weight: 760;
   line-height: 1.22;
 }
@@ -1597,31 +1597,31 @@
   grid-column: 2;
   grid-row: 2;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 5px;
-  padding: 7px;
+  gap: 7px;
+  padding: 9px;
 }
 
 .pres-team-tracks section {
   display: grid;
-  gap: 3px;
+  gap: 5px;
   align-content: start;
   border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 18%, var(--line));
   border-radius: 8px;
   background: #fff;
-  padding: 6px;
+  padding: 8px;
 }
 
 .pres-team-tracks section strong {
   color: var(--ink);
-  font-size: 12.4px;
+  font-size: 14.4px;
   font-weight: 880;
 }
 
 .pres-team-tracks section p {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10.5px;
   font-weight: 690;
-  line-height: 1.18;
+  line-height: 1.22;
 }
 
 .pres-team-meter {
