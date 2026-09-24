@@ -37,8 +37,9 @@ const fabricArchitecture = new URL("../assets/presentation/agentic-fabric-archit
 const dialInActionImage = new URL("../assets/presentation/dial-in-action.webp", import.meta.url).href;
 const nexusCurrentImage = new URL("../assets/presentation/nexus/nexus-current.webp", import.meta.url).href;
 const nexusProposedImage = new URL("../assets/presentation/nexus/nexus-proposed.webp", import.meta.url).href;
-const sanjayPortrait = new URL("../assets/presentation/exec/sanjay.webp", import.meta.url).href;
-const tilakPortrait = new URL("../assets/presentation/exec/tilak.jpg", import.meta.url).href;
+const sanjayPortrait = "/exec/sanjay.webp";
+const shubhraPortrait = "/exec/shubhra.webp";
+const tilakPortrait = "/exec/tilak.jpg";
 const twoLanesApproachImage = new URL("../assets/presentation/twolanes-approach.webp", import.meta.url).href;
 const rfsCover = new URL("../assets/presentation/rfs/rfs-cover.jpg", import.meta.url).href;
 const rfsPandoraStrip = new URL("../assets/presentation/rfs/rfs-pandora-strip.jpg", import.meta.url).href;
@@ -52,6 +53,7 @@ const kingfisherCaseImage = "/cases/kingfisher.jpg";
 const boCaseImage = "/cases/bo.jpg";
 const mcdonaldsCaseImage = "/cases/mcdonalds.jpg";
 const lorealCaseImage = "/cases/loreal.jpg";
+const omPortrait = "/teams/om.jpeg";
 
 type PresentationTone = "accent" | "tech" | "people" | "ops" | "gov" | "proof";
 type PresentationVisual =
@@ -79,7 +81,6 @@ interface PresentationChapter {
   title: string;
   headline: string;
   punch: string;
-  talkTrack: string[];
   tone: PresentationTone;
   visual: PresentationVisual;
   detailIds: string[];
@@ -105,13 +106,26 @@ interface LightboxVideo {
   caption: string;
 }
 
+interface LightboxPerson {
+  name: string;
+  role: string;
+  track: string;
+  initials: string;
+  source?: string;
+  image?: string;
+  imagePosition?: string;
+  placeholderImage?: boolean;
+  pending?: boolean;
+}
+
 interface LightboxContent {
   eyebrow: string;
   title: string;
   body: string;
   images: LightboxImage[];
   video?: LightboxVideo;
-  view?: "transition-baseline";
+  person?: LightboxPerson;
+  view?: "transition-baseline" | "team-member";
 }
 
 type OpenLightbox = (content: LightboxContent) => void;
@@ -307,7 +321,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Site Walkthrough",
     headline: "Walk the retail floor, then unpack the cases.",
     punch: "Ravi Shankar, India Retail CTO, takes the group through one of the retail delivery floors. We see teams in action across Pandora, ASO, Optum, Kingfisher and B&O, then sit down for ASO, Nissan and Optum case walkthroughs focused on Integration, Data and DevOps.",
-    talkTrack: [],
     tone: "proof",
     visual: "sitevisit",
     detailIds: ["scope", "team-skills", "proof"],
@@ -324,7 +337,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Booth Walkthrough",
     headline: "Two booths. One operating model.",
     punch: "Kalpesh uses McDonalds and Loreal to show how great operations work across DevOps, Data and Integration: service ownership, platform reliability, 24x7 support, incident flow, AI load reduction, adoption and shift-left.",
-    talkTrack: [],
     tone: "tech",
     visual: "boothvisit",
     detailIds: ["scope", "dayone", "governance"],
@@ -340,9 +352,8 @@ const presentationChapters: PresentationChapter[] = [
     time: "12:30 - 1:00",
     agenda: "Meet your team",
     title: "Meet The Team",
-    headline: "The identified team is part of the confidence story.",
-    punch: "Before the afternoon proposal discussion, we introduce the T&SF team shape: who covers DevOps, Data, Integration, delivery leadership, 24x7 on-call and improvement capacity.",
-    talkTrack: ["Om Singh", "Named team shape", "DevOps / Data / Integration", "24x7 on-call", "Improve & Evolve"],
+    headline: "Customer ask mapped to the org model.",
+    punch: "We keep the same structure as the team-leader model: Pandora steers, one overall engineering lead is accountable, and DevOps, Data and Integration sit underneath with named specialists visible today plus remaining role names to confirm.",
     tone: "people",
     visual: "meetteam",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity"]
@@ -354,7 +365,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "PS In India",
     headline: "Sanjay anchors PS in India and transformation capability.",
     punch: "This is the leadership session for India presence, PS specifics, People + Product Strategy, Organization Transformation and People Transformation including talent management.",
-    talkTrack: ["Sanjay Menon", "India presence", "People + Product Strategy", "Organization Transformation", "Talent management"],
     tone: "people",
     visual: "exec",
     detailIds: ["team-shape", "team-leader", "team-capacity"]
@@ -366,7 +376,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Journey Until Now",
     headline: "The site visit is the fourth step in the same journey.",
     punch: "May proved the Nexus idea, August scaled it into the RFP response, September sharpened the concern, and 1 October is where we land the revised path.",
-    talkTrack: ["May 2026: RFS presentation", "August 2026: RFP presentation", "September 2026: post-RFP discussion", "1 October 2026: site visit"],
     tone: "tech",
     visual: "recap",
     detailIds: ["hero-anchor", "changes", "scope", "goals"]
@@ -378,7 +387,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Revised Approach",
     headline: "Same north star. Safer adoption path.",
     punch: "We run as-is first, stabilise, transform through maturity gates, then evolve only the items that have earned the move.",
-    talkTrack: ["As-is transition", "Stabilisation baseline", "Transformation by evidence", "North star only after gates"],
     tone: "ops",
     visual: "transition",
     detailIds: ["dayone", "transition-coverage", "lanes-asis", "governance", "horizons"]
@@ -390,7 +398,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Maturity Matrix",
     headline: "Handover continues while maturity becomes transparent.",
     punch: "We do not wait for perfect handover. During transition, every scoped item gets an evidence-based M0-M5 baseline so gaps are visible, priorities are clear, and improvement work moves the estate to a better state over time.",
-    talkTrack: ["Transition keeps moving", "Evidence baseline by item", "Prioritise gaps transparently", "Improve maturity over time"],
     tone: "accent",
     visual: "maturity",
     detailIds: ["dial-explorer", "walkthroughs", "goals", "proof", "pandora", "start"]
@@ -402,7 +409,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Lane 2 Movement",
     headline: "Lane 2 moves one item at a time through evidence gates.",
     punch: "The maturity matrix creates candidates, not a forced transformation wave. Each item enters Lane 2 with a Pandora owner, evidence, rollback, stakeholder sign-off and a clear reason to move from run-as-is to assisted, then to a higher maturity pattern only when Gate 2 passes.",
-    talkTrack: ["Candidate from maturity baseline", "Gate 1 unlocks assist", "Evidence period proves stability", "Gate 2 unlocks higher maturity", "Pandora approves every move"],
     tone: "tech",
     visual: "lane2",
     detailIds: ["twolane", "foundations", "dial-explorer", "walkthroughs", "horizons"]
@@ -414,7 +420,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Client Cases",
     headline: "Case Study 5 connects proof back to the revised proposal.",
     punch: "The morning cases prove capability; this afternoon case anchors transition, operating model and the path from run to evolve.",
-    talkTrack: ["Case Study - 5", "Transition proof", "Operating model proof", "DevOps / Data / Integration"],
     tone: "proof",
     visual: "cases",
     detailIds: ["proof", "faq", "goals", "team-capacity"]
@@ -426,7 +431,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Team + Commercials",
     headline: "Team model and commercial model stay connected.",
     punch: "Sebastian anchors how location mix, team model, rate cards and commercial levers connect to the same delivery model: run base, improve and evolve, and controlled burst capacity.",
-    talkTrack: ["Sebastian Jandrey", "Location / team model", "Commercial model", "Run + Improve + Burst", "Protected commercial levers"],
     tone: "people",
     visual: "team",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "commercials"]
@@ -438,7 +442,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Exec Closure",
     headline: "Tilak closes with AI and innovation reassurance.",
     punch: "Tilak Doddapaneni, Executive Vice President and Global Head of Engineering at Publicis Sapient, reassures the room on AI, innovation, engineering quality and why the model is safe to evolve.",
-    talkTrack: ["Tilak Doddapaneni", "AI reassurance", "Innovation", "Engineering quality", "Leadership Q&A"],
     tone: "people",
     visual: "engineering",
     detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "faq"]
@@ -450,7 +453,6 @@ const presentationChapters: PresentationChapter[] = [
     title: "Debrief",
     headline: "Close with actions, evidence and open questions.",
     punch: "The debrief turns the day into next steps: what was proven in the walkthrough, what needs follow-up, which commercial/team assumptions remain open, and where Pandora wants more evidence.",
-    talkTrack: ["Actions", "Open questions", "Follow-ups", "Decision asks", "FAQ evidence"],
     tone: "gov",
     visual: "faq",
     detailIds: ["faq", "commercials", "transition-coverage", "team-skills", "proof"]
@@ -569,13 +571,6 @@ function SlideShell({
           <small className="pres-agenda-label">{chapter.agenda}</small>
           <h2>{chapter.headline}</h2>
           <p>{chapter.punch}</p>
-          {chapter.talkTrack.length > 0 ? (
-            <div className="pres-talk-track" aria-label={`${chapter.title} talk track`}>
-              {chapter.talkTrack.map((point) => (
-                <span key={point}>{point}</span>
-              ))}
-            </div>
-          ) : null}
           <DetailLinks chapter={chapter} />
         </div>
         <div className="pres-visual">{children}</div>
@@ -616,11 +611,6 @@ function CommercialPresentationSlide({
             This section contains rate cards, cost levers, discounts and customer ask capacity. Unlock it only when the
             commercial discussion is ready.
           </p>
-          <div className="pres-talk-track" aria-label={`${chapter.title} locked talk track`}>
-            <span>Restricted content</span>
-            <span>Password required</span>
-            <span>Presenter controlled</span>
-          </div>
         </div>
         <div className="pres-visual">
           <CommercialAccessPanel mode="presentation" />
@@ -795,26 +785,321 @@ function BoothWalkthroughVisual() {
   );
 }
 
-function MeetTeamVisual() {
-  const groups = [
-    ["DevOps", "8 engineers", "PAKS, GitHub, CI/CD, IaC, tooling and on-call."],
-    ["Data", "7 engineers + lead", "Databricks, Power BI, pipeline support and reporting governance."],
-    ["Integration", "10 engineers + QE + leads + BAs", "Kafka, Kong, schemas, APIs, cutover and translation."],
-    ["Leadership", "Overall engineering lead", "Cross-workstream decisions, maturity path and escalation."]
+function MeetTeamVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
+  type TeamMember = {
+    name: string;
+    role: string;
+    source?: string;
+    pending?: boolean;
+    image?: string;
+    imagePosition?: string;
+    placeholderImage?: boolean;
+  };
+  const peopleGroups: Array<{
+    track: string;
+    role: string;
+    Icon: PresentationIcon;
+    members: TeamMember[];
+  }> = [
+    {
+      track: "Leadership",
+      role: "Overall engineering lead",
+      Icon: Users,
+      members: [
+        { name: "Om Singh", role: "Overall Engineering Lead", image: omPortrait, imagePosition: "62% 42%" }
+      ]
+    },
+    {
+      track: "Data Platform",
+      role: "Data leads",
+      Icon: Database,
+      members: [
+        { name: "Manish Kukreti", role: "Data Lead" },
+        { name: "Anil Yadav", role: "Data Lead" }
+      ]
+    },
+    {
+      track: "Kafka",
+      role: "Technologists",
+      Icon: Network,
+      members: [
+        { name: "Reena Sharma", role: "Sr. Technologist" },
+        { name: "Navneet Singh", role: "Technologist", source: "Lloyds" },
+        { name: "Amit Kumar V", role: "Technologist", source: "Marriott" }
+      ]
+    },
+    {
+      track: "BizTalk",
+      role: "Legacy leads",
+      Icon: ClipboardCheck,
+      members: [
+        { name: "Rajesh Sinha", role: "BizTalk Lead" },
+        { name: "Banke Bihari", role: "BizTalk Lead" }
+      ]
+    },
+    {
+      track: "Infra - AKS",
+      role: "DevOps specialists",
+      Icon: GitBranch,
+      members: [
+        { name: "Vaibhav Chaturvedi", role: "DevOps Specialist" },
+        { name: "Amit Shrivastava", role: "DevOps Specialist" },
+        { name: "Amit Kumar 35", role: "DevOps Specialist" }
+      ]
+    },
+    {
+      track: "SRE",
+      role: "To be confirmed",
+      Icon: Users,
+      members: [{ name: "Kalpesh to add", role: "SRE coverage", pending: true }]
+    }
+  ];
+  const totalNamedPeople = peopleGroups.reduce((total, group) => total + group.members.filter((member) => !member.pending).length, 0);
+  const initialsFor = (name: string) => {
+    const usable = name.replace(/\d+/g, "").split(/\s+/).filter((part) => part.length > 0 && part.toLowerCase() !== "to");
+    const first = usable[0]?.[0] ?? "";
+    const last = usable.length > 1 ? usable[usable.length - 1]?.[0] ?? "" : "";
+    return `${first}${last}`.toUpperCase() || "?";
+  };
+  const displayNameFor = (name: string) => {
+    if (/to add/i.test(name)) return "To be named";
+    return name.replace(/\s+\d+$/, "").trim();
+  };
+  const placeholderPortraits = [
+    { image: sanjayPortrait, imagePosition: "50% 38%" },
+    { image: shubhraPortrait, imagePosition: "50% 34%" },
+    { image: tilakPortrait, imagePosition: "50% 34%" },
+    { image: omPortrait, imagePosition: "62% 42%" }
+  ];
+  const namedMembers = peopleGroups
+    .flatMap((group) => group.members.map((member) => ({ ...member, track: group.track })))
+    .map((member, index) => {
+      if (member.pending || member.image) return member;
+      const placeholder = placeholderPortraits[index % placeholderPortraits.length];
+      return { ...member, ...placeholder, placeholderImage: true };
+    });
+  const memberByName = new Map(namedMembers.map((member) => [member.name, member]));
+  const openMember = (member: TeamMember & { track: string }) => {
+    const roleLine = `${member.role}${member.source ? ` - ${member.source}` : ""}`;
+    onOpenLightbox({
+      eyebrow: "Indicative mugshot",
+      title: member.name,
+      body: member.pending
+        ? `${member.track}: this role still needs a named resource.`
+        : `${member.track}: ${roleLine}. ${member.placeholderImage ? "Placeholder portrait shown for slide completeness; replace with the actual photo when available." : member.image ? "Click-through photo shown from the slide." : "Same marker as the slide; replace with a real photo when available."}`,
+      images: [],
+      view: "team-member",
+      person: {
+        name: member.name,
+        role: member.role,
+        source: member.source,
+        track: member.track,
+        initials: initialsFor(member.name),
+        image: member.image,
+        imagePosition: member.imagePosition,
+        placeholderImage: member.placeholderImage,
+        pending: member.pending
+      }
+    });
+  };
+  const requestedRoles = 29;
+  const remainingNamedRoles = requestedRoles - totalNamedPeople;
+  const omMember = namedMembers.find((member) => member.name === "Om Singh");
+  const visiblePeople = namedMembers.filter((member) => !member.pending);
+  const pendingMembers = namedMembers.filter((member) => member.pending);
+  const summaryTiles = [
+    ["Customer ask", requestedRoles.toString(), "roles"],
+    ["Named today", totalNamedPeople.toString(), "people"],
+    ["Still to name", remainingNamedRoles.toString(), "roles"]
+  ];
+  const groupedPeople = [
+    {
+      label: "Data",
+      people: namedMembers.filter((member) => member.track === "Data Platform")
+    },
+    {
+      label: "DevOps / AKS",
+      people: namedMembers.filter((member) => member.track === "Infra - AKS")
+    },
+    {
+      label: "Integration",
+      people: namedMembers.filter((member) => member.track === "Kafka" || member.track === "BizTalk")
+    },
+    {
+      label: "SRE",
+      people: pendingMembers
+    }
+  ];
+  const capacityTracks: Array<{
+    track: string;
+    ask: string;
+    required: number;
+    named: number;
+    remaining: string;
+    scope: string;
+    Icon: PresentationIcon;
+    people: string[];
+  }> = [
+    {
+      track: "DevOps / Cloud",
+      ask: "8 DevOps engineers",
+      required: 8,
+      named: 3,
+      remaining: "5 DevOps engineer names to confirm",
+      scope: "AKS, GitHub, CI/CD, runners, IaC, observability and platform operations.",
+      Icon: GitBranch,
+      people: ["Vaibhav Chaturvedi", "Amit Shrivastava", "Amit Kumar 35"]
+    },
+    {
+      track: "Data Platform",
+      ask: "7 data engineers + 1 BA",
+      required: 8,
+      named: 2,
+      remaining: "6 data role names to confirm",
+      scope: "Databricks, Power BI, medallion architecture, Unity Catalog and pipeline reliability.",
+      Icon: Database,
+      people: ["Manish Kukreti", "Anil Yadav"]
+    },
+    {
+      track: "Integration + Legacy",
+      ask: "10 integration engineers + 1 QE + 1 BA",
+      required: 12,
+      named: 5,
+      remaining: "7 integration / QE / BA names to confirm",
+      scope: "Kafka, Kong, schemas, APIs, QE, technical BA, cutover and BizTalk knowledge capture.",
+      Icon: Network,
+      people: ["Reena Sharma", "Navneet Singh", "Amit Kumar V", "Rajesh Sinha", "Banke Bihari"]
+    },
+    {
+      track: "Overall + SRE",
+      ask: "1 engineering lead + SRE names",
+      required: 1,
+      named: 1,
+      remaining: "SRE named coverage to confirm",
+      scope: "Single accountable engineering owner, service governance, 24x7 escalation and SRE coverage.",
+      Icon: Users,
+      people: ["Om Singh"]
+    }
+  ];
+  const governance = [
+    ["Pandora on the wheel", "Pandora keeps priorities, gate approvals, risk acceptance and final staffing confirmation."],
+    ["Overall engineering lead", "Om Singh identified · pairs with Pandora and orchestrates every track."]
   ];
   return (
     <div className="pres-meet-team">
-      {groups.map(([title, count, detail]) => (
-        <section key={title}>
-          <span>{title}</span>
-          <strong>{count}</strong>
-          <p>{detail}</p>
-        </section>
-      ))}
-      <div>
-        <ShieldCheck size={18} aria-hidden="true" />
-        <strong>Support model</strong>
-        <span>Domain on-call rota, incident command, Improve & Evolve capacity and planned burst/SME pull-in.</span>
+      <div className="pres-team-roster">
+        <div className="pres-team-roster-head">
+          <span>People Pandora will meet</span>
+          <strong>{totalNamedPeople} named specialists visible today.</strong>
+          <p>Customer ask is {requestedRoles} roles across lead, DevOps, Data and Integration; {remainingNamedRoles} role names still need to be confirmed.</p>
+        </div>
+        {omMember ? (
+          <button
+            type="button"
+            className="pres-meet-lead-card"
+            onClick={() => openMember(omMember)}
+            aria-label="Open mugshot for Om Singh"
+          >
+            <i aria-hidden="true">
+              <img src={omMember.image} alt="" style={{ objectPosition: omMember.imagePosition }} />
+            </i>
+            <span>
+              <small>Overall engineering lead</small>
+              <strong>Om Singh</strong>
+              <em>Accountable lead across DevOps, Data and Integration</em>
+            </span>
+          </button>
+        ) : null}
+        <div className="pres-team-summary-tiles" aria-label="Team staffing summary">
+          {summaryTiles.map(([label, value, unit]) => (
+            <div key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <small>{unit}</small>
+            </div>
+          ))}
+        </div>
+        <div className="pres-team-groups" aria-label="Named people grouped by workstream">
+          {groupedPeople.map((group) => (
+            <section key={group.label}>
+              <span>{group.label}</span>
+              <div>
+                {group.people.map((member) => (
+                  <button
+                    type="button"
+                    className={member.pending ? "pending" : undefined}
+                    key={`${group.label}-${member.name}`}
+                    onClick={() => openMember(member)}
+                    title={`${member.name} - ${member.track}`}
+                    aria-label={`Open mugshot for ${member.name}`}
+                  >
+                    <i className="pres-team-person-avatar" aria-hidden="true">
+                      {member.image ? <img src={member.image} alt="" style={{ objectPosition: member.imagePosition }} /> : <span>{initialsFor(member.name)}</span>}
+                    </i>
+                    <span className="pres-team-person-copy">
+                      <strong>{displayNameFor(member.name)}</strong>
+                      <small>{member.source ? `${member.role} · ${member.source}` : member.role}</small>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+      <div className="pres-team-wheel">
+        {governance.map(([title, detail], index) => (
+          <section className={index === 0 ? "pandora" : "lead"} key={title}>
+            {index === 0 ? <ShieldCheck size={21} aria-hidden="true" /> : <Users size={21} aria-hidden="true" />}
+            <span>{title}</span>
+            <strong>{detail}</strong>
+          </section>
+        ))}
+      </div>
+      <div className="pres-team-tracks">
+        {capacityTracks.map((track) => {
+          const coverage = Math.min(100, Math.round((track.named / track.required) * 100));
+          return (
+          <section key={track.track}>
+            <track.Icon size={20} aria-hidden="true" />
+            <span>{track.ask}</span>
+            <strong>{track.track}</strong>
+            <p>{track.scope}</p>
+            <div className="pres-team-meter" aria-label={`${track.track}: ${track.named} named in room of ${track.required} requested roles`}>
+              <i style={{ width: `${coverage}%` } as CSSProperties} />
+            </div>
+            <div className="pres-team-fill">
+              <b>{track.named}/{track.required} named in room</b>
+              <small>{track.remaining}</small>
+            </div>
+            <div className="pres-team-avatars" aria-label={`${track.track} named people`}>
+              {track.people.length > 0 ? track.people.map((person) => {
+                const member = memberByName.get(person);
+                return (
+                  <button
+                    type="button"
+                    key={`${track.track}-${person}`}
+                    title={person}
+                    onClick={() => openMember(member ? member : { name: person, role: "Named specialist", track: track.track })}
+                    aria-label={`Open mugshot for ${person}`}
+                  >
+                    {member?.image ? <img src={member.image} alt="" style={{ objectPosition: member.imagePosition }} /> : initialsFor(person)}
+                  </button>
+                );
+              }) : (
+                <button
+                  type="button"
+                  className="empty"
+                  onClick={() => openMember({ name: "To be named", role: track.remaining, track: track.track, pending: true })}
+                  aria-label={`Open role gap for ${track.track}`}
+                >
+                  TBN
+                </button>
+              )}
+            </div>
+          </section>
+          );
+        })}
       </div>
     </div>
   );
@@ -1770,7 +2055,9 @@ function PresentationLightbox({ content, onClose }: { content: LightboxContent |
           <p>{content.body}</p>
         </div>
         <div className="pres-lightbox-grid">
-          {content.view === "transition-baseline" ? (
+          {content.view === "team-member" && content.person ? (
+            <TeamMemberPassport person={content.person} />
+          ) : content.view === "transition-baseline" ? (
             <TransitionBaselinePanel />
           ) : (
             <>
@@ -1800,6 +2087,28 @@ function PresentationLightbox({ content, onClose }: { content: LightboxContent |
   );
 }
 
+function TeamMemberPassport({ person }: { person: LightboxPerson }) {
+  const roleLine = `${person.role}${person.source ? ` - ${person.source}` : ""}`;
+  return (
+    <div className="pres-passport-card">
+      <div className={`pres-passport-photo ${person.pending ? "pending" : ""}`}>
+        {person.image ? (
+          <img
+            src={person.image}
+            alt={`${person.name} passport style mugshot`}
+            style={{ objectPosition: person.imagePosition }}
+          />
+        ) : <span>{person.initials}</span>}
+      </div>
+      <div className="pres-passport-meta">
+        <span>{person.track}</span>
+        <strong>{person.name}</strong>
+        <p>{roleLine}</p>
+      </div>
+    </div>
+  );
+}
+
 function VisualFor({
   kind,
   chapterId,
@@ -1815,7 +2124,7 @@ function VisualFor({
   if (kind === "rfs") return <RfsSummaryVisual />;
   if (kind === "sitevisit") return <SiteWalkthroughVisual />;
   if (kind === "boothvisit") return <BoothWalkthroughVisual />;
-  if (kind === "meetteam") return <MeetTeamVisual />;
+  if (kind === "meetteam") return <MeetTeamVisual onOpenLightbox={onOpenLightbox} />;
   if (kind === "transition") {
     return (
       <TransitionVisual

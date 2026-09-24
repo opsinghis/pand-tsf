@@ -124,6 +124,35 @@ const structural: Record<string, boolean> = {
   "presentation slides return to agenda": (presentationMarkup.match(/class="pres-slide-agenda-link"/g) || []).length >= 12 &&
     presentationMarkup.includes('href="#presentation-start"') &&
     presentationMarkup.includes(">Agenda</a>"),
+  "presentation generic tag rows removed": !presentationMarkup.includes("pres-talk-track") &&
+    !presentationMarkup.includes("Named team shape") &&
+    !presentationMarkup.includes("Presenter controlled"),
+  "presentation P03 named meet team model": presentationMarkup.includes("P03 | 12:30 - 1:00") &&
+    presentationMarkup.includes("Customer ask mapped to the org model.") &&
+    presentationMarkup.includes("People Pandora will meet") &&
+    presentationMarkup.includes("11 named specialists visible today.") &&
+    presentationMarkup.includes("29 roles across lead, DevOps, Data and Integration") &&
+    presentationMarkup.includes("18 role names still need to be confirmed") &&
+    presentationMarkup.includes("Om Singh") &&
+    presentationMarkup.includes("DevOps / AKS") &&
+    presentationMarkup.includes("Integration") &&
+    presentationMarkup.includes("SRE") &&
+    presentationMarkup.includes("Manish Kukreti") &&
+    presentationMarkup.includes("Reena Sharma") &&
+    presentationMarkup.includes("Rajesh Sinha") &&
+    presentationMarkup.includes("Vaibhav Chaturvedi") &&
+    presentationMarkup.includes("Kalpesh to add") &&
+    presentationMarkup.includes("Pandora on the wheel") &&
+    presentationMarkup.includes("Overall engineering lead") &&
+    presentationMarkup.includes("Om Singh identified") &&
+    presentationMarkup.includes("8 DevOps engineers") &&
+    presentationMarkup.includes("10 integration engineers + 1 QE + 1 BA") &&
+    presentationMarkup.includes("7 data engineers + 1 BA") &&
+    presentationMarkup.includes("SRE named coverage to confirm") &&
+    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.tsx"), "utf8").includes('view: "team-member"') &&
+    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.tsx"), "utf8").includes("Open mugshot for") &&
+    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("pres-passport-card") &&
+    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("--paper: #fff7fa"),
   "presentation includes leadership sessions": presentationMarkup.includes("Sanjay") &&
     presentationMarkup.includes("Managing Director, Publicis Sapient India") &&
     presentationMarkup.includes("Subject: Exec intros - PS in India") &&
@@ -188,7 +217,7 @@ const structural: Record<string, boolean> = {
   "presentation revised approach preserved": presentationMarkup.includes("P06 | 2:00 - 3:00") &&
     (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 1 &&
     (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 1 &&
-    (presentationMarkup.match(/North star only after gates/g) || []).length >= 1 &&
+    (presentationMarkup.match(/North star/g) || []).length >= 1 &&
     presentationMarkup.includes("View baseline") &&
     presentationMarkup.includes("Watch gated flow") &&
     presentationMarkup.includes("See dial in action") &&
@@ -198,8 +227,9 @@ const structural: Record<string, boolean> = {
     maturityHorizons.some((horizon) => horizon.id === "m6"),
   "presentation P08 explains Lane 2 movement": presentationMarkup.includes("P08 | 2:00 - 3:00") &&
     presentationMarkup.includes("Lane 2 moves one item at a time through evidence gates.") &&
-    presentationMarkup.includes("Gate 1 unlocks assist") &&
-    presentationMarkup.includes("Pandora approves every move") &&
+    presentationMarkup.includes("Gate 1") &&
+    presentationMarkup.includes("Assist gate") &&
+    presentationMarkup.includes("Pandora approves") &&
     presentationMarkup.includes("Kafka connector"),
   "presentation P10 team commercials": presentationMarkup.includes("P10 | 3:00 - 3:30") &&
     presentationMarkup.includes("Team model and commercial model stay connected.") &&
@@ -263,6 +293,8 @@ const videoPath = resolve(import.meta.dirname, "../dist/video/gatedcontrol.mp4")
 const agenticFabricVideoPath = resolve(import.meta.dirname, "../dist/video/agenticfabric.mp4");
 const pandoraModel1Path = resolve(import.meta.dirname, "../dist/pandora/model1.webp");
 const pandoraModel2Path = resolve(import.meta.dirname, "../dist/pandora/model2.webp");
+const omPortraitPath = resolve(import.meta.dirname, "../dist/teams/om.jpeg");
+const execImagePaths = ["sanjay.webp", "shubhra.webp", "tilak.jpg"].map((file) => resolve(import.meta.dirname, "../dist/exec", file));
 const caseImagePaths = [
   "aso.jpg",
   "nissan.jpg",
@@ -279,6 +311,8 @@ const videoSize = statSync(videoPath).size;
 const agenticFabricVideoSize = statSync(agenticFabricVideoPath).size;
 const pandoraModel1Size = statSync(pandoraModel1Path).size;
 const pandoraModel2Size = statSync(pandoraModel2Path).size;
+const omPortraitSize = statSync(omPortraitPath).size;
+const execImageSizes = execImagePaths.map((path) => statSync(path).size);
 const caseImageSizes = caseImagePaths.map((path) => statSync(path).size);
 if (/(?:src|href)="http|url\(http/i.test(html)) throw new Error("Build is not self-contained");
 if (/[\u00c2\u00c3]/.test(html)) throw new Error("Possible mojibake in built HTML");
@@ -287,6 +321,12 @@ if (!html.includes("/video/gatedcontrol.mp4")) throw new Error("Presentation vid
 if (!html.includes("/video/agenticfabric.mp4")) throw new Error("Agentic fabric video route missing from built HTML");
 if (!html.includes("/pandora/model1.webp") || !html.includes("/pandora/model2.webp")) {
   throw new Error("Pandora cover image routes missing from built HTML");
+}
+if (!html.includes("/exec/sanjay.webp") || !html.includes("/exec/shubhra.webp") || !html.includes("/exec/tilak.jpg")) {
+  throw new Error("Presentation exec portrait routes missing from built HTML");
+}
+if (!html.includes("/teams/om.jpeg")) {
+  throw new Error("Om team portrait route missing from built HTML");
 }
 if (
   !html.includes("/cases/aso.jpg") ||
@@ -306,10 +346,14 @@ if (agenticFabricVideoSize < 10_000) {
 if (pandoraModel1Size < 5_000 || pandoraModel2Size < 5_000) {
   throw new Error(`Pandora cover assets missing or too small: ${pandoraModel1Size} / ${pandoraModel2Size} bytes`);
 }
+if (execImageSizes.some((execImageSize) => execImageSize < 3_000)) {
+  throw new Error(`Exec portrait assets missing or too small: ${execImageSizes.join(" / ")} bytes`);
+}
+if (omPortraitSize < 10_000) throw new Error(`Om portrait asset missing or too small: ${omPortraitSize} bytes`);
 if (caseImageSizes.some((caseImageSize) => caseImageSize < 4_000)) {
   throw new Error(`Case study brand assets missing or too small: ${caseImageSizes.join(" / ")} bytes`);
 }
-const budget = 1_305_000;
+const budget = 1_311_000;
 if (size > budget) throw new Error(`Build is ${size} bytes, over budget`);
 
 console.log(
