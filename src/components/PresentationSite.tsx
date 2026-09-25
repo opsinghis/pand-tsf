@@ -646,9 +646,12 @@ function SiteWalkthroughVisual() {
     <div className="pres-site-story">
       <div className="pres-site-picture" aria-label="Retail floor walkthrough illustration">
         <div className="pres-floor-lead">
-          <MapPinned size={18} aria-hidden="true" />
-          <span>Led by Ravi Shankar</span>
-          <strong>India Retail CTO</strong>
+          <MapPinned size={22} aria-hidden="true" />
+          <div>
+            <span>Team areas visit</span>
+            <strong>Retail floor walkthrough</strong>
+            <small>Led by Ravi Shankar | India Retail CTO</small>
+          </div>
         </div>
         <div className="pres-floor-path" aria-hidden="true">
           <i />

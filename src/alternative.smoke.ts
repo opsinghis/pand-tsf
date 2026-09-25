@@ -218,6 +218,9 @@ const structural: Record<string, boolean> = {
     (boothWalkthroughMarkup.match(/class="pres-booth-card"/g) || []).length === 3 &&
     boothWalkthroughMarkup.includes("Nissan") &&
     boothWalkthroughMarkup.includes("/cases/nissan.jpg"),
+  "P01 highlights the retail floor walkthrough": siteWalkthroughMarkup.includes("<strong>Retail floor walkthrough</strong>") &&
+    siteWalkthroughMarkup.includes("Led by Ravi Shankar | India Retail CTO") &&
+    siteWalkthroughMarkup.includes("Customer case walkthrough: ASO + Optum"),
   "presentation deep links curated for P01 and P02": presentationMarkup.includes("Scope: DevOps, Data, Integration") &&
     presentationMarkup.includes("Skills and knowledge transfer") &&
     presentationMarkup.includes("Proof and customer cases") &&

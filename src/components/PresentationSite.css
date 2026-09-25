@@ -904,9 +904,17 @@
 
 .pres-floor-lead {
   display: grid;
-  gap: 5px;
-  max-width: 230px;
-  padding: 13px;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  width: 100%;
+  border-left: 4px solid var(--tone, var(--accent));
+  padding: 14px 16px;
+}
+
+.pres-floor-lead > div {
+  display: grid;
+  gap: 4px;
 }
 
 .pres-floor-lead svg,
@@ -926,9 +934,15 @@
 
 .pres-floor-lead strong {
   color: var(--ink);
-  font-size: 21px;
+  font-size: 25px;
   font-weight: 880;
   line-height: 1.02;
+}
+
+.pres-floor-lead small {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 740;
 }
 
 .pres-floor-path {
