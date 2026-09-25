@@ -73,7 +73,7 @@ const boothPages: BoothPage[] = [
     headline: "Data platform support runs through service areas, evidence and improvement loops.",
     purpose:
       "Explain how Databricks, Power BI, Unity Catalog, DQ, lineage, cost and reliability are operated as a managed service area.",
-    show: ["L1/L2/L3 support ownership", "Pipeline freshness, DQ and backfill response", "Runbook, RCA and automation backlog", "Cost and reliability governance"],
+    show: ["Engineer-owned first response, restore and fix", "Pipeline freshness, DQ and backfill response", "Runbook, RCA and automation backlog", "Cost and reliability governance"],
     proof: ["Failed pipeline example", "Stale dashboard example", "Unity permission example"],
     tone: "data",
     visual: "data"
@@ -135,10 +135,10 @@ const boothPages: BoothPage[] = [
     scope: "B.3.6",
     group: "24x7",
     title: "On-Call Support Model",
-    headline: "Foundation platforms get domain rota, incident command and SME pull-in.",
+    headline: "The delivery engineers also cover nights and weekends by domain rota.",
     purpose:
-      "Explain 24x7 on-call coverage for central Kubernetes, Data, Integration and legacy BizTalk without implying permanent active night-shift staffing.",
-    show: ["Primary / secondary domain cover", "Incident command layer", "Legacy BizTalk escalation", "SME and vendor pull-in"],
+      "Explain how the same DevOps, Data and Integration engineers take primary and secondary on-call after hours and on weekends. Legacy BizTalk issues follow an agreed vendor/SME escalation route rather than a staffed BizTalk engineer rota.",
+    show: ["Primary / secondary engineers by domain", "Incident command layer", "Legacy BizTalk escalation", "SME and vendor pull-in"],
     proof: ["Two-week rota pattern", "Sev1 / Sev2 escalation", "Runbook readiness"],
     tone: "ops",
     visual: "oncall"
@@ -229,7 +229,7 @@ function BoothNav() {
           </a>
         ))}
       </div>
-      <a className="booth-main-link" href="/presentation#case-studies">
+      <a className="booth-main-link" href="/presentation#booth-walkthrough">
         Main deck
         <ExternalLink size={13} aria-hidden="true" />
       </a>

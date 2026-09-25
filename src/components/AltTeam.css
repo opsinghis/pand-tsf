@@ -1126,6 +1126,77 @@
   background: var(--accent);
 }
 
+.team-build-run-diagram {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.85fr) minmax(300px, 1.4fr) minmax(180px, 0.85fr);
+  gap: 16px;
+  align-items: stretch;
+  margin-top: 16px;
+  font-family: var(--sans);
+}
+
+.team-build-run-core,
+.team-build-run-outcome,
+.team-build-run-modes > div {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 17px;
+}
+
+.team-build-run-core {
+  border-color: color-mix(in srgb, var(--tech) 35%, var(--line));
+  background: var(--tech-dim);
+}
+
+.team-build-run-modes {
+  display: grid;
+  gap: 8px;
+}
+
+.team-build-run-modes > div:first-child {
+  border-color: color-mix(in srgb, var(--ops) 35%, var(--line));
+  background: color-mix(in srgb, var(--ops) 8%, #fff);
+}
+
+.team-build-run-modes > div:last-child {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--accent) 8%, #fff);
+}
+
+.team-build-run-outcome {
+  border-color: color-mix(in srgb, var(--gov) 35%, var(--line));
+  background: var(--gov-dim);
+}
+
+.team-build-run-diagram span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.team-build-run-diagram strong {
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.team-build-run-diagram small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+@media (width <= 760px) {
+  .team-build-run-diagram {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Build-run skill ladder */
 .skills-ladder {
   margin-top: 8px;
@@ -1149,13 +1220,8 @@
   background: var(--paper);
 }
 
-.sl-shared-band span {
-  grid-column: 1 / 4;
-}
-
 .sl-shared-band strong {
-  grid-column: 4 / 7;
-  border-left: 1px solid color-mix(in srgb, var(--tech) 32%, var(--line));
+  grid-column: 1 / -1;
   background: var(--tech-dim);
   color: var(--tech);
   padding: 9px 14px;
@@ -1694,10 +1760,6 @@
   font-size: 15px;
 }
 
-.l3-node i.swap {
-  color: var(--tech);
-}
-
 @media (width <= 900px) {
   .l3-bridge {
     grid-template-columns: 1fr;
@@ -1721,10 +1783,6 @@
 
   .sl-shared-band {
     display: block;
-  }
-
-  .sl-shared-band span {
-    display: none;
   }
 
   .sl-shared-band strong {

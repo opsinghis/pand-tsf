@@ -14,7 +14,6 @@ import "./components/ClosingSections.css";
 import "./components/LandscapeMap.css";
 import "./components/alternative.css";
 import "./components/AltTeam.css";
-import "./components/AltCommercials.css";
 import "./components/AltFaq.css";
 import "./components/PresentationSite.css";
 import "./components/BoothVisitSite.css";

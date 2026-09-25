@@ -39,6 +39,8 @@ function collectStrings(value: unknown, out: string[]): void {
 const markup = renderToStaticMarkup(createElement(App));
 const renderedText = normalize(toText(markup));
 const presentationMarkup = renderToStaticMarkup(createElement(PresentationSite));
+const siteWalkthroughMarkup = presentationMarkup.split('id="site-walkthrough"')[1]?.split('id="booth-walkthrough"')[0] || "";
+const boothWalkthroughMarkup = presentationMarkup.split('id="booth-walkthrough"')[1]?.split('id="meet-your-team"')[0] || "";
 const boothMarkup = renderToStaticMarkup(createElement(BoothVisitSite));
 const vercelConfig = JSON.parse(readFileSync(resolve(import.meta.dirname, "../vercel.json"), "utf8")) as {
   rewrites?: Array<{ source: string; destination: string }>;
@@ -75,9 +77,9 @@ const structural: Record<string, boolean> = {
   "Lane 2 empty at 3 months": count(/hlane2 empty/g) === 1,
   "fabric never dropped": markup.includes("agentic fabric") && markup.includes("Gate 0"),
   "landscape map present": count(/ls-item owner-/g) === 11,
-  "commercial section protected": markup.includes('id="commercials"') &&
-    markup.includes("Commercials - restricted access") &&
-    markup.includes("Restricted commercial content") &&
+  "commercial section absent from main site": !markup.includes('id="commercials"') &&
+    !markup.includes('href="#commercials"') &&
+    !markup.includes("Commercials - restricted access") &&
     !markup.includes("Commercial cockpit"),
   "customer ask team model present": markup.includes("Customer ask operating model") &&
     markup.includes("34 FTE steady team with 24x7 on-call") &&
@@ -85,8 +87,8 @@ const structural: Record<string, boolean> = {
     markup.includes("Kafka / Kong engineers") &&
     markup.includes("Base support + 24x7 on-call"),
   "team roster model present": markup.includes("24x7 roster model") &&
-    markup.includes("Domain on-call rota over the business-hours team") &&
-    markup.includes("This is not a permanent night-shift model") &&
+    markup.includes("The delivery engineers also take the night and weekend rota") &&
+    markup.includes("There is no separate Ops L1 or night-shift team") &&
     markup.includes("Major incident layer") &&
     markup.includes("SME / burst pull-in") &&
     markup.includes("Two-week rota"),
@@ -95,7 +97,12 @@ const structural: Record<string, boolean> = {
     readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
       .includes("slot labels are replaced") &&
     readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
-      .includes("Weekend cover uses the same primary / secondary model"),
+      .includes("Weekend cover uses the same engineering pool and primary / secondary pattern"),
+  "skills model uses one engineering pool": markup.includes("One engineering pool across every column") &&
+    markup.includes("One engineering team builds and runs from day one") &&
+    markup.includes("How does the same engineer take a case from alert to lasting fix?") &&
+    !markup.includes("When does a case move from Ops L1") &&
+    !markup.includes("Extra L1 / incident command reserve"),
   "team capacity controls defined": readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
     .includes("Hidden capacity update screen") &&
     readFileSync(resolve(import.meta.dirname, "components/AltTeam.tsx"), "utf8")
@@ -119,7 +126,7 @@ const structural: Record<string, boolean> = {
   "presentation cover agenda links": (presentationMarkup.match(/<a class="pres-agenda-row/g) || []).length >= 9 &&
     presentationMarkup.includes('href="#site-walkthrough"') &&
     presentationMarkup.includes('href="#booth-walkthrough"') &&
-    presentationMarkup.includes('href="#team-overview"') &&
+    presentationMarkup.includes('href="#commercial-model"') &&
     presentationMarkup.includes('href="#faq-close"'),
   "presentation slides return to agenda": (presentationMarkup.match(/class="pres-slide-agenda-link"/g) || []).length >= 12 &&
     presentationMarkup.includes('href="#presentation-start"') &&
@@ -198,13 +205,19 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("Kalpesh") &&
     presentationMarkup.includes("McDonalds") &&
     presentationMarkup.includes("Loreal") &&
-    presentationMarkup.includes("Two booths. One operating model.") &&
+    presentationMarkup.includes("Three booths. One operating model.") &&
     presentationMarkup.includes("/cases/mcdonalds.jpg") &&
     presentationMarkup.includes("/cases/loreal.jpg") &&
     presentationMarkup.includes("AI load reduction") &&
     presentationMarkup.includes("Adoption + shift-left") &&
     presentationMarkup.includes("/booth#booth-overview") &&
     presentationMarkup.includes("Meet The Team"),
+  "Nissan case moves from P01 to P02": siteWalkthroughMarkup.includes("Customer case walkthrough: ASO + Optum") &&
+    !siteWalkthroughMarkup.includes("Nissan") &&
+    boothWalkthroughMarkup.includes("Booth 3") &&
+    (boothWalkthroughMarkup.match(/class="pres-booth-card"/g) || []).length === 3 &&
+    boothWalkthroughMarkup.includes("Nissan") &&
+    boothWalkthroughMarkup.includes("/cases/nissan.jpg"),
   "presentation deep links curated for P01 and P02": presentationMarkup.includes("Scope: DevOps, Data, Integration") &&
     presentationMarkup.includes("Skills and knowledge transfer") &&
     presentationMarkup.includes("Proof and customer cases") &&
@@ -226,25 +239,34 @@ const structural: Record<string, boolean> = {
     maturityHorizons.some((horizon) => horizon.id === "now") &&
     maturityHorizons.some((horizon) => horizon.id === "m6"),
   "presentation P08 explains Lane 2 movement": presentationMarkup.includes("P08 | 2:00 - 3:00") &&
-    presentationMarkup.includes("Lane 2 moves one item at a time through evidence gates.") &&
-    presentationMarkup.includes("Gate 1") &&
-    presentationMarkup.includes("Assist gate") &&
-    presentationMarkup.includes("Pandora approves") &&
+    presentationMarkup.includes("One item earns each step: L0, L1, then L2.") &&
+    presentationMarkup.includes("Gate 0 · once for the estate") &&
+    presentationMarkup.includes("L0 → L1: AI can assist") &&
+    presentationMarkup.includes("L1 → L2: bounded agent action") &&
+    presentationMarkup.includes("Named Pandora owner") &&
+    presentationMarkup.includes("Human approval path proven") &&
+    presentationMarkup.includes("Incident drill passed") &&
+    presentationMarkup.includes("M0–M5 measures operational maturity") &&
     presentationMarkup.includes("Kafka connector"),
-  "presentation P10 team commercials": presentationMarkup.includes("P10 | 3:00 - 3:30") &&
-    presentationMarkup.includes("Team model and commercial model stay connected.") &&
-    presentationMarkup.includes("34 FTE steady team, one engineering lead") &&
-    presentationMarkup.includes("Domain on-call, not night-shift staffing") &&
-    presentationMarkup.includes("Commercial levers") &&
-    !presentationMarkup.includes("Net monthly model"),
+  "presentation P09 operating model": presentationMarkup.includes("P09 | 2:00 - 3:00") &&
+    presentationMarkup.includes("One engineering team. A smarter way to run.") &&
+    presentationMarkup.includes("Pandora retains: planning") &&
+    presentationMarkup.includes("SMART operations layer") &&
+    presentationMarkup.includes("Primary + secondary on-call") &&
+    presentationMarkup.includes("Service management + governance across every step") &&
+    presentationMarkup.includes("Work covered"),
+  "presentation P10 commercial model": presentationMarkup.includes("P10 | 3:00 - 3:30") &&
+    presentationMarkup.includes("Time &amp; Material") &&
+    presentationMarkup.includes("Managed Services") &&
+    presentationMarkup.includes("Outcome-based") &&
+    presentationMarkup.includes("Requested TO-BE team") &&
+    presentationMarkup.includes("One portfolio, different contracts") &&
+    !presentationMarkup.includes("Net monthly model") &&
+    !presentationMarkup.includes("EUR "),
   "presentation P11 engineering leadership": presentationMarkup.includes("P11 | 3:45 - 4:15") &&
     presentationMarkup.includes("Tilak closes with AI and innovation reassurance.") &&
     presentationMarkup.includes("AI, innovation and engineering confidence.") &&
     presentationMarkup.includes("Capability depth"),
-  "commercial disclaimer present in source": readFileSync(resolve(import.meta.dirname, "components/AltCommercials.tsx"), "utf8")
-    .includes("All commercial values shown here are dummy placeholders") &&
-    readFileSync(resolve(import.meta.dirname, "components/PresentationSite.tsx"), "utf8")
-      .includes("Replace with real inputs for actual cost"),
   "presentation proof modals available": (presentationMarkup.match(/Open proof/g) || []).length >= 3,
   "deleted standalone pages absent": !presentationMarkup.includes('id="nexus-proof"') &&
     !presentationMarkup.includes('href="#nexus-proof"') &&

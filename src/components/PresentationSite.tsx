@@ -20,8 +20,6 @@ import {
 } from "lucide-react";
 import { Fragment, useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { brand, horizons, navSections } from "../data/alternative";
-import { defaultCommercialControls, getCommercialSnapshot } from "./AltCommercials";
-import { CommercialAccessPanel, useCommercialAccess } from "./CommercialAccess";
 import {
   averageScore,
   dimensionMarksFromHorizon,
@@ -67,10 +65,9 @@ type PresentationVisual =
   | "transition"
   | "maturity"
   | "lane2"
-  | "cases"
-  | "team"
+  | "operating"
   | "engineering"
-  | "commercials"
+  | "commercial-model"
   | "faq";
 type PresentationIcon = typeof HelpCircle;
 
@@ -238,7 +235,7 @@ const originalAgenda = [
     time: "9:45 - 10:45",
     label: "PS site walkthrough - team areas visit",
     owner: "Ravi Shankar",
-    points: ["Real development & operations", "DevOps + Integration", "ASO", "Nissan"],
+    points: ["Real development & operations", "DevOps + Integration", "ASO", "Optum"],
     targetId: "site-walkthrough"
   },
   {
@@ -252,7 +249,7 @@ const originalAgenda = [
     time: "11:00 - 11:45",
     label: "Client examples - booth walkthrough",
     owner: "Kalpesh",
-    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal"],
+    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal", "Nissan"],
     targetId: "booth-walkthrough"
   },
   {
@@ -288,7 +285,7 @@ const originalAgenda = [
     label: "Commercials & team model",
     owner: "Sebastian Jandrey",
     points: ["Location / team model", "Commercial model"],
-    targetId: "team-overview"
+    targetId: "commercial-model"
   },
   {
     time: "3:30 - 3:45",
@@ -320,7 +317,7 @@ const presentationChapters: PresentationChapter[] = [
     agenda: "PS site walkthrough - team areas visit",
     title: "Site Walkthrough",
     headline: "Walk the retail floor, then unpack the cases.",
-    punch: "Ravi Shankar, India Retail CTO, takes the group through one of the retail delivery floors. We see teams in action across Pandora, ASO, Optum, Kingfisher and B&O, then sit down for ASO, Nissan and Optum case walkthroughs focused on Integration, Data and DevOps.",
+    punch: "Ravi Shankar, India Retail CTO, takes the group through one of the retail delivery floors. We see teams in action across Pandora, ASO, Optum, Kingfisher and B&O, then sit down for ASO and Optum case walkthroughs focused on Integration, Data and DevOps.",
     tone: "proof",
     visual: "sitevisit",
     detailIds: ["scope", "team-skills", "proof"],
@@ -335,8 +332,8 @@ const presentationChapters: PresentationChapter[] = [
     time: "11:00 - 11:45",
     agenda: "Client examples - booth walkthrough",
     title: "Booth Walkthrough",
-    headline: "Two booths. One operating model.",
-    punch: "Kalpesh uses McDonalds and Loreal to show how great operations work across DevOps, Data and Integration: service ownership, platform reliability, 24x7 support, incident flow, AI load reduction, adoption and shift-left.",
+    headline: "Three booths. One operating model.",
+    punch: "Kalpesh uses McDonalds, Loreal and Nissan to show DevOps, Data and platform operations in action. Together they cover service ownership, reliability, 24x7 support, incident flow, AI load reduction, adoption and shift-left.",
     tone: "tech",
     visual: "boothvisit",
     detailIds: ["scope", "dayone", "governance"],
@@ -407,33 +404,33 @@ const presentationChapters: PresentationChapter[] = [
     time: "2:00 - 3:00",
     agenda: "Revised proposal - deep dive",
     title: "Lane 2 Movement",
-    headline: "Lane 2 moves one item at a time through evidence gates.",
-    punch: "The maturity matrix creates candidates, not a forced transformation wave. Each item enters Lane 2 with a Pandora owner, evidence, rollback, stakeholder sign-off and a clear reason to move from run-as-is to assisted, then to a higher maturity pattern only when Gate 2 passes.",
+    headline: "One item earns each step: L0, L1, then L2.",
+    punch: "Run the service as-is at L0. Gate 1 allows AI to assist one item while a person executes. After a proven track record, Gate 2 can allow bounded agent action. Pandora approves each move; Gate 0 establishes the foundations once.",
     tone: "tech",
     visual: "lane2",
     detailIds: ["twolane", "foundations", "dial-explorer", "walkthroughs", "horizons"]
   },
   {
-    id: "case-studies",
+    id: "operating-model",
     time: "2:00 - 3:00",
     agenda: "Revised proposal - deep dive",
-    title: "Client Cases",
-    headline: "Case Study 5 connects proof back to the revised proposal.",
-    punch: "The morning cases prove capability; this afternoon case anchors transition, operating model and the path from run to evolve.",
-    tone: "proof",
-    visual: "cases",
-    detailIds: ["proof", "faq", "goals", "team-capacity"]
+    title: "Operating Model",
+    headline: "One engineering team. A smarter way to run.",
+    punch: "Pandora retains direction and policy. Shared monitoring, runbooks and approved automation help the same DevOps, Data and Integration engineers handle production, on-call and planned change. Service management makes ownership and outcomes visible.",
+    tone: "ops",
+    visual: "operating",
+    detailIds: ["team-converge", "team-skills", "team-leader", "governance", "transition-coverage"]
   },
   {
-    id: "team-overview",
+    id: "commercial-model",
     time: "3:00 - 3:30",
     agenda: "Commercials & Team Model",
-    title: "Team + Commercials",
-    headline: "Team model and commercial model stay connected.",
-    punch: "Sebastian anchors how location mix, team model, rate cards and commercial levers connect to the same delivery model: run base, improve and evolve, and controlled burst capacity.",
+    title: "Commercial Model",
+    headline: "Choose the commercial shape for each type of work.",
+    punch: "The requested team can start with flexible capacity. Defined services can move to managed pricing; bounded migrations can be priced against outcomes. The right model is agreed per workstream and can evolve as the service becomes measurable.",
     tone: "people",
-    visual: "team",
-    detailIds: ["team-shape", "team-leader", "team-skills", "team-capacity", "commercials"]
+    visual: "commercial-model",
+    detailIds: ["team-shape", "team-capacity", "horizons", "goals"]
   },
   {
     id: "engineering-leadership",
@@ -455,7 +452,7 @@ const presentationChapters: PresentationChapter[] = [
     punch: "The debrief turns the day into next steps: what was proven in the walkthrough, what needs follow-up, which commercial/team assumptions remain open, and where Pandora wants more evidence.",
     tone: "gov",
     visual: "faq",
-    detailIds: ["faq", "commercials", "transition-coverage", "team-skills", "proof"]
+    detailIds: ["faq", "team-capacity", "transition-coverage", "team-skills", "proof"]
   }
 ];
 
@@ -579,47 +576,6 @@ function SlideShell({
   );
 }
 
-function CommercialPresentationSlide({
-  chapter,
-  index,
-  onOpenLightbox
-}: {
-  chapter: PresentationChapter;
-  index: number;
-  onOpenLightbox: OpenLightbox;
-}) {
-  const { unlocked } = useCommercialAccess();
-  if (unlocked) {
-    return (
-      <SlideShell chapter={chapter} index={index}>
-        <VisualFor kind={chapter.visual} chapterId={chapter.id} onOpenLightbox={onOpenLightbox} />
-      </SlideShell>
-    );
-  }
-
-  const page = pageLabel(index);
-  return (
-    <section className={`pres-slide tone-${chapter.tone}`} id={chapter.id} aria-label={`${page} ${chapter.title}`}>
-      <div className="pres-slide-inner">
-        <span className="pres-page-flag">{page}</span>
-        <AgendaBackLink />
-        <div className="pres-slide-copy">
-          <span className="pres-kicker">{page} | {chapter.time} | {String(index + 1).padStart(2, "0")} / {presentationChapters.length}</span>
-          <small className="pres-agenda-label">{chapter.agenda}</small>
-          <h2>Commercials are available on request.</h2>
-          <p>
-            This section contains rate cards, cost levers, discounts and customer ask capacity. Unlock it only when the
-            commercial discussion is ready.
-          </p>
-        </div>
-        <div className="pres-visual">
-          <CommercialAccessPanel mode="presentation" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function AgendaVisual() {
   return (
     <div className="pres-agenda-board">
@@ -679,7 +635,6 @@ function SiteWalkthroughVisual() {
   ];
   const cases: Array<[string, string, string]> = [
     ["ASO", "Development + platform + operations", asoCaseImage],
-    ["Nissan", "Platform capabilities + operations", nissanCaseImage],
     ["Optum", "Data platform + operations", optumCaseImage]
   ];
   const focusAreas: Array<[string, string, PresentationIcon]> = [
@@ -714,7 +669,7 @@ function SiteWalkthroughVisual() {
       </div>
       <section className="pres-case-walkthrough">
         <span>After the team-area walkthrough</span>
-        <strong>Customer case walkthrough: ASO + Nissan + Optum</strong>
+        <strong>Customer case walkthrough: ASO + Optum</strong>
         <p>Selected to show development and platform capabilities in a practical customer setting.</p>
         <div className="pres-case-brand-grid">
           {cases.map(([name, detail, image]) => (
@@ -742,7 +697,8 @@ function SiteWalkthroughVisual() {
 function BoothWalkthroughVisual() {
   const booths: Array<[string, string, string, string, string]> = [
     ["Booth 1", "McDonalds", "DevOps operations", "PAKS, portal/tooling, platform reliability and shift-left.", mcdonaldsCaseImage],
-    ["Booth 2", "Loreal", "Data platform management", "Databricks, Power BI, governance, freshness and data reliability.", lorealCaseImage]
+    ["Booth 2", "Loreal", "Data platform management", "Databricks, Power BI, governance, freshness and data reliability.", lorealCaseImage],
+    ["Booth 3", "Nissan", "Platform capabilities + operations", "Platform engineering, support and reliability across the delivery lifecycle.", nissanCaseImage]
   ];
   const coverage: Array<[string, string, PresentationIcon]> = [
     ["Data service model", "Databricks, Power BI, Unity Catalog, DQ and reliability.", Database],
@@ -1440,7 +1396,7 @@ interface LaneTwoItem {
   assist: string;
   higher: string;
   evidence: string[];
-  stakeholders: string[];
+  owner: string;
 }
 
 const laneTwoItems: LaneTwoItem[] = [
@@ -1452,7 +1408,7 @@ const laneTwoItems: LaneTwoItem[] = [
     assist: "Pandav drafts schema-drift diagnosis, replay recommendation and connector recovery evidence.",
     higher: "Approved bounded replay or connector recovery pattern with audit, rollback and outcome review.",
     evidence: ["topic owner", "lag alert quality", "schema contract", "replay drill", "rollback route"],
-    stakeholders: ["Pandora Integration Owner", "Ops L2/L3", "Security / Risk", "Sapient Kafka SME"]
+    owner: "Pandora Integration Owner + on-call integration engineers + Kafka SME"
   },
   {
     id: "databricks",
@@ -1462,7 +1418,7 @@ const laneTwoItems: LaneTwoItem[] = [
     assist: "Assistant prepares failed-run summary, lineage impact, backfill checklist and DQ evidence pack.",
     higher: "Approved rerun or freshness-triage pattern runs with guardrails and human outcome review.",
     evidence: ["job owner", "lineage", "freshness alert", "backfill rehearsal", "DQ threshold"],
-    stakeholders: ["Pandora Data Owner", "Ops L2 Data", "Data L3 SME", "Business Report Owner"]
+    owner: "Pandora Data Owner + on-call data engineers + report owner"
   },
   {
     id: "github",
@@ -1472,7 +1428,7 @@ const laneTwoItems: LaneTwoItem[] = [
     assist: "Assistant drafts failed-build triage, flaky-test pattern and policy-gate repair recommendation.",
     higher: "Approved pipeline repair or recovery recipe executes only inside release guardrails.",
     evidence: ["repo owner", "runner baseline", "secret path", "rollback drill", "release evidence"],
-    stakeholders: ["Pandora Platform Lead", "Ops L2 DevOps", "Ops L3 DevOps", "Release Owner"]
+    owner: "Pandora Platform Lead + on-call DevOps engineers + release owner"
   },
   {
     id: "kong",
@@ -1480,9 +1436,9 @@ const laneTwoItems: LaneTwoItem[] = [
     area: "API Platform",
     baseline: "Support route, policy and consumer-impact issues while catalogue and SLO gaps are visible.",
     assist: "Assistant correlates gateway metrics, contract drift, failed auth and consumer impact.",
-    higher: "Approved contract-health or policy-drift pattern recommends action with owner approval.",
+    higher: "An approved policy-drift repair runs within defined guardrails after owner approval; exceptions return to engineers.",
     evidence: ["API owner", "consumer map", "SLO signal", "policy evidence", "rollback route"],
-    stakeholders: ["Pandora API Owner", "Ops L2 Integration", "Architecture", "Sapient API SME"]
+    owner: "Pandora API Owner + on-call integration engineers + architecture"
   }
 ];
 
@@ -1490,57 +1446,58 @@ const laneTwoSteps: Array<{
   id: string;
   label: string;
   title: string;
-  kind: "level" | "gate" | "evidence";
-  owner: string;
+  kind: "level" | "gate";
   detail: (item: LaneTwoItem) => string;
 }> = [
   {
     id: "baseline",
-    label: "Level 1",
-    title: "Run baseline",
+    label: "L0",
+    title: "Run as-is",
     kind: "level",
-    owner: "Ops + service owner",
     detail: (item) => item.baseline
   },
   {
     id: "gate1",
     label: "Gate 1",
-    title: "Assist gate",
+    title: "Approve assist",
     kind: "gate",
-    owner: "Pandora owner + risk",
-    detail: () => "Owner, audit, human approval and rollback are proven before the item moves into assisted improvement."
+    detail: () => "Pandora checks ownership, audit, human approval and rollback for this item before allowing AI assistance."
   },
   {
     id: "assist",
-    label: "Level 2",
-    title: "Assisted improvement",
+    label: "L1",
+    title: "AI-assisted",
     kind: "level",
-    owner: "Improve & Evolve engineer",
     detail: (item) => item.assist
-  },
-  {
-    id: "measure",
-    label: "Prove",
-    title: "Evidence period",
-    kind: "evidence",
-    owner: "Ops L2/L3 + governance",
-    detail: () => "Incidents, SLOs, rollback success, usage and stakeholder confidence are measured before the next dial-up."
   },
   {
     id: "gate2",
     label: "Gate 2",
-    title: "Higher-maturity gate",
+    title: "Approve agent",
     kind: "gate",
-    owner: "Pandora governance",
-    detail: () => "The item must show a stable assisted track record, passed incident drill, SLO adherence and evaluation evidence."
+    detail: () => "Pandora reviews the L1 track record, incident drill, SLOs and evaluation results before allowing bounded action."
   },
   {
     id: "higher",
-    label: "Level 3",
-    title: "Higher maturity pattern",
+    label: "L2",
+    title: "Agentic",
     kind: "level",
-    owner: "Pandora approves",
     detail: (item) => item.higher
+  }
+];
+
+const laneTwoGateChecks = [
+  {
+    id: "gate1",
+    label: "Gate 1",
+    outcome: "L0 → L1: AI can assist",
+    checks: ["Named Pandora owner", "Audit trail on", "Human approval path proven", "Rollback demonstrated"]
+  },
+  {
+    id: "gate2",
+    label: "Gate 2",
+    outcome: "L1 → L2: bounded agent action",
+    checks: ["Proven L1 track record", "Incident drill passed", "SLOs held", "Evaluation threshold met"]
   }
 ];
 
@@ -1571,12 +1528,19 @@ function LaneTwoVisual() {
         ))}
       </div>
 
+      <div className="pres-lane2-foundation">
+        <ShieldCheck size={17} aria-hidden="true" />
+        <strong>Gate 0 · once for the estate</strong>
+        <span>Security sign-off + audit · trained supervisors · trace/SLO evidence · signed gate charter</span>
+        <small>Pandora approves once. This makes item gate reviews possible; it moves no item automatically.</small>
+      </div>
+
       <div className="pres-lane2-rail" style={{ "--progress": progress } as CSSProperties}>
         <i aria-hidden="true" />
         {laneTwoSteps.map((step, index) => (
           <button
             type="button"
-            className={`${step.kind} ${index === activeStep ? "active" : ""} ${index < activeStep ? "passed" : ""}`}
+            className={`${step.kind} ${index === activeStep ? "active" : ""}`}
             aria-current={index === activeStep}
             key={step.id}
             onClick={() => setActiveStep(index)}
@@ -1589,130 +1553,194 @@ function LaneTwoVisual() {
 
       <div className="pres-lane2-body">
         <section className="pres-lane2-current">
-          <span>{activeItem.label} · {currentStep.label}</span>
+          <span>{activeItem.area} · {activeItem.label} · {currentStep.label}</span>
           <strong>{currentStep.title}</strong>
           <p>{currentStep.detail(activeItem)}</p>
-          <small>{currentStep.owner}</small>
-        </section>
-
-        <section className="pres-lane2-evidence">
-          <span>Evidence collected before movement</span>
-          <div>
-            {activeItem.evidence.map((evidence) => (
-              <strong key={evidence}>{evidence}</strong>
-            ))}
+          <small>{activeItem.owner}</small>
+          <div className="pres-lane2-item-evidence">
+            <span>Evidence for this item</span>
+            <p>{activeItem.evidence.join(" · ")}</p>
           </div>
         </section>
 
-        <section className="pres-lane2-stakeholders">
-          <span>Stakeholders involved</span>
-          <div>
-            {activeItem.stakeholders.map((stakeholder) => (
-              <strong key={stakeholder}>{stakeholder}</strong>
-            ))}
-          </div>
-        </section>
+        {laneTwoGateChecks.map((gate) => (
+          <section className={`pres-lane2-gate-checks ${activeStep === laneTwoSteps.findIndex((step) => step.id === gate.id) ? "active" : ""}`} key={gate.id}>
+            <span>{gate.label} · per item</span>
+            <strong>{gate.outcome}</strong>
+            <ul>
+              {gate.checks.map((check) => <li key={check}>{check}</li>)}
+            </ul>
+            <small>Pandora signs off</small>
+          </section>
+        ))}
       </div>
 
       <div className="pres-lane2-note">
         <ShieldCheck size={17} aria-hidden="true" />
-        <span>Lane 2 is selective: the baseline nominates candidates, gates protect movement, and Pandora approves every dial-up.</span>
+        <span>M0–M5 measures operational maturity. L0–L2 sets automation for this item. The engineers who build the platform also support it. Every dial-up can be reversed.</span>
       </div>
     </div>
   );
 }
 
-function CasesVisual() {
-  const cases: Array<[string, string, PresentationIcon]> = [
-    ["ASO", "Development and operations proof from the team-area walkthrough.", Users],
-    ["Nissan", "DevOps / Integration operating example from the morning visit.", Network],
-    ["McDonalds", "DevOps showcase proof for the booth walkthrough.", GitBranch],
-    ["Loreal", "Data Platform Management proof for the booth walkthrough.", Database],
-    ["Case Study 5", "Transition and operating-model evidence tied to the revised proposal.", ClipboardCheck]
-  ];
+const operatingWork = [
+  {
+    label: "Monitoring",
+    icon: Gauge,
+    items: ["Metrics, alerts, logs and traces", "Job, interface and pipeline health", "Data quality and platform signals"]
+  },
+  {
+    label: "SOP work",
+    icon: ClipboardCheck,
+    items: ["Health checks and scheduled tasks", "Access and account requests", "Scripted recovery and simple data fixes"]
+  },
+  {
+    label: "Service integration",
+    icon: Network,
+    items: ["Incident, request and change flow", "Service reporting and ownership", "Performance review and improvement backlog", "Legacy vendor / SME escalation"]
+  },
+  {
+    label: "Automation",
+    icon: Bot,
+    items: ["Alert correlation and triage support", "Runbook and RCA assistance", "Approved remediation with audit and rollback"]
+  }
+];
+
+function OperatingModelVisual() {
+  const [view, setView] = useState<"model" | "work">("model");
 
   return (
-    <div className="pres-cases">
-      {cases.map(([title, detail, Icon]) => (
-        <div key={title}>
-          <Icon size={24} aria-hidden="true" />
-          <strong>{title}</strong>
-          <p>{detail}</p>
-          <small>Insert specific metric, visual or proof artifact during presentation</small>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function TeamOverviewVisual() {
-  const streams: Array<[string, string, string, PresentationIcon]> = [
-    ["DevOps", "8 FTE", "CI/CD, PAKS, IaC, GitHub, observability and platform on-call.", GitBranch],
-    ["Data", "8 FTE", "7 Databricks / Power BI engineers plus delivery governance.", Database],
-    ["Integration", "16 FTE", "Kafka/Kong engineers, QE, delivery leads and Kafka technical BAs.", Network],
-    ["Legacy", "1 FTE", "Onsite BizTalk / legacy PM for vendor dependency and transition evidence.", ClipboardCheck]
-  ];
-  const buckets = [
-    ["Base support", "Run service, incident flow, L1/L2/L3 routing and 24x7 on-call rota."],
-    ["Improve & Evolve", "Engineering-minded capacity converts recurring toil into automation and better maturity."],
-    ["Burst / SME", "Quarterly dial-up for migrations, specialist gaps, abnormal demand or Sapient SME pull-in."]
-  ];
-
-  return (
-    <div className="pres-team-overview">
-      <div className="pres-team-lead-card">
-        <Users size={24} aria-hidden="true" />
-        <div>
-          <span>Placement logic</span>
-          <strong>34 FTE steady team, one engineering lead</strong>
-          <p>Not three disconnected squads: one backlog, one governance rhythm, domain depth where the platforms need it.</p>
+    <div className="pres-operating-model">
+      <div className="pres-operating-head">
+        <span>Pandora retains: planning · architecture · product · governance · policy · security assurance</span>
+        <div className="pres-operating-switch" role="tablist" aria-label="Operating model view">
+          <button type="button" role="tab" aria-selected={view === "model"} onClick={() => setView("model")}>Operating flow</button>
+          <button type="button" role="tab" aria-selected={view === "work"} onClick={() => setView("work")}>Work covered</button>
         </div>
       </div>
 
-      <div className="pres-team-streams">
-        {streams.map(([label, fte, detail, Icon]) => (
-          <div key={label}>
-            <Icon size={20} aria-hidden="true" />
-            <span>{label}</span>
-            <strong>{fte}</strong>
-            <p>{detail}</p>
+      {view === "model" ? (
+        <div className="pres-operating-flow" role="tabpanel">
+          <div className="pres-operating-flow-stage">
+            <Gauge size={23} aria-hidden="true" />
+            <span>01 · See the service</span>
+            <strong>Signals + requests</strong>
+            <p>Observability, tickets, scheduled checks and business impact create one visible intake.</p>
+            <small>Databricks freshness · Kafka lag · AKS health · access requests</small>
           </div>
+          <ArrowRight className="pres-operating-arrow" size={22} aria-hidden="true" />
+          <div className="pres-operating-flow-stage central">
+            <Bot size={23} aria-hidden="true" />
+            <span>02 · Make work repeatable</span>
+            <strong>SMART operations layer</strong>
+            <p>Runbooks, integrated monitoring and approved Sapient Sustain assistance standardise first checks and recovery for the same engineers.</p>
+            <small>A shared capability, not another staffed support team</small>
+          </div>
+          <ArrowRight className="pres-operating-arrow" size={22} aria-hidden="true" />
+          <div className="pres-operating-flow-stage">
+            <GitBranch size={23} aria-hidden="true" />
+            <span>03 · Own the outcome</span>
+            <strong>Domain engineers</strong>
+            <p>The same DevOps, Data and Integration engineers restore service, fix defects and deliver planned change.</p>
+            <small>Primary + secondary on-call · nights and weekends</small>
+          </div>
+        </div>
+      ) : (
+        <div className="pres-operating-work" role="tabpanel">
+          {operatingWork.map(({ label, icon: Icon, items }) => (
+            <div key={label}>
+              <Icon size={20} aria-hidden="true" />
+              <strong>{label}</strong>
+              <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="pres-operating-governance">
+        <ShieldCheck size={18} aria-hidden="true" />
+        <div>
+          <strong>Service management + governance across every step</strong>
+          <span>Named ownership · incident / request / change standards · MTTA / MTTR and repeat-work measures</span>
+        </div>
+        <a href={detailHref("team-converge", "operating-model")}>Full team model <ExternalLink size={13} aria-hidden="true" /></a>
+      </div>
+    </div>
+  );
+}
+
+const commercialOptions = [
+  {
+    id: "flex",
+    title: "Time & Material",
+    subtitle: "Flexible capacity · MSA rate card",
+    icon: Users,
+    commitment: "Agree the skill mix and location; scale capacity up or down with short lead times.",
+    lever: "Volume and duration can unlock discounts on the agreed rate card.",
+    bestFit: "Requested TO-BE team across DevOps, Data and Integration",
+    example: "Start with the named engineering team and quarterly capacity planning."
+  },
+  {
+    id: "managed",
+    title: "Managed Services",
+    subtitle: "Fixed price · defined service",
+    icon: ShieldCheck,
+    commitment: "Agree the service boundary, volumes and SLAs; Sapient owns the delivery setup within that scope.",
+    lever: "Commit efficiency-based cost reductions as repeat work is removed.",
+    bestFit: "Stable, measurable platform services such as DevOps operations",
+    example: "Move a well-defined run service here once transition evidence is reliable."
+  },
+  {
+    id: "outcome",
+    title: "Outcome-based",
+    subtitle: "Fixed price · concrete initiative",
+    icon: ClipboardCheck,
+    commitment: "Agree a bounded outcome and acceptance criteria; Sapient takes delivery ownership.",
+    lever: "Price the initiative against its result and share delivery risk.",
+    bestFit: "Migrations and tool changes",
+    example: "ADO → GitHub · OpsGenie → PagerDuty · Backstage → Port.io"
+  }
+] as const;
+
+function CommercialModelVisual() {
+  const [activeId, setActiveId] = useState<(typeof commercialOptions)[number]["id"]>("flex");
+  const active = commercialOptions.find((option) => option.id === activeId) ?? commercialOptions[0];
+
+  return (
+    <div className="pres-commercial-model">
+      <div className="pres-commercial-options" role="tablist" aria-label="Commercial model">
+        {commercialOptions.map(({ id, title, subtitle, icon: Icon }) => (
+          <button type="button" role="tab" aria-selected={id === activeId} onClick={() => setActiveId(id)} key={id}>
+            <Icon size={19} aria-hidden="true" />
+            <strong>{title}</strong>
+            <small>{subtitle}</small>
+          </button>
         ))}
       </div>
 
-      <div className="pres-team-ops">
-        <section>
-          <span>24x7 support model</span>
-          <strong>Domain on-call, not night-shift staffing</strong>
-          <p>DevOps, Data and Integration each carry primary / secondary cover. Major incidents pull the engineering lead and delivery leads into command.</p>
+      <div className="pres-commercial-selected" role="tabpanel">
+        <div className="pres-commercial-selected-head">
+          <span>Best fit</span>
+          <strong>{active.bestFit}</strong>
+          <p>{active.example}</p>
+        </div>
+        <div className="pres-commercial-terms">
           <div>
-            <small>DevOps P/S</small>
-            <small>Data P/S</small>
-            <small>Integration P/S</small>
-            <small>Incident command</small>
+            <span>What we agree</span>
+            <p>{active.commitment}</p>
           </div>
-        </section>
-        <section>
-          <span>Capacity model</span>
-          <strong>Run, improve and flex through explicit choices</strong>
-          <ul>
-            {buckets.map(([label, detail]) => (
-              <li key={label}>
-                <b>{label}</b>
-                <em>{detail}</em>
-              </li>
-            ))}
-          </ul>
-        </section>
+          <div>
+            <span>Commercial lever</span>
+            <p>{active.lever}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="pres-team-footer">
-        <ShieldCheck size={17} aria-hidden="true" />
-        <span>Commercial levers remain protected in the detail site; this slide explains the operating shape before price.</span>
-        <a href={detailHref("commercials", "team-overview")}>
-          Commercial levers
-          <ExternalLink size={13} aria-hidden="true" />
-        </a>
+      <div className="pres-commercial-portfolio">
+        <span>One portfolio, different contracts</span>
+        <strong>Flexible team</strong><ArrowRight size={15} aria-hidden="true" />
+        <strong>Defined run service</strong><ArrowRight size={15} aria-hidden="true" />
+        <strong>Bounded change outcome</strong>
       </div>
     </div>
   );
@@ -1755,52 +1783,6 @@ function EngineeringLeadershipVisual() {
       <div className="pres-engineering-close">
         <ShieldCheck size={17} aria-hidden="true" />
         <span>Placed after the commercial and team discussion so Tilak can close on innovation confidence, AI guardrails and engineering depth.</span>
-      </div>
-    </div>
-  );
-}
-
-function CommercialVisual() {
-  const snapshot = getCommercialSnapshot(defaultCommercialControls);
-  const bars = [
-    { label: "Run Base", value: snapshot.runMonthly, tone: "tech" },
-    { label: "Improve + Evolve", value: snapshot.evolveMonthly, tone: "people" },
-    { label: "Customer Ask", value: snapshot.burstMonthly, tone: "proof" }
-  ];
-  const max = Math.max(...bars.map((bar) => bar.value), 1);
-  const operating = [
-    ["L1/L2/L3", "Ops support separated by case type"],
-    ["Locations", "India, Romania and Denmark mix"],
-    ["Talent", "Onboarding, backups, retention and knowledge transfer"],
-    ["Levers", "FTE, billable days, day rates and discount"]
-  ];
-
-  return (
-    <div className="pres-commercial">
-      <div className="pres-commercial-disclaimer">
-        <ShieldCheck size={16} aria-hidden="true" />
-        <span>Dummy model: values are driven by the rate card, FTE, billable days and discounts. Replace with real inputs for actual cost.</span>
-      </div>
-      <div className="pres-operating-stack">
-        {operating.map(([label, detail]) => (
-          <div key={label}>
-            <strong>{label}</strong>
-            <span>{detail}</span>
-          </div>
-        ))}
-      </div>
-      <div className="pres-money-panel">
-        {bars.map((bar) => (
-          <div className={`pres-money-row tone-${bar.tone}`} key={bar.label}>
-            <span>{bar.label}</span>
-            <i><b style={{ width: `${Math.max(8, (bar.value / max) * 100)}%` }} /></i>
-            <strong>EUR {Math.round(bar.value / 1000).toLocaleString("en-GB")}k</strong>
-          </div>
-        ))}
-        <div className="pres-commercial-total">
-          <span>Net monthly model</span>
-          <strong>EUR {Math.round(snapshot.netMonthly / 1000).toLocaleString("en-GB")}k</strong>
-        </div>
       </div>
     </div>
   );
@@ -2135,10 +2117,9 @@ function VisualFor({
   }
   if (kind === "maturity") return <MaturityVisual />;
   if (kind === "lane2") return <LaneTwoVisual />;
-  if (kind === "cases") return <CasesVisual />;
-  if (kind === "team") return <TeamOverviewVisual />;
+  if (kind === "operating") return <OperatingModelVisual />;
   if (kind === "engineering") return <EngineeringLeadershipVisual />;
-  if (kind === "commercials") return <CommercialVisual />;
+  if (kind === "commercial-model") return <CommercialModelVisual />;
   return <FaqVisual />;
 }
 
@@ -2216,15 +2197,11 @@ export function PresentationSite() {
         </div>
       </header>
 
-      {presentationChapters.map((chapter, index) =>
-        chapter.visual === "commercials" ? (
-          <CommercialPresentationSlide chapter={chapter} index={index} onOpenLightbox={setLightbox} key={chapter.id} />
-        ) : (
-          <SlideShell chapter={chapter} index={index} key={chapter.id}>
-            <VisualFor kind={chapter.visual} chapterId={chapter.id} onOpenLightbox={setLightbox} />
-          </SlideShell>
-        )
-      )}
+      {presentationChapters.map((chapter, index) => (
+        <SlideShell chapter={chapter} index={index} key={chapter.id}>
+          <VisualFor kind={chapter.visual} chapterId={chapter.id} onOpenLightbox={setLightbox} />
+        </SlideShell>
+      ))}
 
       {unlinkedSections.length > 0 ? (
         <section className="pres-link-audit" aria-label="All remaining detailed links">

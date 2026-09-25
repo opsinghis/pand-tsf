@@ -1,4 +1,4 @@
-import { ArrowLeftRight, BadgeCheck, CalendarDays, Check, ChevronLeft, ChevronRight, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, ChevronLeft, ChevronRight, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { Fragment, useState, type CSSProperties } from "react";
 import {
   capacityDrivers,
@@ -26,11 +26,11 @@ import { PullQuote, Reveal, Section } from "./primitives";
 
 const opsCaseStages = [
   { id: "signal", label: "Signal", short: "Case starts", hue: "--muted" },
-  { id: "l1", label: "Ops L1", short: "Capture & route", hue: "--tech" },
-  { id: "l2", label: "Ops L2", short: "Diagnose & restore", hue: "--ops" },
-  { id: "l3", label: "Ops L3", short: "Engineer fix", hue: "--gov" },
+  { id: "l1", label: "First response", short: "Assess & capture", hue: "--tech" },
+  { id: "l2", label: "Restore", short: "Diagnose & recover", hue: "--ops" },
+  { id: "l3", label: "Engineer fix", short: "Change code / config", hue: "--gov" },
   { id: "improve", label: "Improve & Evolve", short: "Convert toil", hue: "--accent" },
-  { id: "dev", label: "Development", short: "Build durable capability", hue: "--proof" }
+  { id: "dev", label: "Planned build", short: "Build durable capability", hue: "--proof" }
 ] as const;
 
 type OpsCaseStageId = (typeof opsCaseStages)[number]["id"];
@@ -61,24 +61,24 @@ const opsCaseExamples: OpsCaseExample[] = [
         id: "signal",
         trigger: "A failed-run alert, freshness breach or business ticket appears.",
         action: "Monitoring captures the failing job, table, source feed and visible business impact.",
-        output: "A production case with enough evidence for the first support tier to route."
+        output: "A production case with enough evidence for the domain engineer to act."
       },
       {
         id: "l1",
         trigger: "The alert is confirmed as a real production issue.",
-        action: "Ops L1 validates the run ID, attaches logs, checks first dashboards and routes to the data queue.",
+        action: "The on-call data engineer validates the run ID, attaches logs, checks dashboards and assesses impact.",
         output: "A correctly classified incident with impact, owner, timestamp and initial evidence."
       },
       {
         id: "l2",
         trigger: "The case needs operational restore steps.",
-        action: "Ops L2 reruns the job, quarantines the bad batch, checks lineage and restores the flow if the runbook covers it.",
-        output: "Service restored, or a precise schema / job defect escalated with triage notes."
+        action: "The same engineer reruns the job, quarantines the bad batch, checks lineage and restores the flow if the runbook covers it.",
+        output: "Service restored, or a precise schema / job defect isolated with triage notes."
       },
       {
         id: "l3",
         trigger: "Runbook restore is not enough because the defect is in Spark, Delta logic or job configuration.",
-        action: "Ops L3 patches the job, adds validation, performs a safe backfill and updates the runbook.",
+        action: "The data engineer patches the job, adds validation, performs a safe backfill and updates the runbook.",
         output: "A production fix PR, backfill evidence and a prevention note."
       },
       {
@@ -90,7 +90,7 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "dev",
         trigger: "Pandora prioritises the improvement as reusable capability.",
-        action: "Development builds ingestion templates, data-quality framework changes or medallion design patterns.",
+        action: "The same data team builds ingestion templates, data-quality framework changes or medallion design patterns.",
         output: "A durable platform capability reused by future data products."
       }
     ]
@@ -110,19 +110,19 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "l1",
         trigger: "The alert needs operational ownership.",
-        action: "Ops L1 confirms lag growth, checks known errors and routes the case with topic and connector evidence.",
-        output: "A routed incident with the right Kafka context attached."
+        action: "The on-call integration engineer confirms lag growth, checks known errors and captures topic and connector evidence.",
+        output: "An owned incident with the right Kafka context attached."
       },
       {
         id: "l2",
         trigger: "The connector may be restorable through standard operations.",
-        action: "Ops L2 restarts the connector, validates offsets, rebalances consumers and replays messages where safe.",
+        action: "The same engineer restarts the connector, validates offsets, rebalances consumers and replays messages where safe.",
         output: "Flow restored, or a connector / schema / consumer defect isolated."
       },
       {
         id: "l3",
         trigger: "The issue is caused by connector code, schema compatibility or consumer handling.",
-        action: "Ops L3 patches connector configuration or code, fixes compatibility handling and validates replay.",
+        action: "The integration engineer patches connector configuration or code, fixes compatibility handling and validates replay.",
         output: "A production fix PR and recovered event flow."
       },
       {
@@ -134,7 +134,7 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "dev",
         trigger: "The repeated issue needs a broader engineering pattern.",
-        action: "Development creates event-contract standards, producer / consumer patterns or reusable connector templates.",
+        action: "The same integration team creates event-contract standards, producer / consumer patterns or reusable connector templates.",
         output: "A reusable integration capability that reduces future incidents."
       }
     ]
@@ -154,19 +154,19 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "l1",
         trigger: "The build failure needs classification and routing.",
-        action: "Ops L1 checks known-error patterns, confirms business urgency and notifies the release owner.",
-        output: "A routed release incident with known context and affected release window."
+        action: "The on-call DevOps engineer checks known-error patterns, confirms urgency and notifies the release owner.",
+        output: "An owned release incident with known context and affected release window."
       },
       {
         id: "l2",
         trigger: "The pipeline may be restorable through operational recovery.",
-        action: "Ops L2 repairs runner, cache, secret or environment configuration and retries the pipeline.",
-        output: "Release unblocked, or a workflow / policy defect escalated."
+        action: "The same engineer repairs runner, cache, secret or environment configuration and retries the pipeline.",
+        output: "Release unblocked, or a workflow / policy defect isolated."
       },
       {
         id: "l3",
         trigger: "The failed release is caused by workflow logic, shared action or policy-gate code.",
-        action: "Ops L3 patches the workflow, action or gate logic and proves the release path.",
+        action: "The DevOps engineer patches the workflow, action or gate logic and proves the release path.",
         output: "A fix PR, passing pipeline and updated release runbook."
       },
       {
@@ -178,7 +178,7 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "dev",
         trigger: "The improvement becomes part of the platform roadmap.",
-        action: "Development builds golden GitHub pipelines, shared actions, migration factory assets or standard policy gates.",
+        action: "The same DevOps team builds golden GitHub pipelines, shared actions, migration factory assets or standard policy gates.",
         output: "A reusable delivery platform capability for future releases."
       }
     ]
@@ -198,19 +198,19 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "l1",
         trigger: "The service issue needs first-line routing and impact classification.",
-        action: "Ops L1 confirms alert validity, checks dashboards and routes to the cloud / platform queue.",
+        action: "The on-call platform engineer confirms alert validity, checks dashboards and assesses the affected service.",
         output: "A classified incident with pod state, timestamps and impacted application."
       },
       {
         id: "l2",
         trigger: "The service may be restorable through standard platform operations.",
-        action: "Ops L2 rolls back, scales, restores config, checks secrets and validates access or quota.",
+        action: "The same engineer rolls back, scales, restores config, checks secrets and validates access or quota.",
         output: "Service restored, or a Helm / Terraform / platform defect identified."
       },
       {
         id: "l3",
         trigger: "The root cause is in IaC, Helm chart, certificate handling, quota or platform configuration.",
-        action: "Ops L3 patches Terraform, Helm or platform config and validates the deployment path.",
+        action: "The platform engineer patches Terraform, Helm or platform config and validates the deployment path.",
         output: "A production fix PR, restored service and updated platform runbook."
       },
       {
@@ -222,7 +222,7 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "dev",
         trigger: "The improvement is approved as a platform capability.",
-        action: "Development builds PAKS self-service patterns, golden IaC modules or platform engineering workflows.",
+        action: "The same platform team builds PAKS self-service patterns, golden IaC modules or platform engineering workflows.",
         output: "A standard capability consumed by future services and teams."
       }
     ]
@@ -242,19 +242,19 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "l1",
         trigger: "The alert storm needs severity confirmation and routing.",
-        action: "Ops L1 confirms severity, checks the service dashboard and routes to the right resolver group.",
+        action: "The on-call engineer confirms severity, checks the service dashboard and brings in the domain peer if needed.",
         output: "A correctly prioritised incident with the alert evidence attached."
       },
       {
         id: "l2",
         trigger: "The case needs correlation and runbook-guided restoration.",
-        action: "Ops L2 correlates logs, metrics and traces, drafts RCA notes and follows restore runbooks.",
+        action: "The same engineer correlates logs, metrics and traces, drafts RCA notes and follows restore runbooks.",
         output: "Service stabilised, or an instrumentation / SLO / reliability defect isolated."
       },
       {
         id: "l3",
         trigger: "The issue is caused by missing telemetry, incorrect alert logic or reliability defect.",
-        action: "Ops L3 fixes instrumentation, alert rules, SLO configuration or reliability code.",
+        action: "The domain engineer fixes instrumentation, alert rules, SLO configuration or reliability code.",
         output: "A fix PR, improved signal and updated RCA / runbook."
       },
       {
@@ -266,7 +266,7 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "dev",
         trigger: "The fix needs to become standard for new services.",
-        action: "Development builds observability-by-design standards, dashboards and resilience patterns.",
+        action: "The same engineering team builds observability-by-design standards, dashboards and resilience patterns.",
         output: "A reusable reliability standard embedded into future delivery."
       }
     ]
@@ -286,19 +286,19 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "l1",
         trigger: "The failed gate needs validation and release-risk routing.",
-        action: "Ops L1 confirms the failure is current, attaches test evidence and alerts the release owner.",
-        output: "A routed release-risk incident with the failing test context."
+        action: "The on-call engineer confirms the failure is current, attaches test evidence and alerts the release owner.",
+        output: "An owned release-risk incident with the failing test context."
       },
       {
         id: "l2",
         trigger: "The failure needs triage across test data, environment and API contract.",
-        action: "Ops L2 isolates whether the cause is data, environment, dependency, contract or product regression.",
-        output: "Release restored if operational, or a precise quality-engineering defect escalated."
+        action: "The same engineer isolates whether the cause is data, environment, dependency, contract or product regression, with QE support when needed.",
+        output: "Release restored if operational, or a precise quality-engineering defect isolated."
       },
       {
         id: "l3",
         trigger: "The defect is in test harness, contract validation, quality gate logic or automation.",
-        action: "Ops L3 patches the harness, gate or automation and validates the release signal.",
+        action: "The engineering team patches the harness, gate or automation and validates the release signal.",
         output: "A test / gate fix PR and a reliable pass-fail signal."
       },
       {
@@ -310,7 +310,7 @@ const opsCaseExamples: OpsCaseExample[] = [
       {
         id: "dev",
         trigger: "The quality improvement becomes a delivery-system capability.",
-        action: "Development builds contract-test frameworks, CI quality gates and automation standards.",
+        action: "The same engineering team builds contract-test frameworks, CI quality gates and automation standards.",
         output: "A reusable quality capability that raises release confidence."
       }
     ]
@@ -318,11 +318,11 @@ const opsCaseExamples: OpsCaseExample[] = [
 ];
 
 const opsCaseHandoffs = [
-  { label: "Signal → Ops L1", detail: "A real alert, ticket or monitoring breach needs ownership and evidence capture." },
-  { label: "Ops L1 → Ops L2", detail: "The issue is confirmed and needs diagnosis or runbook-based restoration." },
-  { label: "Ops L2 → Ops L3", detail: "Restore steps are not enough, or the root cause is code, config, IaC, schema, telemetry or test logic." },
-  { label: "Ops L3 → Improve & Evolve", detail: "The fix is repeated, high-toil or worth turning into automation or a reusable pattern." },
-  { label: "Improve & Evolve → Development", detail: "Pandora prioritises it as planned build work, platform capability, migration asset or product change." }
+  { label: "Signal → first response", detail: "The domain primary acknowledges the alert, confirms impact and captures evidence." },
+  { label: "First response → restore", detail: "The same engineer follows the runbook, with the domain secondary available for help." },
+  { label: "Restore → engineering fix", detail: "A defect in code, config, IaC, schema, telemetry or tests needs a controlled change." },
+  { label: "Fix → Improve & Evolve", detail: "Recurring toil or a repeated defect becomes a candidate in the shared backlog." },
+  { label: "Improve & Evolve → planned build", detail: "Pandora prioritises the change; the same engineering team delivers it alongside its run obligations." }
 ];
 
 type TeamCapacityBucket = "run" | "evolve" | "burst";
@@ -350,17 +350,17 @@ const rosterModes: Array<{ id: RosterMode; label: string; note: string }> = [
   {
     id: "business",
     label: "Business hours",
-    note: "Run support, backlog delivery and improvement work are handled by the active domain pods."
+    note: "The domain engineers deliver backlog work, respond to alerts and improve the platform during office hours."
   },
   {
     id: "after",
     label: "After hours",
-    note: "Primary and secondary on-call cover handle alerts; major incidents pull in the escalation layer."
+    note: "The same delivery engineers take primary and secondary on-call; major incidents pull in the engineering lead."
   },
   {
     id: "weekend",
     label: "Weekend",
-    note: "The same rota carries longer coverage windows, so rota pressure becomes the visible constraint."
+    note: "The same engineering rota covers longer weekend windows, with rest and backup planned into capacity."
   }
 ];
 
@@ -508,13 +508,13 @@ const defaultTeamCapacityRoles: TeamCapacityRole[] = [
   {
     id: "extra-run",
     workstream: "Optional",
-    role: "Extra L1 / incident command reserve",
+    role: "Extra incident command reserve",
     defaultFte: 0,
     run: 80,
     evolve: 10,
     burst: 10,
     onCall: false,
-    note: "Add if Pandora wants stronger 24x7 coordination beyond domain on-call."
+    note: "Add if major incident coordination needs a larger leadership reserve beyond domain engineer on-call."
   },
   {
     id: "extra-evolve",
@@ -617,8 +617,8 @@ function TeamOperatingModel() {
           <span className="team-model-kicker">Customer ask operating model</span>
           <h3>{formatFte(steadyFte)} FTE steady team with 24x7 on-call, plus optional capacity adders</h3>
           <p>
-            The same team runs, improves and supports the platforms. On-call is a rota, not shift staffing; when incidents rise,
-            planned delivery capacity is protected by explicit capacity choices.
+            DevOps, Data and Integration engineers build and support their platforms. The same engineers rotate as primary and
+            secondary after hours and on weekends; incident effort and recovery time are counted against planned delivery capacity.
           </p>
         </div>
         <button
@@ -639,9 +639,9 @@ function TeamOperatingModel() {
           <small>{formatFte(steadyFte)} steady + {formatFte(addedFte)} optional</small>
         </div>
         <div>
-          <span>Primary on-call pool</span>
+          <span>Engineers in on-call pools</span>
           <strong>{formatFte(onCallFte)} FTE</strong>
-          <small>DevOps, Data and Integration engineers on rota</small>
+          <small>same DevOps, Data and Integration delivery engineers</small>
         </div>
         <div>
           <span>Leadership layer</span>
@@ -668,7 +668,7 @@ function TeamOperatingModel() {
                 <div className={`team-workstream ${workstream.toLowerCase()}`} key={workstream}>
                   <span>{workstream}</span>
                   <strong>{formatFte(streamFte)} FTE</strong>
-                  <small>{streamOnCall > 0 ? `${formatFte(streamOnCall)} FTE on-call rota` : "governance / coordination"}</small>
+                  <small>{streamOnCall > 0 ? `${formatFte(streamOnCall)} engineers rotate on-call` : "governance / coordination"}</small>
                   <ul>
                     {rows.map((role) => (
                       <li key={role.id}>
@@ -694,8 +694,8 @@ function TeamOperatingModel() {
             </div>
           ))}
           <p>
-            Capacity is intentionally split: base support carries on-call and BAU, Improve & Evolve reduces recurring toil,
-            and burst capacity absorbs planned spikes without pretending the same hour can do everything.
+            These are allocations of the same engineers' time, not separate support and development teams. On-call, incident
+            recovery, planned improvements and burst work cannot consume the same hour twice.
           </p>
         </div>
       </div>
@@ -704,10 +704,10 @@ function TeamOperatingModel() {
         <div className="team-roster-head">
           <div>
             <span className="team-model-kicker">24x7 roster model</span>
-            <h4>Domain on-call rota over the business-hours team</h4>
+            <h4>The delivery engineers also take the night and weekend rota</h4>
             <p>
-              This is not a permanent night-shift model. DevOps, Data and Integration each carry primary / secondary
-              on-call, with a named escalation layer for Sev1 / Sev2 and optional SMEs when the risk profile changes.
+              There is no separate Ops L1 or night-shift team. Each domain rotates its own engineers through primary and
+              secondary on-call, including weekends, with an engineering lead for Sev1 / Sev2 escalation.
             </p>
           </div>
           <div className="team-roster-actions">
@@ -738,7 +738,7 @@ function TeamOperatingModel() {
         </div>
 
         <div className="team-roster-layers" aria-label="Roster layers">
-          <span><b>1</b> Business-hours pod</span>
+          <span><b>1</b> Same engineering pod</span>
           <i />
           <span><b>2</b> Domain primary</span>
           <i />
@@ -772,11 +772,11 @@ function TeamOperatingModel() {
                 <dl>
                   <div>
                     <dt>Primary</dt>
-                    <dd>{rosterMode === "business" ? "active domain pod" : `1 engineer; rota depth ${poolDepth}-person pool`}</dd>
+                    <dd>{rosterMode === "business" ? "active domain engineers" : `1 delivery engineer; ${poolDepth}-person rota pool`}</dd>
                   </div>
                   <div>
                     <dt>Secondary</dt>
-                    <dd>{rosterMode === "business" ? "lead / peer review" : "backup engineer from same domain"}</dd>
+                    <dd>{rosterMode === "business" ? "lead / peer review" : "another delivery engineer in the same domain"}</dd>
                   </div>
                   <div>
                     <dt>Scope</dt>
@@ -860,8 +860,9 @@ function TeamOperatingModel() {
             </div>
 
             <p className="team-rota-foot">
-              Weekend cover uses the same primary / secondary model, but with longer contact windows. If incident volume
-              proves high, the capacity assumptions panel can add domain engineers, incident command reserve or burst SMEs.
+              Weekend cover uses the same engineering pool and primary / secondary pattern, with longer contact windows.
+              Overnight pages need next-day recovery time and a named backup. If incident volume rises, capacity assumptions
+              must be adjusted before committing the same engineers to more planned delivery.
             </p>
           </div>
         ) : null}
@@ -974,7 +975,7 @@ function OrgDiagram() {
   const trackX = [180, 520, 860];
   return (
     <Reveal>
-      <svg className="process-svg" viewBox="0 0 1040 470" role="img" aria-label="Delivery org: Pandora leadership pairs 1:1 with one accountable Sapient Engagement Principal (a senior engineering leader). No one person is the deep expert in everything — each track (Data & Integration, DevOps & Cloud, AgentOps) carries its own subject-matter expert, the Principal orchestrates through them, and draws on Sapient's senior thought leadership and CoE. Pandora also keeps a direct, transparent dotted line to every track lead.">
+      <svg className="process-svg" viewBox="0 0 1040 470" role="img" aria-label="Delivery org: Pandora leadership pairs with one accountable Sapient engineering leader. Each domain has engineers who both build and take on-call, with a subject-matter expert for depth. Pandora keeps direct access to every track lead.">
         <defs>
           <marker id="arrow-org" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -1022,10 +1023,10 @@ function OrgDiagram() {
             <rect x={trackX[i] - 138} y="276" width="276" height="30" rx="6" fill="#FBF3E3" stroke="#DDBB8C" />
             <text x={trackX[i] - 126} y="295" className="svg-small svg-bold" fill="#A3671F">{track.sme}</text>
             <rect x={trackX[i] - 138} y="314" width="276" height="34" rx="6" fill="#EFF3EA" stroke="#BBD0AF" />
-            <text x={trackX[i] - 126} y="328" className="svg-small svg-bold" fill="#55763F">DEV</text>
+            <text x={trackX[i] - 126} y="328" className="svg-small svg-bold" fill="#55763F">BUILD + IMPROVE</text>
             <text x={trackX[i] - 126} y="341" className="svg-small">{track.dev}</text>
             <rect x={trackX[i] - 138} y="354" width="276" height="34" rx="6" fill="#F8F1E6" stroke="#DDBB8C" />
-            <text x={trackX[i] - 126} y="368" className="svg-small svg-bold" fill="#A3671F">OPS</text>
+            <text x={trackX[i] - 126} y="368" className="svg-small svg-bold" fill="#A3671F">RUN + ON-CALL</text>
             <text x={trackX[i] - 126} y="381" className="svg-small">{track.ops}</text>
           </g>
         ))}
@@ -1038,17 +1039,17 @@ function OrgDiagram() {
           <text x="610" y="426" className="svg-small" fill="#35597B">Direct access — Pandora sees every lead (encouraged)</text>
         </g>
         <text x="520" y="446" textAnchor="middle" className="svg-small svg-bold" fill="#35597B">
-          Distributed across Gurgaon · Bucharest · Copenhagen — one team, one backlog
+          Same engineers build and run, including the night and weekend rota — one team, one backlog
         </text>
       </svg>
     </Reveal>
   );
 }
 
-// ── 13 · One team, sequenced — dev/ops convergence ───────────────────────
+// ── 13 · One engineering team, build and run ──────────────────────────────
 export function ConvergenceSection() {
   return (
-    <Section id="team-converge" num="13" title="Two waves in transition, one team at the destination">
+    <Section id="team-converge" num="13" title="One engineering team builds and runs from day one">
       <p className="sec-sub">{convergeIntro}</p>
       <ConvergenceDiagram />
       <div className="conv-mechs">
@@ -1062,50 +1063,38 @@ export function ConvergenceSection() {
           </Reveal>
         ))}
       </div>
-      <PullQuote quote={convergeClincher} source="Why the agentic dial resolves the dev/ops question" />
+      <PullQuote quote={convergeClincher} source="How the shared engineering rota works" />
     </Section>
   );
 }
 
 function ConvergenceDiagram() {
-  const horizons4 = [
-    { x: 200, date: "Jan 2027" },
-    { x: 420, date: "Apr 2027" },
-    { x: 640, date: "Oct 2027" },
-    { x: 860, date: "Oct 2028" }
-  ];
   return (
     <Reveal>
-      <svg className="process-svg" viewBox="0 0 1040 280" role="img" aria-label="Development and operations start as two streams and converge into one build-and-run team by Oct 2028, enabled by agentic ops removing operational cognitive load">
-        <rect x="10" y="10" width="1020" height="260" rx="8" fill="#FBFAF8" stroke="#E5E2DB" />
-        <text x="34" y="36" className="svg-label">DEVELOPMENT AND OPERATIONS CONVERGE — ONE BUILD-AND-RUN TEAM</text>
-
-        {horizons4.map((h) => (
-          <line key={h.date} x1={h.x} y1="54" x2={h.x} y2="236" stroke="#E5E2DB" strokeDasharray="3 4" />
-        ))}
-
-        <rect x="34" y="64" width="150" height="38" rx="7" fill="#EFF3EA" stroke="#BBD0AF" />
-        <text x="109" y="87" textAnchor="middle" className="svg-title" fill="#55763F">Development</text>
-        <rect x="34" y="196" width="150" height="38" rx="7" fill="#F8F1E6" stroke="#DDBB8C" />
-        <text x="109" y="219" textAnchor="middle" className="svg-title" fill="#A3671F">Operations · 24×7</text>
-
-        <path d="M184 83 C 420 92 640 120 852 138" fill="none" stroke="#55763F" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
-        <path d="M184 215 C 420 206 640 158 852 138" fill="none" stroke="#A3671F" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
-        <line x1="852" y1="138" x2="1006" y2="138" stroke="#35597B" strokeWidth="7" strokeLinecap="round" />
-
-        <rect x="300" y="116" width="392" height="46" rx="8" fill="#E9F3EC" stroke="#2E7D4F" />
-        <text x="496" y="134" textAnchor="middle" className="svg-small svg-bold" fill="#2E7D4F">Agentic ops (Ops L2/L3) removes the operational cognitive load —</text>
-        <text x="496" y="150" textAnchor="middle" className="svg-small" fill="#3a5a44">so build-minded engineers can own what they run.</text>
-
-        <rect x="836" y="104" width="180" height="68" rx="8" fill="#EDF1F6" stroke="#B6C5D5" />
-        <text x="926" y="126" textAnchor="middle" className="svg-title" fill="#35597B">One team</text>
-        <text x="926" y="144" textAnchor="middle" className="svg-small">build it · run it</text>
-        <text x="926" y="158" textAnchor="middle" className="svg-small">agent-supervised</text>
-
-        {horizons4.map((h) => (
-          <text key={h.date} x={h.x} y="256" textAnchor="middle" className="svg-small svg-bold">{h.date}</text>
-        ))}
-      </svg>
+      <div className="team-build-run-diagram" role="img" aria-label="The same DevOps, Data and Integration engineers deliver planned work, operate platforms during business hours, and rotate through after-hours and weekend primary and secondary on-call. Incidents feed one improvement backlog.">
+        <div className="team-build-run-core">
+          <span>From day one</span>
+          <strong>One domain engineering team</strong>
+          <small>DevOps · Data · Integration</small>
+        </div>
+        <div className="team-build-run-modes">
+          <div>
+            <span>Office hours</span>
+            <strong>Build + run + improve</strong>
+            <small>Backlog delivery and production response</small>
+          </div>
+          <div>
+            <span>Nights + weekends</span>
+            <strong>Same engineers on call</strong>
+            <small>Primary · secondary · lead escalation</small>
+          </div>
+        </div>
+        <div className="team-build-run-outcome">
+          <span>One backlog</span>
+          <strong>Restore → fix → prevent</strong>
+          <small>Incident evidence informs the next planned change.</small>
+        </div>
+      </div>
     </Reveal>
   );
 }
@@ -1124,10 +1113,10 @@ function SkillCaseShowcase() {
       <div className="skill-case-head">
         <div>
           <span className="skill-case-kicker">Operating case simulator</span>
-          <h3>When does a case move from Ops L1 to Ops L2 to Ops L3 to Development?</h3>
+          <h3>How does the same engineer take a case from alert to lasting fix?</h3>
           <p>
-            Choose a real platform case, then move it through the operating tiers. The active card shows who works the case,
-            why it moves, and what output proves the handoff is ready.
+            Choose a platform case, then follow its work from first response to planned build. The domain engineer stays
+            accountable, calling a peer or specialist when the incident needs one.
           </p>
         </div>
         <div className="skill-case-controls" aria-label="Move the selected operating case">
@@ -1203,7 +1192,7 @@ function SkillCaseShowcase() {
         </div>
 
         <div className="skill-case-rules">
-          <h4>Why the case moves</h4>
+          <h4>When the work changes</h4>
           <ol>
             {opsCaseHandoffs.map((rule, index) => {
               const reached = activeStage > index;
@@ -1229,8 +1218,7 @@ export function TeamSkillsSection() {
       <p className="sec-sub">{skillsNote}</p>
       <div className="skills-ladder">
         <div className="sl-shared-band">
-          <span />
-          <strong>Ops L3, Improve & Evolve and Development share one senior-engineering pool — fix → improve → build, same people</strong>
+          <strong>One engineering pool across every column: first response → restore → fix → improve → build. Nights and weekends use the same rota.</strong>
         </div>
         <div className="sl-head">
           <span>Engineering skill</span>
@@ -1244,11 +1232,11 @@ export function TeamSkillsSection() {
         {skillRows.map((row) => (
           <div className="sl-row" key={row.skill}>
             <span className="sl-skill">{row.skill}</span>
-            <span data-tier="Ops L1 · Monitor & route">{row.t1}</span>
-            <span data-tier="Ops L2 · Diagnose & restore">{row.t2}</span>
-            <span className="sl-shared" data-tier="Ops L3 · Engineer fix">{row.t3}</span>
+            <span data-tier="First response · assess & capture">{row.t1}</span>
+            <span data-tier="Restore · diagnose & recover">{row.t2}</span>
+            <span className="sl-shared" data-tier="Engineer fix · code / config / IaC">{row.t3}</span>
             <span className="sl-improve" data-tier="Improve & Evolve · Lane 2 backlog">{row.improve}</span>
-            <span className="sl-shared" data-tier="Development · Build & change">{row.dev}</span>
+            <span className="sl-shared" data-tier="Development · planned build">{row.dev}</span>
           </div>
         ))}
       </div>
@@ -1261,15 +1249,13 @@ export function TeamSkillsSection() {
         </div>
         <div className="l3-flow" aria-label={skillBridge.flow.join(" to ")}>
           {skillBridge.flow.map((step, index) => {
-            const isSharedPool = step === "Ops L3" || step === "Development";
+            const isSharedPool = ["First response", "Restore", "Engineer fix", "Planned build"].includes(step);
             const isImprove = step === "Improve & Evolve";
             return (
               <div className={`l3-node${isSharedPool ? " shared" : ""}${isImprove ? " improve" : ""}`} key={step}>
                 <span>{step}</span>
                 {index < skillBridge.flow.length - 1 && (
-                  <i className={step === "Ops L3" ? "swap" : ""} aria-hidden="true">
-                    {step === "Ops L3" ? <ArrowLeftRight size={15} /> : "→"}
-                  </i>
+                  <i aria-hidden="true">→</i>
                 )}
               </div>
             );

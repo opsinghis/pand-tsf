@@ -48,7 +48,7 @@ export const navChapters = [
   { id: "team", label: "The Team", sections: [
     { id: "team-shape", label: "One team, three locations", num: "11" },
     { id: "team-leader", label: "One leader · Pandora owns decisions", num: "12" },
-    { id: "team-converge", label: "Why two teams? Dev & ops converge", num: "13" },
+    { id: "team-converge", label: "One team builds and runs", num: "13" },
     { id: "team-skills", label: "Skills & knowledge transfer", num: "14" },
     { id: "team-capacity", label: "Capacity that compounds", num: "15" }
   ]},
@@ -890,7 +890,7 @@ export const footerLines = [
 
 // ── The Team — delivery model chapter ────────────────────────────────────
 export const teamIntro =
-  "The engine behind the plan: one team across three locations under a single accountable Sapient Engagement Principal — a senior engineering leader — with Pandora holding architecture, standards and every gate, and effective capacity that compounds each horizon rather than a rise in headcount.";
+  "One engineering team across three locations builds, runs and improves the platforms. The same DevOps, Data and Integration engineers take primary and secondary on-call outside office hours, including weekends. A Sapient engineering leader is accountable; Pandora retains architecture, standards and every gate.";
 
 export interface TeamLocation {
   id: string;
@@ -904,7 +904,7 @@ export interface TeamLocation {
 export const teamLocations: TeamLocation[] = [
   { id: "copenhagen", city: "Copenhagen", kind: "Onsite · Pandora HQ", role: "Leadership, liaison and trust — embedded with your leaders", roles: ["Sapient Engagement Principal", "Solution / Engineering lead", "Rotating SMEs, 1–2× a year"], lane1: 65 },
   { id: "bucharest", city: "Bucharest", kind: "Nearshore · Romania", role: "Timezone overlap with Copenhagen — senior engineering and fast feedback", roles: ["Senior / lead engineers", "QE / SDET", "Delivery coordination"], lane1: 80 },
-  { id: "gurgaon", city: "Gurgaon", kind: "Offshore · India", role: "Engineering and 24/7 operations scale — the delivery backbone", roles: ["Data · Kafka · DevOps · Cloud engineers", "Development + Operations rotation", "AgentOps skill authoring"], lane1: 88 }
+  { id: "gurgaon", city: "Gurgaon", kind: "Offshore · India", role: "Engineering delivery and on-call rota — the delivery backbone", roles: ["Data · Kafka · DevOps · Cloud engineers", "Same engineers build and take on-call", "AgentOps skill authoring"], lane1: 88 }
 ];
 
 export interface TeamTrack {
@@ -922,7 +922,7 @@ export const teamTracks: TeamTrack[] = [
 ];
 
 export const teamLeaderNote =
-  "One Sapient Engagement Principal — our senior engineering leader on the account — is accountable across all three tracks and both lanes: SLAs, throughput, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager. No single person is expected to be the deep expert in everything — so each track carries its own subject-matter expert across DevOps, integration, operations and data; the Principal orchestrates through them, and behind them stands Sapient's senior thought leadership and CoE, specialists on call. That single accountable line never becomes a filter: Pandora keeps a standing, transparent line to every track lead in Data, DevOps and Ops — and we actively encourage you to use it.";
+  "One Sapient Engagement Principal — our senior engineering leader on the account — is accountable across all tracks and both lanes: SLAs, throughput, on-call health, capability transfer and the improvement backlog roll up to one person, pairing directly with your Delivery Lead and Engineering Manager. Each DevOps, Data and Integration track carries its own engineering depth and a primary/secondary after-hours rota; there is no separate L1 team. The Principal can draw on Sapient specialists when needed. Pandora keeps a direct line to every track lead.";
 
 export interface ControlBand {
   area: string;
@@ -954,7 +954,7 @@ export interface SkillRow {
 export const skillRows: SkillRow[] = [
   {
     skill: "Data engineering",
-    t1: "Pipeline alerts, failed-run routing, first checks",
+    t1: "Pipeline alerts, failed-run validation, first checks",
     t2: "Rerun, quarantine, DQ triage, lineage lookup",
     t3: "Spark / Delta fix PR, model and job optimisation",
     improve: "Convert recurring fixes into auto-DQ triage, self-healing reruns and templates",
@@ -970,7 +970,7 @@ export const skillRows: SkillRow[] = [
   },
   {
     skill: "DevOps / CI-CD",
-    t1: "Failed-build routing and known-error checks",
+    t1: "Failed-build validation and known-error checks",
     t2: "Runner, secret and pipeline recovery",
     t3: "Workflow / action refactor PR, policy-gate fix",
     improve: "Convert flaky builds into auto-remediation and policy-as-code improvements",
@@ -986,7 +986,7 @@ export const skillRows: SkillRow[] = [
   },
   {
     skill: "SRE / Observability",
-    t1: "Alert intake, severity routing, dashboard checks",
+    t1: "Alert intake, severity assessment, dashboard checks",
     t2: "Correlation, RCA draft, runbook-guided restore",
     t3: "Instrumentation, SLO or reliability fix PR",
     improve: "Convert operational noise into auto-RCA, alert reduction and SLO guards",
@@ -1003,24 +1003,24 @@ export const skillRows: SkillRow[] = [
 ];
 
 export const skillsNote =
-  "Read the matrix left to right: Ops L1 monitors, routes and captures patterns; Ops L2 diagnoses and restores; Ops L3 engineers the fix. Recurring L3 fixes then move into the Lane 2 Improve & Evolve backlog and the same senior engineers carry them into development, so production learning becomes permanent code, IaC, tests and runbooks.";
+  "Read the matrix as work modes, not staffed support tiers. The same domain engineers take the alert, perform first checks and restoration, engineer the fix, and build the lasting improvement. They rotate as primary and secondary on-call outside office hours and on weekends; there is no separate Ops L1 team.";
 
 export const skillTierHeaders = [
-  { label: "Ops L1", detail: "Monitor, log & route" },
-  { label: "Ops L2", detail: "Diagnose & restore" },
-  { label: "Ops L3", detail: "Fix in code / IaC" },
-  { label: "Improve & Evolve", detail: "Toil into backlog" },
-  { label: "Development", detail: "Build & change" }
+  { label: "First response", detail: "Alert, log & assess" },
+  { label: "Restore", detail: "Diagnose & recover" },
+  { label: "Engineer fix", detail: "Code, config or IaC" },
+  { label: "Improve & Evolve", detail: "Turn toil into backlog" },
+  { label: "Development", detail: "Build lasting capability" }
 ] as const;
 
 export const skillBacklogNote =
-  "Improvement is fed by every tier, not only L3: L1 records repeat alerts and handoffs, L2 records repeated restore steps, and L3 records root-cause fixes. The Improve & Evolve backlog is where day-to-day operations becomes the improvement engine.";
+  "Each phase feeds improvement: first response records noisy or repeated alerts, restoration exposes repeated manual steps, and engineering fixes reveal root causes. The same engineers turn that evidence into an Improve & Evolve backlog, then deliver the approved changes.";
 
 export const skillBridge = {
-  title: "L3, Improve & Evolve and Development are one pool",
+  title: "One engineer can carry a case from alert to durable change",
   detail:
-    "The same senior engineering pool works L3 production fixes, Lane 2 improvement items and development backlog items. Incidents become pull requests, reusable recipes, tests, runbooks and prevention work.",
-  flow: ["Incident / request", "Ops L1", "Ops L2", "Ops L3", "Improve & Evolve", "Development", "Permanent fix / reusable pattern"]
+    "The primary on-call engineer owns the initial response, calls a domain peer when needed, restores service and follows the defect into code. Planned improvement is prioritised with Pandora; it is not an automatic extra assignment after an overnight incident.",
+  flow: ["Alert / request", "First response", "Restore", "Engineer fix", "Improve & Evolve", "Planned build", "Stable service / reusable pattern"]
 };
 
 export interface KtStep {
@@ -1029,15 +1029,15 @@ export interface KtStep {
 }
 
 export const ktLoop: KtStep[] = [
-  { step: "Acquire", detail: "Parallel shadow across L1, L2, L3 and development; access, tooling and service maps" },
-  { step: "Document", detail: "Tiered runbooks, fix patterns, ADRs, architecture notes and one knowledge wiki" },
-  { step: "Play back", detail: "Reverse-shadow: we replay incidents, fixes and backlog conversion to Pandora SMEs" },
-  { step: "Certify", detail: "Role-based clinics and readiness checks for operate, restore, fix and build" },
-  { step: "Own", detail: "Pandora can operate, improve and extend anything delivered — the acceptance bar" }
+  { step: "Acquire", detail: "Shadow the full engineer journey: alert, restore, code fix and change; include night and weekend scenarios" },
+  { step: "Document", detail: "Runbooks, escalation paths, fix patterns, architecture notes and one shared knowledge base" },
+  { step: "Play back", detail: "Reverse-shadow a weekday incident and an after-hours page with Pandora SMEs" },
+  { step: "Certify", detail: "Check each engineer can acknowledge, restore or escalate, hand over, and safely change the service" },
+  { step: "Own", detail: "Named primary and secondary coverage, approved rota, and a service Pandora can operate and extend" }
 ];
 
 export const ktNote =
-  "Knowledge transfer is role-based and designed into the work: L1 learns the signals, L2 learns restoration, L3 learns fix patterns, and development learns how operational evidence changes the backlog. The same loop runs across Gurgaon, Bucharest and Copenhagen from one knowledge base, and doubles as Gate-0 AI-fluency readiness.";
+  "Knowledge transfer follows the same engineers from alert to code. Before joining the rota, each engineer demonstrates access, alert acknowledgement, runbook restoration, escalation to a peer, handover after a night or weekend page, and safe change. Primary and secondary owners share the same evidence across Gurgaon, Bucharest and Copenhagen.";
 
 export interface CapacityDriver {
   at: string;
@@ -1066,9 +1066,9 @@ export const teamAsks: string[] = [
 export const teamClose =
   "One accountable leader, one team across three locations, Pandora decision rights at every gate, capacity compounding, and ownership transferring — the delivery engine that makes the gentle path credible.";
 
-// ── The Team · dev/ops convergence (answers "why two teams?") ─────────────
+// ── The Team · one build-and-run engineering model ───────────────────────
 export const convergeIntro =
-  "Not two teams — one team, sequenced. The transition stabilises the running service (the support wave) before it takes on change (the dev wave); the destination is a single team that builds and runs. What makes that possible is the agentic dial itself: Level 2/3 operations removes the operational cognitive load that forced development and operations apart, so a build-minded engineer can own what they run without being a full-time ops specialist.";
+  "The same engineers build, run and improve each platform from the start. Transition makes them ready for both production ownership and planned delivery; after-hours and weekend support is a primary/secondary rota over that same team. Automation can reduce repeated pages over time, but is not a prerequisite for this operating model.";
 
 export interface ConvergeMechanism {
   title: string;
@@ -1076,11 +1076,11 @@ export interface ConvergeMechanism {
 }
 
 export const convergeMechanisms: ConvergeMechanism[] = [
-  { title: "A layered core, not uniform heroes", detail: "An experienced SRE/DevOps backbone holds 24×7 and the hard incidents; development engineers take on-call for what they build, with agentic ops carrying the toil." },
-  { title: "Rotation & pairing", detail: "Engineers rotate between development and operations, building the build-and-run mindset over the journey rather than hiring for it fully formed." },
-  { title: "Follow-the-sun — 24×7 by design", detail: "Copenhagen, Bucharest and Gurgaon cover the clock, so no individual carries an unsustainable pager — and dialled agentic ops cuts the night wake-ups further." },
-  { title: "Select for mindset, enable the rest", detail: "We screen for ownership and curiosity, then close skills through Gate-0 enablement — the same clinics that build capability build the mindset." }
+  { title: "One accountable domain team", detail: "DevOps, Data and Integration engineers own both the backlog and production service in their domain. There is no separately staffed Ops L1 queue." },
+  { title: "Primary and secondary rota", detail: "The same engineers rotate through after-hours and weekend cover. The secondary takes over when the primary is unavailable or needs specialist help." },
+  { title: "Protect delivery capacity", detail: "Incident time, recovery after a night page and planned leave are visible in capacity planning. Major incidents pull in the engineering lead and domain peers." },
+  { title: "Learn from every page", detail: "The engineer who restores service captures the fix, updates the runbook and proposes prevention work for the shared backlog." }
 ];
 
 export const convergeClincher =
-  "So the two-wave transition is the on-ramp to the one team the agentic capability makes possible — dialling up agentic ops is what collapses development and operations into a single agent-supervising team, without burning out the rare full-stack engineer.";
+  "Build and run are one responsibility from day one. Better observability and automation make the rota lighter over time; staffing and delivery plans still account for real on-call effort.";

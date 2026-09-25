@@ -7,10 +7,8 @@ import { AskSectionAlt, CautionSection, FooterAlt, HorizonsSection, PandoraSecti
 import { ChangesSection, FoundationsSection, LandscapeSection, ScopeOverviewSection, TwoLaneSection } from "./components/AltModel";
 import { AsIsLanesSection, DayOneSection, GovernanceSection, TransitionCoverageSection } from "./components/AltRun";
 import { ConvergenceSection, TeamCapacitySection, TeamLeaderSection, TeamShapeSection, TeamSkillsSection } from "./components/AltTeam";
-import { CommercialsSection } from "./components/AltCommercials";
 import { FaqSection } from "./components/AltFaq";
 import { BoothVisitSite } from "./components/BoothVisitSite";
-import { ProtectedCommercialsSection } from "./components/CommercialAccess";
 import { BackToPresentationLink, PresentationSite } from "./components/PresentationSite";
 
 type SpecialRoute = "presentation" | "booth" | "main";
@@ -78,9 +76,6 @@ export default function App() {
             <ConvergenceSection />
             <TeamSkillsSection />
             <TeamCapacitySection />
-            <ProtectedCommercialsSection>
-              <CommercialsSection />
-            </ProtectedCommercialsSection>
             <DialSection />
             <WalkthroughSection />
             <GoalsSection />

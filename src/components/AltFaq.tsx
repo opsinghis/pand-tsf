@@ -49,7 +49,7 @@ const faqs: FaqItem[] = [
       { label: "Transition coverage", href: "#transition-coverage" },
       { label: "Landscape map", href: "#landscape" },
       { label: "Governance", href: "#governance" },
-      { label: "Commercials", href: "#commercials" }
+      { label: "Team capacity", href: "#team-capacity" }
     ]
   },
   {
@@ -63,7 +63,7 @@ const faqs: FaqItem[] = [
     links: [
       { label: "How we start", href: "#start" },
       { label: "Transition coverage", href: "#transition-coverage" },
-      { label: "Commercial model", href: "#commercials" }
+      { label: "Transition coverage", href: "#transition-coverage" }
     ]
   },
   {
@@ -77,7 +77,7 @@ const faqs: FaqItem[] = [
     links: [
       { label: "Skills & KT", href: "#team-skills" },
       { label: "Capacity that compounds", href: "#team-capacity" },
-      { label: "Team convergence", href: "#team-converge" }
+      { label: "Build-and-run team", href: "#team-converge" }
     ]
   },
   {
@@ -105,7 +105,7 @@ const faqs: FaqItem[] = [
     links: [
       { label: "Team capacity", href: "#team-capacity" },
       { label: "Skills & KT", href: "#team-skills" },
-      { label: "Commercials", href: "#commercials" }
+      { label: "Team capacity", href: "#team-capacity" }
     ]
   },
   {
@@ -113,12 +113,12 @@ const faqs: FaqItem[] = [
     category: "Capability",
     question: "Do you have enough people and capability across the scope?",
     answer: [
-      "The answer should not be a pile of CVs. We show a role-based capability model across Ops L1, Ops L2, Ops L3, Improve & Evolve, development interface and burst capacity, mapped to DevOps, Data, Integration and Legacy.",
-      "The customer ask calculator in Commercials lets us show the additional named capacity request separately from the steady run base, including DevOps, Databricks/Power BI, Kafka/Kong and BizTalk."
+      "We show one domain engineering team across DevOps, Data and Integration. The same engineers handle first response, restoration, code fixes, planned development and improvement; they rotate through after-hours and weekend on-call. There is no separate Ops L1 layer.",
+      "The team capacity model shows the requested roles and the available run, improve and specialist coverage across DevOps, Databricks/Power BI, Kafka/Kong and BizTalk."
     ],
     links: [
       { label: "Skills & KT", href: "#team-skills" },
-      { label: "Staffing commercial model", href: "#commercials" },
+      { label: "Team capacity", href: "#team-capacity" },
       { label: "Scope of work", href: "#scope" },
       { label: "Your goals", href: "#goals" }
     ]
@@ -133,7 +133,7 @@ const faqs: FaqItem[] = [
     ],
     links: [
       { label: "One team, three locations", href: "#team-shape" },
-      { label: "Commercial model", href: "#commercials" },
+      { label: "Team and location model", href: "#team-shape" },
       { label: "Governance", href: "#governance" }
     ]
   },
@@ -146,7 +146,7 @@ const faqs: FaqItem[] = [
       "Our commercial response is total cost of service: location blend, editable rate card, term discount, volume discount, productivity dividend, engineering credit bank, burst-capacity model and a declining run-cost curve as automation removes repeated work."
     ],
     links: [
-      { label: "Commercial model", href: "#commercials" },
+      { label: "Team capacity", href: "#team-capacity" },
       { label: "Cost of caution", href: "#caution" },
       { label: "Capacity that compounds", href: "#team-capacity" }
     ]

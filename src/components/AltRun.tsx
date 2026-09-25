@@ -38,8 +38,8 @@ import { PullQuote, Reveal, Section } from "./primitives";
 const coverageStages = [
   { id: "inventory", window: "Weeks 0-2", label: "Inventory", short: "Access + map", hue: "--tech", Icon: SearchCheck },
   { id: "probe", window: "Weeks 1-6", label: "Probe", short: "Runtime proof", hue: "--ops", Icon: Gauge },
-  { id: "support", window: "By day 60", label: "Support gate", short: "L1/L2 ready", hue: "--proof", Icon: ShieldCheck },
-  { id: "dev", window: "Days 60-120", label: "Dev gate", short: "Fix route", hue: "--gov", Icon: GitBranch },
+  { id: "support", window: "By day 60", label: "Run gate", short: "Engineer rota ready", hue: "--proof", Icon: ShieldCheck },
+  { id: "dev", window: "Days 60-120", label: "Fix gate", short: "Code route proven", hue: "--gov", Icon: GitBranch },
   { id: "close", window: "Months 4-6", label: "Close gaps", short: "Burn down", hue: "--accent", Icon: CheckCircle2 }
 ] as const;
 
@@ -84,8 +84,8 @@ const transitionCases: CoverageCase[] = [
     handoverPercent: 42,
     coveredPercent: 86,
     gap: "Topic owner missing, replay authority unclear, connector dependency undocumented.",
-    owner: "Sapient L2/L3 with Pandora Integration owner",
-    control: "Replay rehearsal, schema contract capture, connector restart path, named L2/L3 owner and two-week hypercare.",
+    owner: "Sapient integration engineers on call with Pandora Integration owner",
+    control: "Replay rehearsal, schema contract capture, connector restart path, named primary/secondary engineers and two-week hypercare.",
     missing: ["topic owner", "replay rule", "connector dependency"],
     evidence: ["Schema Registry", "consumer lag", "connector config", "producer repos"],
     steps: [
@@ -103,13 +103,13 @@ const transitionCases: CoverageCase[] = [
       },
       {
         id: "support",
-        action: "Move to L1/L2 support with named risk mitigations.",
+        action: "Move to the integration engineer rota with named risk mitigations.",
         evidence: "Runbook, alert route, replay approval and escalation path are signed off.",
         confidence: "The flow can transition, but not blindly."
       },
       {
         id: "dev",
-        action: "Convert the residual risk into L3/dev backlog.",
+        action: "Convert the residual risk into the same engineering team's fix backlog.",
         evidence: "Schema-contract gaps and replay automation are raised as engineering work.",
         confidence: "The gap becomes a visible fix path, not a hidden support debt."
       },
@@ -132,7 +132,7 @@ const transitionCases: CoverageCase[] = [
     handoverPercent: 30,
     coveredPercent: 68,
     gap: "Backfill steps absent, data owner unclear, downstream table impact not documented.",
-    owner: "Pandora data owner plus Sapient Data L2/L3",
+    owner: "Pandora data owner plus Sapient data engineers on call",
     control: "Do not count it as fully transitioned until lineage, backfill and DQ evidence pass.",
     missing: ["lineage", "backfill steps", "DQ rationale"],
     evidence: ["Databricks jobs", "Delta history", "OpenMetadata", "failed-run tickets"],
@@ -180,7 +180,7 @@ const transitionCases: CoverageCase[] = [
     handoverPercent: 78,
     coveredPercent: 94,
     gap: "Runner dependency and secret rotation notes were incomplete, but release history is strong.",
-    owner: "Sapient DevOps L2/L3 with Pandora platform lead",
+    owner: "Sapient DevOps engineers on call with Pandora platform lead",
     control: "Dry-run release, runner baseline, secret test and rollback rehearsal before cutover.",
     missing: ["runner baseline", "secret rotation", "rollback note"],
     evidence: ["GitHub runs", "runner config", "Key Vault", "repo permissions"],
@@ -200,7 +200,7 @@ const transitionCases: CoverageCase[] = [
       {
         id: "support",
         action: "Accept into support with standard release safeguards.",
-        evidence: "L1/L2 alert route and L3 fix route are ready for failed builds.",
+        evidence: "The same DevOps team has a tested alert route, restore runbook and code fix path for failed builds.",
         confidence: "This can transition now because evidence beats the missing notes."
       },
       {
@@ -270,7 +270,7 @@ const transitionCases: CoverageCase[] = [
 const maturityLevels = [
   { level: 0, label: "M0", title: "Unknown", short: "vendor-dependent", hue: "--accent", x: 50, y: 7 },
   { level: 1, label: "M1", title: "Discovered", short: "inventory + gaps", hue: "--ops", x: 86, y: 27 },
-  { level: 2, label: "M2", title: "Run-ready", short: "L1/L2 can run", hue: "--tech", x: 86, y: 70 },
+  { level: 2, label: "M2", title: "Run-ready", short: "Engineer rota ready", hue: "--tech", x: 86, y: 70 },
   { level: 3, label: "M3", title: "Risk-mitigated", short: "run with safeguards", hue: "--gov", x: 50, y: 91 },
   { level: 4, label: "M4", title: "Proactive", short: "SLO + prevention", hue: "--proof", x: 14, y: 70 },
   { level: 5, label: "M5", title: "Pandav ready", short: "safe automation", hue: "--accent", x: 14, y: 27 }
@@ -294,9 +294,9 @@ const maturityDefinitions = [
   {
     label: "M2",
     title: "Run-ready",
-    meaning: "Ops L1/L2 can monitor, triage and run known recovery actions with named escalation.",
+    meaning: "The domain engineer rota can monitor, triage and run known recovery actions with named escalation.",
     evidence: "Alert route, ServiceNow or PagerDuty mapping, tested access, basic runbook, escalation owner and support handoff.",
-    example: "A Databricks job failure creates a ticket; L2 can rerun it; L3/Data SME is named for unresolved failures."
+    example: "A Databricks job failure pages the on-call data engineer, who can rerun it or bring in a data SME for an unresolved defect."
   },
   {
     label: "M3",
@@ -358,7 +358,7 @@ const maturityInputDimensions: MaturityInputDimension[] = [
     states: [
       "No confirmed owner or escalation path; support would depend on tribal knowledge.",
       "Likely owner is identified, but RACI and escalation are not confirmed.",
-      "L1/L2/L3 escalation owner is known and reachable.",
+      "Primary, secondary and engineering escalation owners are known and reachable.",
       "RACI is stable across service, change, incident and vendor decisions.",
       "Ownership quality is reviewed through service governance and recurring gaps are removed.",
       "Ownership graph is reliable enough for automated routing and assisted decisions."
@@ -417,12 +417,12 @@ const maturityInputDimensions: MaturityInputDimension[] = [
     label: "Runbooks & known errors",
     abbr: "Runbk",
     pillar: "Run",
-    question: "Can L1/L2 follow known actions without waiting for one expert?",
+    question: "Can the domain engineer rota follow known actions without depending on one expert?",
     start: 0,
     states: [
       "No usable runbook or known-error record.",
       "Draft notes exist, but steps, inputs, outputs or risks are incomplete.",
-      "Known recovery actions are documented and usable by L1/L2.",
+      "Known recovery actions are documented and usable by the on-call domain engineer.",
       "Runbooks are versioned, linked to alerts and validated through reverse shadow.",
       "Runbook gaps are mined from incidents and improved every cycle.",
       "Runbook steps are structured enough for governed automation."
@@ -755,17 +755,17 @@ const supportEvidenceFlow = [
   },
   {
     stage: "Route and ticket",
-    owner: "Ops L1",
+    owner: "On-call domain engineer",
     evidence: "PagerDuty, ServiceNow, Jira, email/SMS only if governed with owner and SLA."
   },
   {
     stage: "Triage and restore",
-    owner: "Ops L1/L2",
+    owner: "Same domain engineer",
     evidence: "Impact, severity, runbook step, restart/rerun/backfill, communication and escalation."
   },
   {
     stage: "Engineering fix",
-    owner: "Ops L3",
+    owner: "Domain engineer / SME",
     evidence: "Code, config, IaC, schema, connector, pipeline or platform defect fixed safely."
   },
   {
@@ -777,8 +777,8 @@ const supportEvidenceFlow = [
 
 export const maturityHorizons = [
   { id: "now", label: "Now", title: "Baseline", detail: "current evidence baseline" },
-  { id: "d60", label: "Day 60", title: "Run transition", detail: "support takeover gate" },
-  { id: "d120", label: "Day 120", title: "Dev transition", detail: "fix route proven" },
+  { id: "d60", label: "Day 60", title: "Run readiness", detail: "engineer rota takeover gate" },
+  { id: "d120", label: "Day 120", title: "Fix readiness", detail: "same team's code fix route proven" },
   { id: "m6", label: "3-6 mo", title: "Mature run", detail: "gap burn-down" },
   { id: "m12", label: "12+ mo", title: "Pandav path", detail: "candidate patterns" }
 ] as const;
