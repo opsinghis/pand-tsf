@@ -36,7 +36,6 @@ const dialInActionImage = new URL("../assets/presentation/dial-in-action.webp", 
 const nexusCurrentImage = new URL("../assets/presentation/nexus/nexus-current.webp", import.meta.url).href;
 const nexusProposedImage = new URL("../assets/presentation/nexus/nexus-proposed.webp", import.meta.url).href;
 const sanjayPortrait = "/exec/sanjay.webp";
-const shubhraPortrait = "/exec/shubhra.webp";
 const tilakPortrait = "/exec/tilak.jpg";
 const twoLanesApproachImage = new URL("../assets/presentation/twolanes-approach.webp", import.meta.url).href;
 const rfsCover = new URL("../assets/presentation/rfs/rfs-cover.jpg", import.meta.url).href;
@@ -110,7 +109,6 @@ interface LightboxPerson {
   source?: string;
   image?: string;
   imagePosition?: string;
-  placeholderImage?: boolean;
   pending?: boolean;
 }
 
@@ -751,7 +749,6 @@ function MeetTeamVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
     pending?: boolean;
     image?: string;
     imagePosition?: string;
-    placeholderImage?: boolean;
   };
   const peopleGroups: Array<{
     track: string;
@@ -823,28 +820,17 @@ function MeetTeamVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
     if (/to add/i.test(name)) return "To be named";
     return name.replace(/\s+\d+$/, "").trim();
   };
-  const placeholderPortraits = [
-    { image: sanjayPortrait, imagePosition: "50% 38%" },
-    { image: shubhraPortrait, imagePosition: "50% 34%" },
-    { image: tilakPortrait, imagePosition: "50% 34%" },
-    { image: omPortrait, imagePosition: "62% 42%" }
-  ];
   const namedMembers = peopleGroups
-    .flatMap((group) => group.members.map((member) => ({ ...member, track: group.track })))
-    .map((member, index) => {
-      if (member.pending || member.image) return member;
-      const placeholder = placeholderPortraits[index % placeholderPortraits.length];
-      return { ...member, ...placeholder, placeholderImage: true };
-    });
+    .flatMap((group) => group.members.map((member) => ({ ...member, track: group.track })));
   const memberByName = new Map(namedMembers.map((member) => [member.name, member]));
   const openMember = (member: TeamMember & { track: string }) => {
     const roleLine = `${member.role}${member.source ? ` - ${member.source}` : ""}`;
     onOpenLightbox({
-      eyebrow: "Indicative mugshot",
+      eyebrow: "Team member",
       title: member.name,
       body: member.pending
         ? `${member.track}: this role still needs a named resource.`
-        : `${member.track}: ${roleLine}. ${member.placeholderImage ? "Placeholder portrait shown for slide completeness; replace with the actual photo when available." : member.image ? "Click-through photo shown from the slide." : "Same marker as the slide; replace with a real photo when available."}`,
+        : `${member.track}: ${roleLine}.`,
       images: [],
       view: "team-member",
       person: {
@@ -855,7 +841,6 @@ function MeetTeamVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
         initials: initialsFor(member.name),
         image: member.image,
         imagePosition: member.imagePosition,
-        placeholderImage: member.placeholderImage,
         pending: member.pending
       }
     });
@@ -989,7 +974,7 @@ function MeetTeamVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
                     key={`${group.label}-${member.name}`}
                     onClick={() => openMember(member)}
                     title={`${member.name} - ${member.track}`}
-                    aria-label={`Open mugshot for ${member.name}`}
+                    aria-label={`Open details for ${member.name}`}
                   >
                     <i className="pres-team-person-avatar" aria-hidden="true">
                       {member.image ? <img src={member.image} alt="" style={{ objectPosition: member.imagePosition }} /> : <span>{initialsFor(member.name)}</span>}
@@ -1039,7 +1024,7 @@ function MeetTeamVisual({ onOpenLightbox }: { onOpenLightbox: OpenLightbox }) {
                     key={`${track.track}-${person}`}
                     title={person}
                     onClick={() => openMember(member ? member : { name: person, role: "Named specialist", track: track.track })}
-                    aria-label={`Open mugshot for ${person}`}
+                    aria-label={`Open details for ${person}`}
                   >
                     {member?.image ? <img src={member.image} alt="" style={{ objectPosition: member.imagePosition }} /> : initialsFor(person)}
                   </button>

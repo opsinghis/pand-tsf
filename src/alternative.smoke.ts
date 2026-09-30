@@ -41,6 +41,7 @@ const renderedText = normalize(toText(markup));
 const presentationMarkup = renderToStaticMarkup(createElement(PresentationSite));
 const boothWalkthroughMarkup = presentationMarkup.split('id="booth-walkthrough"')[1]?.split('id="site-walkthrough"')[0] || "";
 const siteWalkthroughMarkup = presentationMarkup.split('id="site-walkthrough"')[1]?.split('id="meet-your-team"')[0] || "";
+const meetTeamMarkup = presentationMarkup.split('id="meet-your-team"')[1]?.split('id="exec-presence"')[0] || "";
 const boothMarkup = renderToStaticMarkup(createElement(BoothVisitSite));
 const vercelConfig = JSON.parse(readFileSync(resolve(import.meta.dirname, "../vercel.json"), "utf8")) as {
   rewrites?: Array<{ source: string; destination: string }>;
@@ -160,6 +161,10 @@ const structural: Record<string, boolean> = {
     readFileSync(resolve(import.meta.dirname, "components/PresentationSite.tsx"), "utf8").includes("Open mugshot for") &&
     readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("pres-passport-card") &&
     readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("--paper: #fff7fa"),
+  "P03 shows Om Singh as the only team photo": meetTeamMarkup.includes('/teams/om.jpeg') &&
+    !meetTeamMarkup.includes('/exec/') &&
+    !meetTeamMarkup.includes('placeholder portrait') &&
+    (meetTeamMarkup.match(/<img /g) || []).length === 2,
   "presentation includes leadership sessions": presentationMarkup.includes("Sanjay") &&
     presentationMarkup.includes("Managing Director, Publicis Sapient India") &&
     presentationMarkup.includes("Subject: Exec intros - PS in India") &&
@@ -324,7 +329,7 @@ const agenticFabricVideoPath = resolve(import.meta.dirname, "../dist/video/agent
 const pandoraModel1Path = resolve(import.meta.dirname, "../dist/pandora/model1.webp");
 const pandoraModel2Path = resolve(import.meta.dirname, "../dist/pandora/model2.webp");
 const omPortraitPath = resolve(import.meta.dirname, "../dist/teams/om.jpeg");
-const execImagePaths = ["sanjay.webp", "shubhra.webp", "tilak.jpg"].map((file) => resolve(import.meta.dirname, "../dist/exec", file));
+const execImagePaths = ["sanjay.webp", "tilak.jpg"].map((file) => resolve(import.meta.dirname, "../dist/exec", file));
 const caseImagePaths = [
   "aso.jpg",
   "nissan.jpg",
@@ -351,7 +356,7 @@ if (!html.includes("/video/agenticfabric.mp4")) throw new Error("Agentic fabric 
 if (!html.includes("/pandora/model1.webp") || !html.includes("/pandora/model2.webp")) {
   throw new Error("Pandora cover image routes missing from built HTML");
 }
-if (!html.includes("/exec/sanjay.webp") || !html.includes("/exec/shubhra.webp") || !html.includes("/exec/tilak.jpg")) {
+if (!html.includes("/exec/sanjay.webp") || !html.includes("/exec/tilak.jpg")) {
   throw new Error("Presentation exec portrait routes missing from built HTML");
 }
 if (!html.includes("/teams/om.jpeg")) {
