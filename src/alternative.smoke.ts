@@ -39,8 +39,8 @@ function collectStrings(value: unknown, out: string[]): void {
 const markup = renderToStaticMarkup(createElement(App));
 const renderedText = normalize(toText(markup));
 const presentationMarkup = renderToStaticMarkup(createElement(PresentationSite));
-const siteWalkthroughMarkup = presentationMarkup.split('id="site-walkthrough"')[1]?.split('id="booth-walkthrough"')[0] || "";
-const boothWalkthroughMarkup = presentationMarkup.split('id="booth-walkthrough"')[1]?.split('id="meet-your-team"')[0] || "";
+const boothWalkthroughMarkup = presentationMarkup.split('id="booth-walkthrough"')[1]?.split('id="site-walkthrough"')[0] || "";
+const siteWalkthroughMarkup = presentationMarkup.split('id="site-walkthrough"')[1]?.split('id="meet-your-team"')[0] || "";
 const boothMarkup = renderToStaticMarkup(createElement(BoothVisitSite));
 const vercelConfig = JSON.parse(readFileSync(resolve(import.meta.dirname, "../vercel.json"), "utf8")) as {
   rewrites?: Array<{ source: string; destination: string }>;
@@ -181,11 +181,12 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("September 2026") &&
     presentationMarkup.includes("1 October 2026") &&
     presentationMarkup.includes("Site Visit"),
-  "presentation keeps agenda conductor pages": presentationMarkup.includes("P01 | 9:45 - 10:45") &&
+  "presentation keeps agenda conductor pages": boothWalkthroughMarkup.includes("P01 | 9:45 - 10:45") &&
+    siteWalkthroughMarkup.includes("P02 | 11:00 - 11:45") &&
     presentationMarkup.includes("Ravi Shankar") &&
     presentationMarkup.includes("India Retail CTO") &&
     presentationMarkup.includes("Pandora") &&
-    presentationMarkup.includes("Optum") &&
+    presentationMarkup.includes("Financial Customer") &&
     presentationMarkup.includes("Kingfisher") &&
     presentationMarkup.includes("B&amp;O") &&
     presentationMarkup.includes("Engage with team members") &&
@@ -195,7 +196,7 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("AKS cluster operations") &&
     presentationMarkup.includes("/cases/aso.jpg") &&
     presentationMarkup.includes("/cases/nissan.jpg") &&
-    presentationMarkup.includes("/cases/optum.jpg") &&
+    !presentationMarkup.includes("/cases/optum.jpg") &&
     presentationMarkup.includes("/cases/pandora.jpg") &&
     presentationMarkup.includes("/cases/kingfisher.jpg") &&
     presentationMarkup.includes("/cases/bo.jpg") &&
@@ -212,15 +213,16 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("Adoption + shift-left") &&
     presentationMarkup.includes("/booth#booth-overview") &&
     presentationMarkup.includes("Meet The Team"),
-  "Nissan case moves from P01 to P02": siteWalkthroughMarkup.includes("Customer case walkthrough: ASO + Optum") &&
+  "Nissan is booth 3, not a retail-floor case": siteWalkthroughMarkup.includes("Customer case walkthrough: ASO + Financial Customer") &&
     !siteWalkthroughMarkup.includes("Nissan") &&
     boothWalkthroughMarkup.includes("Booth 3") &&
     (boothWalkthroughMarkup.match(/class="pres-booth-card"/g) || []).length === 3 &&
     boothWalkthroughMarkup.includes("Nissan") &&
     boothWalkthroughMarkup.includes("/cases/nissan.jpg"),
-  "P01 highlights the retail floor walkthrough": siteWalkthroughMarkup.includes("<strong>Retail floor walkthrough</strong>") &&
+  "P02 highlights the retail floor walkthrough": siteWalkthroughMarkup.includes("<strong>Retail floor walkthrough</strong>") &&
     siteWalkthroughMarkup.includes("Led by Ravi Shankar | India Retail CTO") &&
-    siteWalkthroughMarkup.includes("Customer case walkthrough: ASO + Optum"),
+    siteWalkthroughMarkup.includes("Customer case walkthrough: ASO + Financial Customer") &&
+    !siteWalkthroughMarkup.includes("Optum"),
   "presentation deep links curated for P01 and P02": presentationMarkup.includes("Scope: DevOps, Data, Integration") &&
     presentationMarkup.includes("Skills and knowledge transfer") &&
     presentationMarkup.includes("Proof and customer cases") &&
@@ -230,6 +232,9 @@ const structural: Record<string, boolean> = {
     presentationMarkup.includes("/booth#incident-reliability") &&
     !presentationMarkup.includes("McDonalds: DevOps operations") &&
     !presentationMarkup.includes("Loreal: Data platform management"),
+  "presentation opens with booths before the retail floor": presentationMarkup.indexOf('id="booth-walkthrough"') < presentationMarkup.indexOf('id="site-walkthrough"') &&
+    presentationMarkup.includes("Move to retail floor") &&
+    presentationMarkup.includes('href="#booth-walkthrough">Start walkthrough'),
   "presentation revised approach preserved": presentationMarkup.includes("P06 | 2:00 - 3:00") &&
     (presentationMarkup.match(/Same north star\. Safer adoption path\./g) || []).length >= 1 &&
     (presentationMarkup.match(/We run as-is first, stabilise, transform through maturity gates/g) || []).length >= 1 &&
@@ -323,7 +328,6 @@ const execImagePaths = ["sanjay.webp", "shubhra.webp", "tilak.jpg"].map((file) =
 const caseImagePaths = [
   "aso.jpg",
   "nissan.jpg",
-  "optum.jpg",
   "pandora.jpg",
   "kingfisher.jpg",
   "bo.jpg",
@@ -356,7 +360,6 @@ if (!html.includes("/teams/om.jpeg")) {
 if (
   !html.includes("/cases/aso.jpg") ||
   !html.includes("/cases/nissan.jpg") ||
-  !html.includes("/cases/optum.jpg") ||
   !html.includes("/cases/kingfisher.jpg") ||
   !html.includes("/cases/bo.jpg") ||
   !html.includes("/cases/mcdonalds.jpg") ||

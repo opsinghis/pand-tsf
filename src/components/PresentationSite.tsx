@@ -45,7 +45,6 @@ const rfsPortrait = new URL("../assets/presentation/rfs/rfs-portrait.jpg", impor
 const rfsRoute = new URL("../assets/presentation/rfs/rfs-route.jpg", import.meta.url).href;
 const asoCaseImage = "/cases/aso.jpg";
 const nissanCaseImage = "/cases/nissan.jpg";
-const optumCaseImage = "/cases/optum.jpg";
 const pandoraCaseImage = "/cases/pandora.jpg";
 const kingfisherCaseImage = "/cases/kingfisher.jpg";
 const boCaseImage = "/cases/bo.jpg";
@@ -233,24 +232,24 @@ const originalAgenda = [
   },
   {
     time: "9:45 - 10:45",
-    label: "PS site walkthrough - team areas visit",
-    owner: "Ravi Shankar",
-    points: ["Real development & operations", "DevOps + Integration", "ASO", "Optum"],
-    targetId: "site-walkthrough"
+    label: "Client examples - booth walkthrough",
+    owner: "Kalpesh",
+    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal", "Nissan"],
+    targetId: "booth-walkthrough"
   },
   {
     time: "10:45 - 11:00",
     label: "Tea / Coffee Break",
     owner: "Break",
-    points: ["Refresh", "Move to booth area"],
-    targetId: "booth-walkthrough"
+    points: ["Refresh", "Move to retail floor"],
+    targetId: "site-walkthrough"
   },
   {
     time: "11:00 - 11:45",
-    label: "Client examples - booth walkthrough",
-    owner: "Kalpesh",
-    points: ["DevOps showcase", "McDonalds", "Data platform management", "Loreal", "Nissan"],
-    targetId: "booth-walkthrough"
+    label: "PS site walkthrough - team areas visit",
+    owner: "Ravi Shankar",
+    points: ["Real development & operations", "DevOps + Integration", "ASO", "Financial Customer"],
+    targetId: "site-walkthrough"
   },
   {
     time: "12:00 - 12:30",
@@ -312,24 +311,8 @@ const originalAgenda = [
 
 const presentationChapters: PresentationChapter[] = [
   {
-    id: "site-walkthrough",
-    time: "9:45 - 10:45",
-    agenda: "PS site walkthrough - team areas visit",
-    title: "Site Walkthrough",
-    headline: "Walk the retail floor, then unpack the cases.",
-    punch: "Ravi Shankar, India Retail CTO, takes the group through one of the retail delivery floors. We see teams in action across Pandora, ASO, Optum, Kingfisher and B&O, then sit down for ASO and Optum case walkthroughs focused on Integration, Data and DevOps.",
-    tone: "proof",
-    visual: "sitevisit",
-    detailIds: ["scope", "team-skills", "proof"],
-    detailLinks: [
-      { num: "03", label: "Scope: DevOps, Data, Integration", href: detailHref("scope", "site-walkthrough") },
-      { num: "14", label: "Skills and knowledge transfer", href: detailHref("team-skills", "site-walkthrough") },
-      { num: "22", label: "Proof and customer cases", href: detailHref("proof", "site-walkthrough") }
-    ]
-  },
-  {
     id: "booth-walkthrough",
-    time: "11:00 - 11:45",
+    time: "9:45 - 10:45",
     agenda: "Client examples - booth walkthrough",
     title: "Booth Walkthrough",
     headline: "Three booths. One operating model.",
@@ -342,6 +325,22 @@ const presentationChapters: PresentationChapter[] = [
       { num: "02", label: "Integration operating model", href: "/booth#integration-operating-model" },
       { num: "03", label: "PAKS / DevOps operations", href: "/booth#paks-operations" },
       { num: "04", label: "Incident and reliability model", href: "/booth#incident-reliability" }
+    ]
+  },
+  {
+    id: "site-walkthrough",
+    time: "11:00 - 11:45",
+    agenda: "PS site walkthrough - team areas visit",
+    title: "Site Walkthrough",
+    headline: "Walk the retail floor, then unpack the cases.",
+    punch: "Ravi Shankar, India Retail CTO, takes the group through one of the retail delivery floors. We see teams in action across Pandora, ASO, Financial Customer, Kingfisher and B&O, then sit down for ASO and Financial Customer case walkthroughs focused on Integration, Data and DevOps.",
+    tone: "proof",
+    visual: "sitevisit",
+    detailIds: ["scope", "team-skills", "proof"],
+    detailLinks: [
+      { num: "03", label: "Scope: DevOps, Data, Integration", href: detailHref("scope", "site-walkthrough") },
+      { num: "14", label: "Skills and knowledge transfer", href: detailHref("team-skills", "site-walkthrough") },
+      { num: "22", label: "Proof and customer cases", href: detailHref("proof", "site-walkthrough") }
     ]
   },
   {
@@ -626,16 +625,16 @@ function ExecutivePlaceholderVisual() {
 }
 
 function SiteWalkthroughVisual() {
-  const squads: Array<[string, string, string]> = [
+  const squads: Array<[string, string, string?]> = [
     ["Pandora", "Retail platform context", pandoraCaseImage],
     ["ASO", "Development capability", asoCaseImage],
-    ["Optum", "Scaled team operations", optumCaseImage],
+    ["Financial Customer", "Scaled team operations"],
     ["Kingfisher", "Multi-brand retail platform", kingfisherCaseImage],
     ["B&O", "Premium retail experience", boCaseImage]
   ];
-  const cases: Array<[string, string, string]> = [
+  const cases: Array<[string, string, string?]> = [
     ["ASO", "Development + platform + operations", asoCaseImage],
-    ["Optum", "Data platform + operations", optumCaseImage]
+    ["Financial Customer", "Data platform + operations"]
   ];
   const focusAreas: Array<[string, string, PresentationIcon]> = [
     ["Integration", "Kafka, Kong, APIs and event operations.", Network],
@@ -660,7 +659,7 @@ function SiteWalkthroughVisual() {
         </div>
         {squads.map(([name, detail, image], index) => (
           <div className={`pres-floor-squad squad-${index + 1}`} key={name}>
-            <img src={image} alt={`${name} brand marker`} />
+            {image ? <img src={image} alt={`${name} brand marker`} /> : <span className="pres-customer-marker" aria-hidden="true">FC</span>}
             <strong>{name}</strong>
             <span>{detail}</span>
           </div>
@@ -672,12 +671,12 @@ function SiteWalkthroughVisual() {
       </div>
       <section className="pres-case-walkthrough">
         <span>After the team-area walkthrough</span>
-        <strong>Customer case walkthrough: ASO + Optum</strong>
+        <strong>Customer case walkthrough: ASO + Financial Customer</strong>
         <p>Selected to show development and platform capabilities in a practical customer setting.</p>
         <div className="pres-case-brand-grid">
           {cases.map(([name, detail, image]) => (
-            <article className={`case-${name.toLowerCase()}`} key={name}>
-              <img src={image} alt={`${name} case study brand visual`} />
+            <article className={`case-${name.toLowerCase().replaceAll(" ", "-")}`} key={name}>
+              {image ? <img src={image} alt={`${name} case study brand visual`} /> : <div className="pres-customer-case-marker" aria-hidden="true">FC</div>}
               <small>{name}</small>
               <span>{detail}</span>
             </article>
@@ -2172,7 +2171,7 @@ export function PresentationSite() {
           <h1>Pandora T&amp;SF - Site Visit</h1>
           <p>Part of the ongoing RFP process to choose the right platform partner: see real operations, meet the proposed team, review the revised approach, and close the commercial, AI and innovation questions.</p>
           <div className="pres-hero-actions">
-            <a href="#site-walkthrough">
+            <a href="#booth-walkthrough">
               Start walkthrough
               <ArrowRight size={15} aria-hidden="true" />
             </a>

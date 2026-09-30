@@ -1003,6 +1003,19 @@
   object-fit: cover;
 }
 
+.pres-floor-squad .pres-customer-marker {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--tone-dim, var(--accent-dim));
+  color: var(--tone, var(--accent));
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .pres-floor-squad.squad-2 img,
 .pres-floor-squad.squad-4 img,
 .pres-floor-squad.squad-5 img {
@@ -1098,10 +1111,19 @@
   object-fit: cover;
 }
 
-.pres-case-brand-grid .case-aso img,
-.pres-case-brand-grid .case-optum img {
+.pres-case-brand-grid .case-aso img {
   padding: 8px;
   object-fit: contain;
+}
+
+.pres-customer-case-marker {
+  display: grid;
+  place-items: center;
+  height: 54px;
+  background: var(--tone-dim, var(--accent-dim));
+  color: var(--tone, var(--accent));
+  font-size: 20px;
+  font-weight: 850;
 }
 
 .pres-case-brand-grid small {
