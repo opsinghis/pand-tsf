@@ -124,6 +124,7 @@ const structural: Record<string, boolean> = {
     (presentationMarkup.match(/Tea \/ Coffee Break/g) || []).length >= 2 &&
     presentationMarkup.includes("Lunch") &&
     readFileSync(resolve(import.meta.dirname, "components/PresentationSite.css"), "utf8").includes("A4 landscape"),
+  "agenda puts P03 before lunch": /12:00 - 12:30<\/span><strong>Meet your team<\/strong>[\s\S]*?12:30 - 1:00<\/span><strong>Lunch<\/strong>/.test(presentationMarkup),
   "presentation cover agenda links": (presentationMarkup.match(/<a class="pres-agenda-row/g) || []).length >= 9 &&
     presentationMarkup.includes('href="#site-walkthrough"') &&
     presentationMarkup.includes('href="#booth-walkthrough"') &&
@@ -135,7 +136,7 @@ const structural: Record<string, boolean> = {
   "presentation generic tag rows removed": !presentationMarkup.includes("pres-talk-track") &&
     !presentationMarkup.includes("Named team shape") &&
     !presentationMarkup.includes("Presenter controlled"),
-  "presentation P03 named meet team model": presentationMarkup.includes("P03 | 12:30 - 1:00") &&
+  "presentation P03 named meet team model": presentationMarkup.includes("P03 | 12:00 - 12:30") &&
     presentationMarkup.includes("Customer ask mapped to the org model.") &&
     presentationMarkup.includes("People Pandora will meet") &&
     presentationMarkup.includes("11 named specialists visible today.") &&
@@ -290,7 +291,7 @@ const structural: Record<string, boolean> = {
   "presentation page references available": presentationMarkup.includes("<em>P00</em>") &&
     presentationMarkup.includes("P01 | 9:45 - 10:45") &&
     presentationMarkup.includes("P02 | 11:00 - 11:45") &&
-    presentationMarkup.includes("P03 | 12:30 - 1:00") &&
+    presentationMarkup.includes("P03 | 12:00 - 12:30") &&
     presentationMarkup.includes("P12 | 4:15 - 4:30"),
   "presentation journey includes post-RFP proof button": presentationMarkup.includes("Post-RFP discussion") &&
     presentationMarkup.includes("Ambition recalibrated") &&

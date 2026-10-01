@@ -251,17 +251,17 @@ const originalAgenda = [
   },
   {
     time: "12:00 - 12:30",
-    label: "Lunch",
-    owner: "Break",
-    points: ["Pause"],
-    targetId: "meet-your-team"
-  },
-  {
-    time: "12:30 - 1:00",
     label: "Meet your team",
     owner: "Om Singh",
     points: ["Team identified for T&SF", "Roles", "Locations", "Support model"],
     targetId: "meet-your-team"
+  },
+  {
+    time: "12:30 - 1:00",
+    label: "Lunch",
+    owner: "Break",
+    points: ["Pause"],
+    targetId: "exec-presence"
   },
   {
     time: "1:00 - 2:00",
@@ -343,7 +343,7 @@ const presentationChapters: PresentationChapter[] = [
   },
   {
     id: "meet-your-team",
-    time: "12:30 - 1:00",
+    time: "12:00 - 12:30",
     agenda: "Meet your team",
     title: "Meet The Team",
     headline: "Customer ask mapped to the org model.",
